@@ -19,6 +19,30 @@ let rec remove_empty_tail = function
   | [] | [""] -> []
   | hd::tl -> hd :: remove_empty_tail tl
 
+let not_found req =
+  CL.Server.respond_not_found ~uri:(CL.Request.uri req) ()
+
+type handler = 
+  | Static of string
+  | Dynamic of (path:string -> req:C.Request.t -> string)
+  | Unknown of string
+
+let one ~(path:string) ~(req:C.Request.t) = "ONEONEXXXXXXONE"
+
+let urls = [
+  ( [ ""; "/" ], Static "index.html" );
+  ( [ "/one" ], Dynamic one);
+]
+
+let urlmap path = 
+  try
+    let (_, f) = 
+      List.find (fun (ps, _) -> List.exists (fun p -> path=p) ps) urls 
+    in
+    f
+  with Not_found -> Unknown path
+  
+
 (* main callback function *)
 let t conn_id ?body req =
   let path = Uri.path (CL.Request.uri req) in
@@ -37,12 +61,15 @@ let t conn_id ?body req =
   | Some body ->
      lwt body = string_of_stream body in
      CL.Server.respond_string ~status:`OK ~body ()
-  | None -> if path = "/" then
-      (* Return the index page *)
-      static#read "index.html"
-      >>= function
-      | Some b ->
-        lwt body = string_of_stream b in CL.Server.respond_string ~status:`OK ~body ()
-      | None -> assert false
-    else
-      CL.Server.respond_not_found ~uri:(CL.Request.uri req) ()
+  | None -> match urlmap path with
+      | Static filename -> 
+          (static#read filename >>= function
+            | Some b ->
+                lwt body = string_of_stream b in
+                CL.Server.respond_string ~status:`OK ~body ()
+            | None -> not_found req
+          )
+      | Dynamic handler -> 
+          let page = handler path req in
+          CL.Server.respond_string ~status:`OK ~body:page ()
+      | Unknown _ -> not_found req
