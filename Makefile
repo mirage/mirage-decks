@@ -1,0 +1,30 @@
+# based off mirage-www/Makefile
+
+.PHONY: all run clean
+
+all: build
+	@ :
+
+src/dist/setup:
+	cd src && mirari configure www.conf $(FLAGS) $(CONF_FLAGS)
+
+build: src/dist/setup
+	cd src && mirari build www.conf $(FLAGS)
+
+run:
+	cd src && mirari run www.conf $(FLAGS)
+
+clean:
+	cd src && obuild clean
+	$(RM) mir-www
+
+test: unix-socket-build unix-socket-run
+
+xen-%:
+	$(MAKE) FLAGS=--xen $*
+
+unix-socket-%:
+	$(MAKE) FLAGS="--unix --socket" $*
+
+unix-direct-%:
+	$(MAKE) FLAGS="--unix" $*

@@ -7,3 +7,10 @@
 *.cmx
 *.cmxs
 *.cmxa
+
+**/dist
+
+src/main.ml
+src/backend.ml
+src/filesystem_static.ml
+src/mir-www
