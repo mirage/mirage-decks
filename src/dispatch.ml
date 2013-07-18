@@ -27,31 +27,11 @@ type handler =
   | Dynamic of (path:string -> req:C.Request.t -> string)
   | Unknown of string
 
-let urls = 
-  ( [ ""; "/" ], Static "index.html" )
-  :: (List.map (fun p -> ( [ p ], Static ("reveal-2.4.0" ^ p)))
-        [ "/css/print/paper.css";
-          "/css/print/pdf.css";
-          "/css/reveal.min.css"; 
-          "/css/theme/default.css";
-          "/js/reveal.min.js";
-          "/lib/css/zenburn.css";
-          "/lib/font/league_gothic-webfont.svg";
-          "/lib/font/league_gothic-webfont.ttf";
-          "/lib/font/league_gothic-webfont.woff";
-          "/lib/js/classList.js";
-          "/lib/js/head.min.js";
-          "/plugin/highlight/highlight.js";
-          "/plugin/highlight/highlight.js";
-          "/plugin/markdown/markdown.js";
-          "/plugin/markdown/marked.js";
-          "/plugin/notes/notes.html";
-          "/plugin/notes/notes.js";
-          "/plugin/zoom-js/zoom.js";
-        ]
-  )
-
-let urlmap path = 
+let resolve path = 
+  let urls = 
+    ( [ ""; "/" ], Dynamic Slides.index )
+    :: List.map (fun (ps, h) -> (ps, Static h)) Reveal.urls
+  in
   try
     let (_, f) = 
       List.find (fun (ps, _) -> List.exists (fun p -> path=p) ps) urls 
@@ -72,23 +52,24 @@ let t conn_id ?body req =
     OS.Devices.find_kv_ro "static" >>=
     function
     | None   -> Printf.printf "fatal error, static kv_ro not found\n%!"; exit 1
-    | Some x -> return x in
-
+    | Some x -> return x 
+  in
   (* determine if it is static or dynamic content *)
   match_lwt static#read path with
   | Some body ->
      lwt body = string_of_stream body in
      CL.Server.respond_string ~status:`OK ~body ()
-  | None -> match urlmap path with
-      | Static filename -> 
-          (static#read filename >>= function
-            | Some b ->
-                lwt body = string_of_stream b in
-                CL.Server.respond_string ~status:`OK ~body ()
-            | None -> not_found req
-          )
-      | Dynamic handler -> 
-          let page = handler path req in
-          CL.Server.respond_string ~status:`OK ~body:page ()
-      | Unknown _ -> not_found req
-
+  | None -> 
+      match resolve path with
+        | Static filename -> 
+            (static#read filename >>= function
+              | Some b ->
+                  lwt body = string_of_stream b in
+                  CL.Server.respond_string ~status:`OK ~body ()
+              | None -> not_found req
+            )
+        | Dynamic handler -> 
+            let body = handler path req in
+            CL.Server.respond_string ~status:`OK ~body ()
+        | Unknown _ -> not_found req
+        

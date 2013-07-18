@@ -1,3 +1,12 @@
+let index ~(path:string) ~(req:Cohttp.Request.t) = 
+  "index"
+
+
+
+
+(*
+
+
 open Cow
 open Printf
 open Lwt
@@ -98,3 +107,5 @@ let t = function
         with Not_found -> Pages.not_found [x]
       in
       Html.html_t, page
+
+ *)
