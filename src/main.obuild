@@ -1,8 +1,0 @@
-obuild-ver: 1
-name: www
-version: 0.0.0
-
-executable mir-www
-  main: main.ml
-  buildDepends: mirage, fd-send-recv, cohttp.mirage, uri,  re
-  pp: camlp4o

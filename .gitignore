@@ -11,6 +11,7 @@
 **/dist
 
 src/main.ml
+src/main.obuild
 src/backend.ml
 src/filesystem_static.ml
 src/mir-www
