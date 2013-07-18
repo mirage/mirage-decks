@@ -1,15 +1,14 @@
-let index ~(path:string) ~(req:Cohttp.Request.t) = 
-  "index"
-
-
-
-
-(*
-
-
 open Cow
-open Printf
 open Lwt
+open Printf
+
+type date = {
+  year: int;
+  month: int;
+  day: int;
+} with xml
+
+let date (year, month, day) = { year; month; day }
 
 module Html = struct
 
@@ -21,53 +20,76 @@ module Html = struct
     let id = match id with "" -> "" | s -> sprintf "id='%s'" s in
     sprintf "<%s>\
   %s\
-  </%s>" (String.concat " " [ tag; cl; id ]) body tag
+  </%s>" (String.concat " " ([ tag; id; cl ] @ literals)) body tag
 
   let html = wrap "html"
   let head ?cl ?id ?literals body = wrap "head" ?cl:None ?id:None ?literals:None body
   
-  let body ?cl ?id ?literals body = 
-    lwt b = Pages.file_template body >|= Markdown.of_string >|= Markdown.to_html in
-    wrap "body" ?cl:None ?id:None ?literals:None (Html.to_string b)
+  let body = wrap "body"
 
   let title = wrap "title"
   let div = wrap "div"
+
+  let ul = wrap "ul"
+  let li = wrap "li"
+  
+  let link ?cl ?id u s = wrap "a" ~literals:[ (sprintf "href='%s'" u) ] s
 end
 
 type presentation = {
   permalink: string;
-  updated: Wiki.date;
-  author: Atom.author;
+  given: date;
+  speakers: Atom.author list;
   venue: string;
   title: string;
   slides: string;
 }
 
-let date = Wiki.date
-
 let presentations = [
   { permalink = "oscon13";
-    updated = date (2013, 07, 18, 00, 00);
-    author = People.mort;
+    given = date (2013, 07, 18);
+    speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
     title = "Mirage at OSCON 2013";
     slides = "oscon13.md";
   };
 ]
 
-let permalink_exists x = List.exists (fun e -> e.permalink = x) presentations
+let exists x = 
+  List.exists (fun e -> x = "/slides/" ^ e.permalink) presentations
 
-let render preso = 
+let index ~(path:string) ~(req:Cohttp.Request.t) = 
   Html.(
     "<!doctype html>\n"
     ^ (html 
          (head 
             ("<meta charset='utf-8'>\n"
-             ^ title slide.title
+             ^ title "Mirage Presentations :: Index"
             ))
-       ^ (body preso.slides)
+       ^ (body 
+            (ul
+               (String.concat "\n" 
+                  (List.map (fun p -> li (link p.permalink p.title)) 
+                     presentations))
+            )
+       )
     )
   )
+
+let render fs content = 
+  "rednered"
+
+
+(*
+
+
+open Cow
+open Printf
+open Lwt
+
+
+
+let render preso = 
 
 (*       <link rel='stylesheet' href='../css/reveal.min.css'>*)
 
