@@ -17,6 +17,7 @@ run:
 clean:
 	cd src && obuild clean
 	$(RM) mir-www
+	$(RM) src/main.ml src/backend.ml src/filesystem_static.ml
 
 test: unix-socket-build unix-socket-run
 
