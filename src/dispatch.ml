@@ -24,13 +24,21 @@ let not_found req =
 
 type handler = 
   | Static of string
+  | Slides of Slides.deck
   | Dynamic of (path:string -> req:C.Request.t -> string)
   | Unknown of string
 
+let handler_to_string = function
+  | Static s -> sprintf "Static(%s)" s
+  | Slides d -> sprintf "Slides(%s ~ %s)" d.Slides.permalink d.Slides.slides
+  | Dynamic f -> sprintf "Dynamic()"
+  | Unknown s -> sprintf "Unknown(%s)" s
+
 let resolve path = 
   let urls = 
-    ( [ ""; "/" ], Dynamic Slides.index )
-    :: List.map (fun (ps, h) -> (ps, Static h)) Reveal.urls
+    [ ( [ ""; "/" ], Dynamic Slides.index ) ]
+    @ (List.map (fun (p, h) -> ([p], Static h)) Reveal.urls)
+    @ (List.map (fun p -> (["/" ^ p.Slides.permalink], Slides p)) Slides.decks)
   in
   try
     let (_, f) = 
@@ -43,7 +51,6 @@ let resolve path =
 (* main callback function *)
 let t conn_id ?body req =
   let path = Uri.path (CL.Request.uri req) in
-  printf "[dispatch] path:'%s'\n%!" path;
   let path_elem =
     remove_empty_tail (Re_str.(split_delim (regexp_string "/") path))
   in
@@ -60,7 +67,9 @@ let t conn_id ?body req =
      lwt body = string_of_stream body in
      CL.Server.respond_string ~status:`OK ~body ()
   | None -> 
-      match resolve path with
+      let h = resolve path in
+      printf "[dispatch] '%s' -> %s\n%!" path (handler_to_string h);
+      match h with
         | Static filename -> 
             (static#read filename >>= function
               | Some b ->
@@ -68,8 +77,13 @@ let t conn_id ?body req =
                   CL.Server.respond_string ~status:`OK ~body ()
               | None -> not_found req
             )
+        
         | Dynamic handler -> 
             let body = handler path req in
+            CL.Server.respond_string ~status:`OK ~body ()
+        
+        | Slides deck -> 
+            lwt body = Slides.render req static deck in
             CL.Server.respond_string ~status:`OK ~body ()
         | Unknown _ -> not_found req
         

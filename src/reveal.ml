@@ -1,30 +1,30 @@
 let version = "2.4.0"
 
+let header = "templates/reveal-2.4.0-header.html"
+let footer = "templates/reveal-2.4.0-footer.html"
+
 let urls = 
-  let prefix = "reveal-" ^ version in
-  let remap s = 
-    Re_str.(let re = regexp "^/slides" in replace_first re prefix s) 
-  in
-  List.map (fun p -> ( [p], remap p ))
-    [ "/slides/css/print/paper.css";
-      "/slides/css/print/pdf.css";
-      "/slides/css/reveal.min.css"; 
-      "/slides/css/theme/default.css";
+  let prefix = "/reveal-" ^ version in
+  List.map (fun p -> (p, prefix ^ p))
+    [ "/css/print/paper.css";
+      "/css/print/pdf.css";
+      "/css/reveal.min.css"; 
+      "/css/theme/default.css";
 
-      "/slides/js/reveal.min.js";
+      "/js/reveal.min.js";
       
-      "/slides/lib/css/zenburn.css";
-      "/slides/lib/font/league_gothic-webfont.svg";
-      "/slides/lib/font/league_gothic-webfont.ttf";
-      "/slides/lib/font/league_gothic-webfont.woff";
-      "/slides/lib/js/classList.js";
-      "/slides/lib/js/head.min.js";
+      "/lib/css/zenburn.css";
+      "/lib/font/league_gothic-webfont.svg";
+      "/lib/font/league_gothic-webfont.ttf";
+      "/lib/font/league_gothic-webfont.woff";
+      "/lib/js/classList.js";
+      "/lib/js/head.min.js";
 
-      "/slides/plugin/highlight/highlight.js";
-      "/slides/plugin/highlight/highlight.js";
-      "/slides/plugin/markdown/markdown.js";
-      "/slides/plugin/markdown/marked.js";
-      "/slides/plugin/notes/notes.html";
-      "/slides/plugin/notes/notes.js";
-      "/slides/plugin/zoom-js/zoom.js";
+      "/plugin/highlight/highlight.js";
+      "/plugin/highlight/highlight.js";
+      "/plugin/markdown/markdown.js";
+      "/plugin/markdown/marked.js";
+      "/plugin/notes/notes.html";
+      "/plugin/notes/notes.js";
+      "/plugin/zoom-js/zoom.js";
     ]

@@ -18,11 +18,11 @@ module Html = struct
   let wrap ?(cl="") ?(id="") ?(literals=[]) tag body =
     let cl = match cl with "" -> "" | s -> sprintf "class='%s'" s in
     let id = match id with "" -> "" | s -> sprintf "id='%s'" s in
-    sprintf "<%s>\
-  %s\
-  </%s>" (String.concat " " ([ tag; id; cl ] @ literals)) body tag
+    sprintf "<%s>\n\
+  %s\n\
+  </%s>\n" (String.concat " " ([ tag; id; cl ] @ literals)) body tag
 
-  let html = wrap "html"
+  let html = wrap "html" ~literals:["lang=en"]
   let head ?cl ?id ?literals body = wrap "head" ?cl:None ?id:None ?literals:None body
   
   let body = wrap "body"
@@ -36,7 +36,7 @@ module Html = struct
   let link ?cl ?id u s = wrap "a" ~literals:[ (sprintf "href='%s'" u) ] s
 end
 
-type presentation = {
+type deck = {
   permalink: string;
   given: date;
   speakers: Atom.author list;
@@ -45,89 +45,63 @@ type presentation = {
   slides: string;
 }
 
-let presentations = [
+let decks = [
   { permalink = "oscon13";
     given = date (2013, 07, 18);
     speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
     title = "Mirage at OSCON 2013";
-    slides = "oscon13.md";
+    slides = "/slides/oscon13.html";
   };
 ]
 
 let exists x = 
-  List.exists (fun e -> x = "/slides/" ^ e.permalink) presentations
+  List.exists (fun e -> x = "/slides/" ^ e.permalink) decks
 
 let index ~(path:string) ~(req:Cohttp.Request.t) = 
   Html.(
     "<!doctype html>\n"
     ^ (html 
-         (head 
-            ("<meta charset='utf-8'>\n"
-             ^ title "Mirage Presentations :: Index"
-            ))
-       ^ (body 
-            (ul
-               (String.concat "\n" 
-                  (List.map (fun p -> li (link p.permalink p.title)) 
-                     presentations))
-            )
-       )
+         ((head 
+             ("<meta charset='utf-8'>\n"
+              ^ title "Mirage Decks :: Index"
+             ))
+          ^ (body 
+               (ul
+                  (String.concat "\n" 
+                     (List.map (fun p -> li (link p.permalink p.title)) 
+                        decks))
+               ))
+         ))
     )
-  )
 
-let render fs content = 
-  "rednered"
-
-
+let render req fs deck = 
+  let string_of_stream s =
+    Lwt_stream.to_list s >|= Cstruct.copyv
+  in
+  lwt h = match_lwt fs#read Reveal.header with
+    | Some b -> string_of_stream b
+    | None -> failwith "[slides] render: header"
+  in 
+  lwt f = match_lwt fs#read Reveal.footer with
+    | Some b -> string_of_stream b
+    | None -> failwith "[slides] render: footer"
+  in 
+  lwt content = match_lwt fs#read deck.slides with
+    | Some b -> string_of_stream b
+    | None -> failwith "[slides] render: content"
+  in 
+  return (h ^ content ^ f)
 (*
+  in 
+  lwt f = fs#read Reveal.footer >>= function
+    | Some b -> string_of_stream b
+    | None -> failwith "[slides] render: footer"
+  in 
+  lwt content = fs#read deck.slides >>= function
+    | Some b -> string_of_stream b
+    | None -> failwith ("[slides] render: content: " ^ deck.slides)
+  in
 
-
-open Cow
-open Printf
-open Lwt
-
-
-
-let render preso = 
-
-(*       <link rel='stylesheet' href='../css/reveal.min.css'>*)
-
-  
-  
-  
-
-(*
- ^ <:html<
-    <body>
-      <div class="reveal">
-        <div class="slides">
-          $str:slide.slides$
-        </div>
-      </div>
-      
-      <script src="../lib/js/head.min.js"></script>
-      <script src="../js/reveal.min.js"></script>
-      <script>
-        Reveal.initialize();
-      </script>
-    </body>
->> >|= Html.to_string
- *)
-
-(** *)
-  
-let t = function
-  | [] -> Html.html_t, index_page
-(*
-| ["atom.xml"] -> ["content-type","application/atom+xml; charset=UTF-8"], atom_feed
-*)
-  | x -> 
-      let page = 
-        try
-          List.find (fun e -> e.permalink = x) presentations |> render
-        with Not_found -> Pages.not_found [x]
-      in
-      Html.html_t, page
-
+  [h; content; f]
  *)
