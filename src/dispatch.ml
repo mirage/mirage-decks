@@ -27,12 +27,29 @@ type handler =
   | Dynamic of (path:string -> req:C.Request.t -> string)
   | Unknown of string
 
-let one ~(path:string) ~(req:C.Request.t) = "ONEONEXXXXXXONE"
-
-let urls = [
-  ( [ ""; "/" ], Static "index.html" );
-  ( [ "/one" ], Dynamic one);
-]
+let urls = 
+  ( [ ""; "/" ], Static "index.html" )
+  :: (List.map (fun p -> ( [ p ], Static ("reveal-2.4.0" ^ p)))
+        [ "/css/print/paper.css";
+          "/css/print/pdf.css";
+          "/css/reveal.min.css"; 
+          "/css/theme/default.css";
+          "/js/reveal.min.js";
+          "/lib/css/zenburn.css";
+          "/lib/font/league_gothic-webfont.svg";
+          "/lib/font/league_gothic-webfont.ttf";
+          "/lib/font/league_gothic-webfont.woff";
+          "/lib/js/classList.js";
+          "/lib/js/head.min.js";
+          "/plugin/highlight/highlight.js";
+          "/plugin/highlight/highlight.js";
+          "/plugin/markdown/markdown.js";
+          "/plugin/markdown/marked.js";
+          "/plugin/notes/notes.html";
+          "/plugin/notes/notes.js";
+          "/plugin/zoom-js/zoom.js";
+        ]
+  )
 
 let urlmap path = 
   try
@@ -46,6 +63,7 @@ let urlmap path =
 (* main callback function *)
 let t conn_id ?body req =
   let path = Uri.path (CL.Request.uri req) in
+  printf "[dispatch] path:'%s'\n%!" path;
   let path_elem =
     remove_empty_tail (Re_str.(split_delim (regexp_string "/") path))
   in
@@ -73,3 +91,4 @@ let t conn_id ?body req =
           let page = handler path req in
           CL.Server.respond_string ~status:`OK ~body:page ()
       | Unknown _ -> not_found req
+
