@@ -10,6 +10,8 @@ let urls =
       "/css/print/pdf.css";
       "/css/reveal.min.css"; 
       "/css/theme/default.css";
+      "/css/theme/sky.css";
+      "/css/theme/solarized.css";
 
       "/js/reveal.min.js";
       
