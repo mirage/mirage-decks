@@ -62,7 +62,7 @@ let t conn_id ?body req =
     | Some x -> return x 
   in
   (* determine if it is static or dynamic content *)
-  match_lwt static#read path with
+  match_lwt static#read ("/static" ^ path) with
   | Some body ->
      lwt body = string_of_stream body in
      CL.Server.respond_string ~status:`OK ~body ()
