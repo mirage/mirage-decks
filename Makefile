@@ -1,6 +1,6 @@
 # based off mirage-www/Makefile
 
-.PHONY: all run clean
+.PHONY: all run clean test fs
 
 all: build
 	@ :
@@ -20,6 +20,9 @@ clean:
 	$(RM) src/main.ml src/backend.ml src/filesystem_static.ml
 
 test: unix-socket-build unix-socket-run
+
+fs: 
+	mir-crunch -o src/filesystem_static.ml -name "static" ./files
 
 xen-%:
 	$(MAKE) FLAGS=--xen $*
