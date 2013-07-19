@@ -42,16 +42,20 @@ type deck = {
   speakers: Atom.author list;
   venue: string;
   title: string;
-  slides: string;
 }
 
 let decks = [
+  { permalink = "revealjs";
+    given = date (1970, 01, 01);
+    speakers = [];
+    venue = "";
+    title = "Reveal.js sample";
+  };
   { permalink = "oscon13";
     given = date (2013, 07, 18);
     speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
     title = "Mirage at OSCON 2013";
-    slides = "/slides/oscon13.html";
   };
 ]
 
@@ -87,7 +91,9 @@ let render req fs deck =
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: footer"
   in 
-  lwt content = match_lwt fs#read deck.slides with
+  let path = "/slides/" ^ deck.permalink ^ "/index.html" in
+  printf "[slides] path:'%s'\n%!" path;
+  lwt content = match_lwt fs#read path with
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: content"
   in 

@@ -30,7 +30,7 @@ type handler =
 
 let handler_to_string = function
   | Static s -> sprintf "Static(%s)" s
-  | Slides d -> sprintf "Slides(%s ~ %s)" d.Slides.permalink d.Slides.slides
+  | Slides d -> sprintf "Slides(%s)" d.Slides.permalink
   | Dynamic f -> sprintf "Dynamic()"
   | Unknown s -> sprintf "Unknown(%s)" s
 
