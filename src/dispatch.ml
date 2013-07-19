@@ -25,28 +25,45 @@ let not_found req =
 type handler = 
   | Static of string
   | Slides of Slides.deck
+  | Assets of Slides.deck
   | Dynamic of (path:string -> req:C.Request.t -> string)
   | Unknown of string
 
 let handler_to_string = function
   | Static s -> sprintf "Static(%s)" s
   | Slides d -> sprintf "Slides(%s)" d.Slides.permalink
+  | Assets d -> sprintf "Asset(%s)" d.Slides.permalink
   | Dynamic f -> sprintf "Dynamic()"
   | Unknown s -> sprintf "Unknown(%s)" s
 
-let resolve path = 
-  let urls = 
-    [ ( [ ""; "/" ], Dynamic Slides.index ) ]
-    @ (List.map (fun (p, h) -> ([p], Static h)) Reveal.urls)
-    @ (List.map (fun p -> (["/" ^ p.Slides.permalink], Slides p)) Slides.decks)
+let urlmap =
+  let decks = 
+      List.map (fun d -> (["/" ^ d.Slides.permalink ^ "/"], Slides d)) Slides.decks
   in
+  let assets = 
+    List.map (fun d ->
+      (List.map (fun a -> "/" ^ d.Slides.permalink ^ "/" ^ a) d.Slides.assets), Assets d)
+      Slides.decks
+  in
+  [ ( [ ""; "/" ], Dynamic Slides.index ) ]
+  @ (List.map (fun (p, h) -> ([p], Static h)) Reveal.urls)
+  @ decks
+  @ assets
+    
+let _ = 
+  printf "[urlmap] : %s\n%!" 
+    (String.concat "\n\t"
+       (List.map (fun (ps, h) -> 
+         sprintf "%s -> %s" (String.concat "; " ps) (handler_to_string h))
+          urlmap))
+    
+let resolve path = 
   try
     let (_, f) = 
-      List.find (fun (ps, _) -> List.exists (fun p -> path=p) ps) urls 
+      List.find (fun (ps, _) -> List.exists (fun p -> path=p) ps) urlmap
     in
     f
-  with Not_found -> Unknown path
-  
+  with Not_found -> Unknown path  
 
 (* main callback function *)
 let t conn_id ?body req =
@@ -82,8 +99,7 @@ let t conn_id ?body req =
             let body = handler path req in
             CL.Server.respond_string ~status:`OK ~body ()
         
-        | Slides deck -> 
-            lwt body = Slides.render req static deck in
-            CL.Server.respond_string ~status:`OK ~body ()
+        | Slides deck -> Slides.slides path static deck
+        | Assets deck -> Slides.asset path static deck
         | Unknown _ -> not_found req
         

@@ -2,6 +2,9 @@ open Cow
 open Lwt
 open Printf
 
+module CL = Cohttp_lwt_mirage
+module C = Cohttp
+
 type date = {
   year: int;
   month: int;
@@ -12,8 +15,9 @@ let date (year, month, day) = { year; month; day }
 
 module Html = struct
 
-  let html_t = ["content-type","text/html"]
-  let html_t = ["content-type","application/atom+xml; charset=UTF-8"]
+  let html_t = ["content-type", "text/html"]
+  let atom_t = ["content-type", "application/atom+xml; charset=UTF-8"]
+  let octets_t = ["content-type", "application/octet-stream"]
   
   let wrap ?(cl="") ?(id="") ?(literals=[]) tag body =
     let cl = match cl with "" -> "" | s -> sprintf "class='%s'" s in
@@ -42,6 +46,7 @@ type deck = {
   speakers: Atom.author list;
   venue: string;
   title: string;
+  assets: string list;
 }
 
 let decks = [
@@ -50,12 +55,17 @@ let decks = [
     speakers = [];
     venue = "";
     title = "Reveal.js sample";
+    assets = [];
   };
   { permalink = "oscon13";
     given = date (2013, 07, 18);
     speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
     title = "Mirage at OSCON 2013";
+    assets = [ "arch2.png"; "boot-time.png"; "memory-model.png"; 
+               "threat-model-dom0.png"; "threat-model.png"; 
+               "vapps-current.png"; "vapps-specialised.png"; "zero-copy-io.png"
+             ]; 
   };
 ]
 
@@ -73,16 +83,15 @@ let index ~(path:string) ~(req:Cohttp.Request.t) =
           ^ (body 
                (ul
                   (String.concat "\n" 
-                     (List.map (fun p -> li (link p.permalink p.title)) 
+                     (List.map (fun p -> li (link (p.permalink ^ "/") p.title)) 
                         decks))
                ))
          ))
     )
 
-let render req fs deck = 
-  let string_of_stream s =
-    Lwt_stream.to_list s >|= Cstruct.copyv
-  in
+let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv
+
+let slides path fs deck = 
   lwt h = match_lwt fs#read Reveal.header with
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: header"
@@ -91,23 +100,22 @@ let render req fs deck =
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: footer"
   in 
-  let path = "/slides/" ^ deck.permalink ^ "/index.html" in
+  let path = "/slides" ^ path ^ "index.html" in
   printf "[slides] path:'%s'\n%!" path;
   lwt content = match_lwt fs#read path with
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: content"
   in 
-  return (h ^ content ^ f)
-(*
-  in 
-  lwt f = fs#read Reveal.footer >>= function
-    | Some b -> string_of_stream b
-    | None -> failwith "[slides] render: footer"
-  in 
-  lwt content = fs#read deck.slides >>= function
-    | Some b -> string_of_stream b
-    | None -> failwith ("[slides] render: content: " ^ deck.slides)
-  in
+  let body = h ^ content ^ f in
+  CL.Server.respond_string ~status:`OK ~body ()
 
-  [h; content; f]
- *)
+let asset path fs deck = 
+  let path = "/slides" ^ path in
+  printf "[asset] path:'%s'\n%!" path;
+  lwt body = match_lwt fs#read path with
+    | Some b -> string_of_stream b
+    | None -> failwith "[slides] render: asset"
+  in 
+  let headers = C.Header.of_list Html.octets_t in
+  CL.Server.respond_string ~headers ~status:`OK ~body ()
+
