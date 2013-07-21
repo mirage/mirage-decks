@@ -64,7 +64,9 @@ let decks = [
     title = "Mirage at OSCON 2013";
     assets = [ "arch2.png"; "boot-time.png"; "memory-model.png"; 
                "threat-model-dom0.png"; "threat-model.png"; 
-               "vapps-current.png"; "vapps-specialised.png"; "zero-copy-io.png";
+               "vapps-current.png"; "vapps-specialised-1.png"; 
+               "vapps-specialised-2.png"; "vapps-specialised-3.png"; 
+               "zero-copy-io.png";
                "kloc.png"; "cothreads.png"; "scaling-instances.png";
                "openflow-controller.png"; "thread-scaling.png"; "block-storage.png"
              ]; 
