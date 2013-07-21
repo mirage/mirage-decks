@@ -1,4 +1,4 @@
-<section data-markdown>
+<section data-markdown class="title center">
   <script type="text/template">
     ## Unikernels: Functional Library Operating Systems for the Cloud
 	
@@ -20,8 +20,7 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
-      <img alt="progressive specialisation" src="threat-model-dom0.png"
-           style="background-color: white">
+      <img alt="progressive specialisation" src="threat-model.png">
     </script>
   </section>
 
@@ -29,8 +28,13 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
-      <img alt="progressive specialisation" src="threat-model.png"
-           style="background-color: white">
+      <img alt="progressive specialisation" src="threat-model.png">
+   
+      + Internet
+      + SAN/NAS
+      + Tenants
+      + SDN
+   
    </script>
   </section>
 
@@ -38,6 +42,18 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
+      <img alt="progressive specialisation" src="threat-model.png">
+
+      <style type="text/css">
+        .triangle-isosceles.left:after { 
+          border-width: 20px 80px 20px 0;
+        }
+      </style>
+      <p class="bubble triangle-isosceles left" 
+         style="width: 12em; top: 250px; left: 400px">
+        Type-safety in the application layer defeats several external threats.
+      </p>
+
     </script>
   </section>
 
@@ -45,6 +61,20 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
+      <img alt="progressive specialisation" src="threat-model.png">
+
+      <style type="text/css">        
+        .triangle-isosceles:after { 
+          bottom: -55px;
+          border-width: 60px 25px 0 0;
+        }
+      </style>
+      <p class="bubble triangle-isosceles bottom" 
+         style="width: 15em; top: 225px; left: 400px">
+        Type-safety in the kernel will make all external I/O safe, but at what
+        cost?
+      </p>
+    
     </script>
   </section>
 
@@ -52,6 +82,11 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
+      <img alt="progressive specialisation" src="threat-model.png">
+
+        Most attacks never come from within a guest, only from external
+        traffic. So why all these privilege checks? 
+    
     </script>
   </section>
 
@@ -59,6 +94,10 @@
     <script type="text/template">
       ## Key Design Insights
 
+      <img alt="progressive specialisation" src="threat-model.png">
+
+      The hypervisor gifts us a stable hardware interface. Cures the curse of
+      library operating systems! 
     </script>
   </section>
 
@@ -66,6 +105,14 @@
     <script type="text/template">
       ## Key Design Insights
 
+      <img alt="progressive specialisation" src="threat-model.png">
+
+      The hypervisor gifts us a stable hardware interface.  Cures the curse of
+      library operating systems! 
+
+
+      Protocol-level compatibility between  special-purpose cloud appliances,
+      e.g. a webserver, a database VM.
     </script>
   </section>
 </section>
@@ -75,7 +122,11 @@
     <script type="text/template">
       ## Unikernels!
 
-    </script>
+       <img alt="progressive specialisation" src="threat-model.png">
+   
+       Virtual machines are UNIX processes "done right" on the cloud.   
+   
+   </script>
   </section>
 
   <section data-markdown>
@@ -90,7 +141,7 @@
     <script type="text/template">
       ## Virtual Appliances: Specialised
 
-      <img alt="progressive specialisation" src="vapps-specialised.png">
+      <img alt="progressive specialisation" src="vapps-specialised-1.png">
     </script>
   </section>
 
@@ -98,6 +149,7 @@
     <script type="text/template">
       ## Virtual Appliances: Specialised
 
+      <img alt="progressive specialisation" src="vapps-specialised-2.png">
     </script>
   </section>
 
@@ -105,6 +157,7 @@
     <script type="text/template">
       ## Virtual Appliances: Specialised
 
+      <img alt="progressive specialisation" src="vapps-specialised-3.png">
     </script>
   </section>
 </section>
@@ -238,6 +291,12 @@
     <script type="text/template">
       ## Simplified Memory Management
 
+      <img alt="progressive specialisation" src="memory-model.png"
+           style="max-height: 75%">
+        
+      Compiled native source code and runtime statically linked with random
+      start offset.
+
     </script>
   </section>
 
@@ -245,6 +304,12 @@
     <script type="text/template">
       ## Simplified Memory Management
 
+      <img alt="progressive specialisation" src="memory-model.png"
+           style="max-height: 75%">
+        
+      All I/O memory gets mapped into a reserved area and is thus
+      distinguished. 
+    
     </script>
   </section>
 
@@ -252,6 +317,11 @@
     <script type="text/template">
       ## Simplified Memory Management
 
+      <img alt="progressive specialisation" src="memory-model.png"
+           style="max-height: 75%">
+
+      OCaml heap is contiguous, with simpler write barriers as a result.
+        
     </script>
   </section>
 
@@ -322,6 +392,12 @@
           Dns.Server.listen dev src zones   
         )
       ```
+      
+      + Cooperative threads as functions
+      + Statically evaluated configuration
+      + Functional callbacks
+      + Libraries directly link to network stack
+    
     </script>
   </section>
 

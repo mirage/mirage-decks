@@ -12,6 +12,7 @@ let urls =
       "/css/theme/default.css";
       "/css/theme/sky.css";
       "/css/theme/solarized.css";
+      "/css/theme/horizon.css";
 
       "/js/reveal.min.js";
       
