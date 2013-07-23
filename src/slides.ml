@@ -66,7 +66,8 @@ let decks = [
                "threat-model-dom0.png"; "threat-model.png"; 
                "vapps-current.png"; "vapps-specialised-1.png"; 
                "vapps-specialised-2.png"; "vapps-specialised-3.png"; 
-               "zero-copy-io.png";
+               "zero-copy-io.png"; "red-arrow.png"; "green-arrow.png"; 
+               "key-insight.png";
                "kloc.png"; "cothreads.png"; "scaling-instances.png";
                "openflow-controller.png"; "thread-scaling.png"; "block-storage.png"
              ]; 

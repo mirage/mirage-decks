@@ -20,7 +20,33 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
-      <img alt="progressive specialisation" src="threat-model.png">
+      <img src="threat-model.png" />
+      
+      <div class="fragment">
+        <img class="arrow" 
+             style="position:absolute; 
+                    top: 180px; left: 350px; height: 250px" 
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="position:absolute; 
+                    top: 350px; left: 600px; height: 250px; 
+                    -webkit-transform: rotate(-90deg)"
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="position:absolute; top: 350px; left: 400px; 
+                    height: 250px; -webkit-transform: rotate(-90deg)" 
+             src="red-arrow.png" />
+        
+        <p class="bubble triangle-isosceles left"
+           style="width: 4em; top: 400px; left: 820px" >
+          Internet<br />
+          SAN/NAS<br />
+          Tenants<br />
+          SDN
+        </p>
+      </div>
     </script>
   </section>
 
@@ -28,52 +54,43 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
-      <img alt="progressive specialisation" src="threat-model.png">
-   
-      + Internet
-      + SAN/NAS
-      + Tenants
-      + SDN
-   
-   </script>
-  </section>
+      <img src="threat-model.png" />
 
-  <section data-markdown>
-    <script type="text/template">
-      ## The Cloud Threat Model
-
-      <img alt="progressive specialisation" src="threat-model.png">
-
-      <style type="text/css">
-        .triangle-isosceles.left:after { 
-          border-width: 20px 80px 20px 0;
-        }
-      </style>
-      <p class="bubble triangle-isosceles left" 
-         style="width: 12em; top: 250px; left: 400px">
-        Type-safety in the application layer defeats several external threats.
-      </p>
-
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## The Cloud Threat Model
-
-      <img alt="progressive specialisation" src="threat-model.png">
-
-      <style type="text/css">        
-        .triangle-isosceles:after { 
-          bottom: -55px;
-          border-width: 60px 25px 0 0;
-        }
-      </style>
-      <p class="bubble triangle-isosceles bottom" 
-         style="width: 15em; top: 225px; left: 400px">
-        Type-safety in the kernel will make all external I/O safe, but at what
-        cost?
-      </p>
+       
+      <div class="fragment">
+        <img class="arrow" 
+             style="position:absolute; top: 180px; left: 350px; 
+                    height: 250px" 
+             src="green-arrow.png" />
+        
+        <img class="arrow" 
+             style="position:absolute; top: 350px; left: 600px; 
+                    height: 250px; -webkit-transform: rotate(-90deg)"
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="position:absolute; top: 350px; left: 400px; 
+                    height: 250px; -webkit-transform: rotate(-90deg)" 
+             src="red-arrow.png" />
+        
+        <p class="bubble triangle-isosceles right" 
+           style="width: 11em; top: 300px; left: -50px">
+          Type-safety in the application layer defeats several external threats.
+        </p>
+      </div>
+        
+      <div class="fragment">
+        <p class="bubble triangle-isosceles"
+           style="width: 12em; top: 240px; left: 450px">
+          Type-safety in the kernel will make all external I/O safe, but at what
+          cost?
+        </p>
+        
+        <img class="arrow" 
+             style="position:absolute; top: 350px; left: 400px; 
+                    height: 250px; -webkit-transform: rotate(-90deg)"
+             src="green-arrow.png" />
+      </div>
     
     </script>
   </section>
@@ -82,11 +99,13 @@
     <script type="text/template">
       ## The Cloud Threat Model
 
-      <img alt="progressive specialisation" src="threat-model.png">
+      <img src="threat-model.png" />
 
-        Most attacks never come from within a guest, only from external
-        traffic. So why all these privilege checks? 
-    
+        <p class="bubble triangle-isosceles left"
+           style="width: 15.5em; top: 200px; left: 400px" >
+          Most attacks never come from <strong>within</strong> a guest, only from external
+          traffic. So why all these privilege checks? 
+      </p>
     </script>
   </section>
 
@@ -94,26 +113,20 @@
     <script type="text/template">
       ## Key Design Insights
 
-      <img alt="progressive specialisation" src="threat-model.png">
-
-      The hypervisor gifts us a stable hardware interface. Cures the curse of
-      library operating systems! 
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Key Design Insights
-
-      <img alt="progressive specialisation" src="threat-model.png">
-
-      The hypervisor gifts us a stable hardware interface.  Cures the curse of
-      library operating systems! 
-
-
-      Protocol-level compatibility between  special-purpose cloud appliances,
-      e.g. a webserver, a database VM.
-    </script>
+      <img src="threat-model.png" />
+        
+        <p class="bubble triangle-isosceles top"
+           style="width: 12em; top: 420px; left: 40px">
+          The hypervisor gifts us a stable hardware interface. Cures the curse
+          of library operating systems! 
+        </p>
+        
+        <p class="fragment bubble triangle-isosceles"
+           style="width: 13em; top: 180px; right: -50px">
+          Protocol-level compatibility between special-purpose cloud
+          appliances, e.g. a webserver, a database VM. 
+        </p>
+      </script>
   </section>
 </section>
 
@@ -122,26 +135,47 @@
     <script type="text/template">
       ## Unikernels!
 
-       <img alt="progressive specialisation" src="threat-model.png">
-   
-       Virtual machines are UNIX processes "done right" on the cloud.   
-   
-   </script>
+      <img src="key-insight.png" />
+      <p class="fragment bubble triangle-isosceles"
+         style="width: 12em; top: 150px; left: 270px">
+        Virtual machines are UNIX processes &ldquo;done right&rdquo; on the cloud.   
+      </p>   
+    </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
       ## Virtual Appliances: Current
 
-      <img alt="progressive specialisation" src="vapps-current.png">
+      <img src="vapps-current.png" />
+
+      Compiler has to stop at userspace.
+
+      Every level has a different API, calling convention, and privilege requirements.
+   
+   
    </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
-      ## Virtual Appliances: Specialised
+      ## Contributions
+      
+      + The unikernel approach to building single-purpose appliances        
+        + Library OS + high level programming interface
+        + Single-address space layout
 
-      <img alt="progressive specialisation" src="vapps-specialised-1.png">
+        <br />
+
+      + Evaluation of these techniques using a functional programming language
+        (OCaml)
+        + Benefits of type-safety need not damage performance
+        + Static typing + modules = high level manipulation
+
+        <br />
+
+      + Language extensions for systems programming in OCaml
+
     </script>
   </section>
 
@@ -149,7 +183,7 @@
     <script type="text/template">
       ## Virtual Appliances: Specialised
 
-      <img alt="progressive specialisation" src="vapps-specialised-2.png">
+      <img src="vapps-specialised-1.png" />
     </script>
   </section>
 
@@ -157,7 +191,15 @@
     <script type="text/template">
       ## Virtual Appliances: Specialised
 
-      <img alt="progressive specialisation" src="vapps-specialised-3.png">
+      <img src="vapps-specialised-2.png" />
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Virtual Appliances: Specialised
+
+      <img src="vapps-specialised-3.png" />
     </script>
   </section>
 </section>
@@ -181,18 +223,20 @@
     <script type="text/template">
       ## Appliance Image Size
 
-      <table>
-        <thead>
-          <td>Appliance</td><td>Standard Build</td><td>Dead Code Elimination</td>
+      <table style="border-bottom: 1px black solid">
+        <thead style="font-weight: bold">
+          <td style="border-bottom: 1px black solid; width: 15em">Appliance</td>
+          <td style="border-bottom: 1px black solid">Standard Build</td>
+          <td style="border-bottom: 1px black solid">Dead Code Elimination</td>
         </thead>
         <tbody>
-          <tr>
+          <tr style="background-color: rgba(0, 0, 1, 0.2)">
             <td>DNS</td><td>0.449 MB</td><td>0.184 MB</td>
           </tr>
           <tr>
             <td>Web Server</td><td>0.674 MB</td><td>0.172 MB</td>
           </tr>
-          <tr>
+          <tr style="background-color: rgba(0, 0, 1, 0.2)">
             <td>Openflow learning switch</td><td>0.393 MB</td><td>0.164 MB</td>
           </tr>
           <tr>
@@ -201,6 +245,7 @@
         </tbody>
       </table>
 
+      <br />
       All configuration and data compiled into the image by the toolchain.
 
       Live migration is easy and fun :-)
@@ -211,7 +256,7 @@
     <script type="text/template">
       ## Boot Time
 
-      <img alt="progressive specialisation" src="boot-time.png">
+      <img src="boot-time.png">
 
       _Unikernels are compact enough to boot and respond to network traffic in
       real-time._
@@ -282,46 +327,26 @@
     <script type="text/template">
       ## Simplified Memory Management
 
-      <img alt="progressive specialisation" src="memory-model.png"
-           style="max-height: 75%">
-    </script>
-  </section>
+      <img src="memory-model.png"
+           style="max-height: 75%; margin-left: 150px" />
 
-  <section data-markdown>
-    <script type="text/template">
-      ## Simplified Memory Management
+      <p class="fragment bubble triangle-isosceles"
+         style="top: 0; left:260px; width: 13em">
+        Compiled native source code and runtime statically linked with random
+        start offset.
+      </p>
+      
+      <p class="fragment bubble triangle-isosceles right"
+         style="top: 230px; left:-90px; width: 9.5em">
+        All I/O memory gets mapped into a reserved area and is thus
+        distinguished. 
+      </p>
 
-      <img alt="progressive specialisation" src="memory-model.png"
-           style="max-height: 75%">
-        
-      Compiled native source code and runtime statically linked with random
-      start offset.
+      <p class="fragment bubble triangle-isosceles left"
+         style="top: 470px; left:370px; width: 12em">
+        OCaml heap is contiguous, with simpler write barriers as a result.
+      </p>
 
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Simplified Memory Management
-
-      <img alt="progressive specialisation" src="memory-model.png"
-           style="max-height: 75%">
-        
-      All I/O memory gets mapped into a reserved area and is thus
-      distinguished. 
-    
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Simplified Memory Management
-
-      <img alt="progressive specialisation" src="memory-model.png"
-           style="max-height: 75%">
-
-      OCaml heap is contiguous, with simpler write barriers as a result.
-        
     </script>
   </section>
 
@@ -329,7 +354,7 @@
     <script type="text/template">
       ## Zero-Copy IO Buffer Management
 
-      <img alt="progressive specialisation" src="zero-copy-io.png">
+      <img src="zero-copy-io.png">
     </script>
   </section>
 
@@ -359,7 +384,7 @@
     <script type="text/template">
       ## Progressive Specialisation
 
-      <img alt="progressive specialisation" src="arch2.png">
+      <img style="width:95%" src="arch2.png">
 
     </script>
   </section>
@@ -384,19 +409,38 @@
     <script type="text/template">
       ## DNS Server Code
 
-      ```
+      <pre>
+        <code style="font-size:32px; line-height:1.1">
+      
       let main () =
         lwt zones = read key "zones" "zone.db" in 
         Net.Manager.bind (fun mgr dev ->
           let src = `any_addr, 53 in
           Dns.Server.listen dev src zones   
         )
-      ```
+
+        </code>
+      </pre>
       
-      + Cooperative threads as functions
-      + Statically evaluated configuration
-      + Functional callbacks
-      + Libraries directly link to network stack
+      <p class="fragment bubble triangle-isosceles"
+         style="top:20px; left:80px; width:10em">
+        Cooperative threads as functions
+      </p>
+
+      <p class="fragment bubble triangle-isosceles"
+         style="top:50px; left:550px; width:10em">
+        Statically evaluated configuration
+      </p>
+
+      <p class="fragment bubble triangle-isosceles top"
+         style="top:350px; left:400px">
+        Functional callbacks
+      </p>
+
+      <p class="fragment bubble triangle-isosceles top"
+         style="top:420px; left:-10px; width: 10em">
+        Libraries directly link to network stack
+      </p>
     
     </script>
   </section>
@@ -529,7 +573,9 @@
         + <http://www.openmirage.org>
         + (Code) <http://github.com/mirage>
         + (O'Reilly Book) <http://realworldocaml.org>
-      
+
+        <br />
+
       + <http://www.cl.cam.ac.uk/projects/ocamllabs>
         + Funded by industry/academia (Jane Street Capital, Citrix, EU FP7,
           RCUK/Horizon)
@@ -543,38 +589,18 @@
     <script type="text/template">
       ## Key Research Directions
 
-      + __Interoperability -- with billions of VMs out there__
+      + __Interoperability &mdash; with billions of VMs out there__
         + A unikernel per-language?
         + Interconnect strategies? Heap sharing?
         + Formal method integration easier or harder?
-      + __Coordination -- planetary scale computers__
+      + __Coordination &mdash; planetary scale computers__
         + Resources are highly elastic now.
         + How to coordinate a million microkernels? 
         + "Warehouse Scale Computing"
-      + __Library Applications --- where are they?__
+      + __Library Applications &mdash; where are they?__
         + Irminsule, a git-like functional distributed database
         + Beanstalk, a self-scaling web server
     </script>
   </section>
 
 </section>
-
-<!--
-
-<section data-markdown>
-<script type="text/template">
-</script>
-</section>
-
-
-
-<section>
-<h2>
-Some<br />
-stuff
-</h2>
-
-<h2 class="fragment absolute-element" style="position: absolute; width: 239px; height: 68px; z-index: 4; left: 379px; top: 372px;" data-fragment-index="0">gdgTitleb</h2>
-<div class="absolute-element" style="position: absolute; width: 78px; height: 46px; z-index: 4; left: 689px; top: 241px;">gdfg</div>
-</section>
--->
