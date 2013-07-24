@@ -1,5 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Quicksand:400,700,400italic,700italic);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
 /**
  * Horizon DER theme for reveal.js. 
  *
@@ -8,6 +6,8 @@
  * Based on `sky` theme by Hakim El Hattab, http://hakim.se.
  *
  */
+
+@import url(horizon-fonts.css);
 
 /*********************************************
  * GLOBAL STYLES
@@ -23,7 +23,7 @@ body {
   background-color: #f7fbfc; }
 
 .reveal {
-  font-family: "Open Sans", sans-serif;
+  font-family: "PT Sans", sans-serif;
   font-size: 32px;
   font-weight: 200;
   letter-spacing: -0.02em;
@@ -155,9 +155,8 @@ p.bubble {
 .reveal h6 {
   margin: 0 0 20px 0;
   color: #333333;
-  font-family: "Quicksand", sans-serif;
+  font-family: "PT Sans Narrow", sans-serif;
   line-height: 0.9em;
-  letter-spacing: -0.08em;
   text-transform: uppercase;
   text-shadow: none; 
 }
