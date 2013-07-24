@@ -42,8 +42,27 @@ body {
   background: #134674;
   text-shadow: none; }
 
+.reveal  {
+    background-color: white;
+    width: 100%;
+}
+.reveal .slides { width: 100%; }
+
+.reveal .slides>section {
+    padding: 0;
+    width: 100%;
+}
+.reveal .slides>section>section {
+    padding: 0;
+    width: 100%;
+}
+
 .reveal section.title {
     margin-top: 100px;
+}
+.reveal section.title h1 {
+    margin-bottom: 1em;
+    font-size: 2.5em;
 }
 
 /***********************************************************************
@@ -105,7 +124,7 @@ p.bubble {
 	
 	border-color:#f3961c transparent;
     
-    border-width: 50px 20px 0 20px;
+    border-width: 55px 20px 0 20px;
     bottom: -50px;
     left: 2em;
     
@@ -118,7 +137,7 @@ p.bubble {
 	bottom:auto;
 	left:auto;
 	border-color:#f3961c transparent;
-    border-width: 0 20px 50px 20px;
+    border-width: 0 20px 55px 20px;
     top: -50px;
     right: 2em;
 }
@@ -128,7 +147,7 @@ p.bubble {
 	top: 2em; /* controls vertical position */
 	left:-50px; /* value = - border-left-width - border-right-width */
 	bottom:auto;
-	border-width:20px 50px 20px 0;
+	border-width:20px 55px 20px 0;
 	border-color:transparent #f3961c;
 }
 
@@ -138,7 +157,7 @@ p.bubble {
 	right:-50px; /* value = - border-left-width - border-right-width */
 	bottom:auto;
     left:auto;
-	border-width:20px 0 20px 50px;
+	border-width:20px 0 20px 55px;
 	border-color:transparent #f3961c;
 }
 
@@ -162,7 +181,22 @@ p.bubble {
 }
 
 .reveal h1 {
-  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2); }
+  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2); 
+}
+
+.reveal h2 {
+    padding: 1ex 1em 1ex 0.5em;
+    margin-bottom: 1ex;
+    background-color: #2462aa;
+background-image: url('starburst.png');
+color: white;
+}
+.reveal small {
+color: #aaaaaa;
+}
+.reveal h2 a:not(.image) {
+color: #aaaaaa;
+}
 
 /*********************************************
  * LINKS
@@ -189,10 +223,19 @@ p.bubble {
  * IMAGES
  *********************************************/
 .reveal section img {
-  margin: 15px 0px;
+max-width:80%;
+max-height:80%;
+margin: 0 auto;
+display: block;
+}
+
+.reveal section img {
+
   background: rgba(255, 255, 255, 0.12);
-  border: 4px solid #333333;
+/*
+  border: 3px solid #888888;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+*/
   -webkit-transition: all .2s linear;
   -moz-transition: all .2s linear;
   -ms-transition: all .2s linear;
