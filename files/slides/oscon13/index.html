@@ -1,14 +1,12 @@
 <section data-markdown class="title center">
   <script type="text/template">
-    ## Unikernels: Functional Library Operating Systems for the Cloud
+    ## __Unikernels__: Functional Library Operating Systems for the Cloud
 	
-    ### Anil Madhavapeddy<small>University of Cambridge</small>
-    
-    with a merry crew:
-    
-    Haris Rotsos, Balraj Singh, Steven Smith, Jon Crowcroft, Steve Hand
+    __Anil Madhavapeddy__, Haris Rotsos, Balraj Singh, <br />
+    Steven Smith, Jon Crowcroft, Steve Hand
     <small>University of Cambridge</small>
-    **<br>Richard Mortier <small>University of Nottingham</small>**
+
+    __Richard Mortier__ <small>University of Nottingham</small>
     <br>Thomas Gazagnaire <small>OCamlPro</small>
     <br>Dave Scott <small>Citrix Systems R&D</small>
 
@@ -145,20 +143,6 @@
 
   <section data-markdown>
     <script type="text/template">
-      ## Virtual Appliances: Current
-
-      <img src="vapps-current.png" />
-
-      Compiler has to stop at userspace.
-
-      Every level has a different API, calling convention, and privilege requirements.
-   
-   
-   </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
       ## Contributions
       
       + The unikernel approach to building single-purpose appliances        
@@ -177,6 +161,20 @@
       + Language extensions for systems programming in OCaml
 
     </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Virtual Appliances: Current
+
+      <img src="vapps-current.png" />
+
+      Compiler has to stop at userspace.
+
+      Every level has a different API, calling convention, and privilege requirements.
+   
+   
+   </script>
   </section>
 
   <section data-markdown>
@@ -212,7 +210,7 @@
       Unikernel appliances are:
 
       + Smaller, both in kLoC & image size
-      + Boot faster, at round-trip time timescales
+      + Boot faster, _at packet round-trip time timescales_
       + High performance
       + Type-safe
 
@@ -256,7 +254,7 @@
     <script type="text/template">
       ## Boot Time
 
-      <img src="boot-time.png">
+      <img src="boot-time.png" />
 
       _Unikernels are compact enough to boot and respond to network traffic in
       real-time._
@@ -267,7 +265,7 @@
     <script type="text/template">
       ## How Large is Large?
 
-      <img alt="comparing lines of code" src="kloc.png">
+      <img src="kloc.png">
     </script>
   </section>
   
@@ -275,7 +273,7 @@
     <script type="text/template">
       ## Event Driven Co-Threads
 
-      <img alt="comparing lines of code" src="cothreads.png">
+      <img style="padding-top:1ex" src="cothreads.png" />
 
       _Garbage collected heap management is more efficient in a single
       address-space environment. Thread latency can be reduced by eliminating
@@ -288,7 +286,7 @@
     <script type="text/template">
       ## Single-instance Thread Scaling
 
-      <img alt="comparing lines of code" src="thread-scaling.png">
+      <img src="thread-scaling.png" />
 
       _Threads are heap allocated values, so benefit from the faster garbage
       collection cycle in the Mirage Xen version, and the scheduler can be
@@ -301,7 +299,7 @@
     <script type="text/template">
       ## Block Storage
 
-      <img alt="comparing lines of code" src="block-storage.png">
+      <img src="block-storage.png">
 
     </script>
   </section>
@@ -331,13 +329,13 @@
            style="max-height: 75%; margin-left: 150px" />
 
       <p class="fragment bubble triangle-isosceles"
-         style="top: 0; left:260px; width: 13em">
+         style="top: 0; left:260px; width: 15em">
         Compiled native source code and runtime statically linked with random
         start offset.
       </p>
       
       <p class="fragment bubble triangle-isosceles right"
-         style="top: 230px; left:-90px; width: 9.5em">
+         style="top: 230px; left:-100px; width: 10em">
         All I/O memory gets mapped into a reserved area and is thus
         distinguished. 
       </p>
@@ -372,7 +370,8 @@
         + Exception for I/O mappings if they are non-exec and do not modify
           any existing mappings 
       
-      
+      <br />
+
       + Very easy in unikernels due to focus on _compile-time specialisation_
         instead of _run-time complexity_
     
@@ -384,7 +383,7 @@
     <script type="text/template">
       ## Progressive Specialisation
 
-      <img style="width:95%" src="arch2.png">
+      <img style="padding: 1ex 1em" src="specialisation.png">
 
     </script>
   </section>
@@ -400,7 +399,11 @@
 
       We discuss _deens_, our DNS server in detail here.
 
-      We also have a simple webserver, and an OpenFlow Switch and Controller.
+      We also have:
+
+      + a simple webserver, 
+      + an OpenFlow Switch, and
+      + an OpenFlow Controller.
 
     </script>
   </section>
@@ -515,7 +518,7 @@
     <script type="text/template">
       ## Openflow Controller performance
 
-      <img alt="comparing lines of code" src="openflow-controller.png">
+      <img src="openflow-controller.png">
 
       _OpenFlow controller is competitive with NOX (C++), but much higher
       level. Applications can link directly against the switch to route their
@@ -534,11 +537,13 @@
         + C runtime is small, and getting smaller
         + Is fully event-driven and non-preemptive
 
+        <br />
       + __Rewriting protocols wasn't that hard__
         + Not necessarily the best research strategy though
         + But an extremely useful learning experience
         + Tech transfer is vital
 
+        <br />
       + __Unikernels fit perfectly on the cloud__
         + Internet protocol building blocks
         + Seamless interop with legacy code through VMs
@@ -551,17 +556,21 @@
 
       Pure OCaml code at <http://github.com/mirage/> for: 
       
-      + Device drivers (netfront/blkfront/xenstore)
-      + TCP/IPv4 and DHCPv4
-      + HTTP
-      + DNS(SEC)
-      + SSH
-      + OpenFlow (controller/switch)
-      + vchan IPC
-      + 9P :-)
-      + NFS
-      + FAT32
-      + Distributed k/v store: arakoon.org
+      + Device drivers
+        + netfront
+        + blkfront
+        + xenstore
+      
+      + Networking/Communication
+        + IP/TCP/UDP/DHCP/DNS(SEC) (v4)
+        + HTTP, SSH, OpenFlow (controller/switch)
+        + vchan IPC
+      
+      + Storage
+        + 9P :-)
+        + NFS
+        + FAT32
+        + <http://arakoon.org> distributed k/v store
     </script>
   </section>
 
@@ -574,14 +583,6 @@
         + (Code) <http://github.com/mirage>
         + (O'Reilly Book) <http://realworldocaml.org>
 
-        <br />
-
-      + <http://www.cl.cam.ac.uk/projects/ocamllabs>
-        + Funded by industry/academia (Jane Street Capital, Citrix, EU FP7,
-          RCUK/Horizon)
-        + Focus: real world functional programming with OCaml
-        + Need compiler hackers, protocol heads, PL/type theory systems. Must
-          enjoy open source work!  
     </script>
   </section>
 
@@ -593,13 +594,37 @@
         + A unikernel per-language?
         + Interconnect strategies? Heap sharing?
         + Formal method integration easier or harder?
+
+        <br />
       + __Coordination &mdash; planetary scale computers__
         + Resources are highly elastic now.
         + How to coordinate a million microkernels? 
-        + "Warehouse Scale Computing"
+        + &ldquo;Warehouse Scale Computing&rdquo;
+ 
+        <br />
       + __Library Applications &mdash; where are they?__
         + Irminsule, a git-like functional distributed database
         + Beanstalk, a self-scaling web server
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## __We're hiring!__ <small>Must enjoy open source work!</small>
+
+      + OCamlLabs, Cambridge, UK
+        + <http://www.cl.cam.ac.uk/projects/ocamllabs>
+        + Real world functional programming with OCaml
+        + Need compiler hackers, protocol heads, PL/type theory systems
+
+        <br />
+      + Networks-as-a-Service, University of Nottingham, UK
+        + <http://bit.ly/13sBjjC> <br />
+          (2 posts, 3 years, deadline __Friday August 2nd__)
+        + Joint with University of Cambridge & Imperial College
+        + Network virtualisation for millions of microkernel apps
+        + Need Mirage hackers, network protocol experts, graph theorists
+        
     </script>
   </section>
 

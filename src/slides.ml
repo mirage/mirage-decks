@@ -62,7 +62,7 @@ let decks = [
     speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
     title = "Mirage at OSCON 2013";
-    assets = [ "arch2.png"; "boot-time.png"; "memory-model.png"; 
+    assets = [ "specialisation.png"; "boot-time.png"; "memory-model.png"; 
                "threat-model-dom0.png"; "threat-model.png"; 
                "vapps-current.png"; "vapps-specialised-1.png"; 
                "vapps-specialised-2.png"; "vapps-specialised-3.png"; 
