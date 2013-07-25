@@ -13,6 +13,11 @@ let urls =
       "/css/theme/sky.css";
       "/css/theme/solarized.css";
       "/css/theme/horizon.css";
+      "/css/theme/horizon-fonts.css";
+      "/css/theme/horizon.png";
+      "/css/theme/ucam.png";
+      "/css/theme/uon.png";
+      "/css/theme/horizon-starburst.png";
 
       "/js/reveal.min.js";
       

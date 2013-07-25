@@ -62,14 +62,30 @@ let decks = [
     speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
     title = "Mirage at OSCON 2013";
-    assets = [ "specialisation.png"; "starburst.png"; "boot-time.png"; "memory-model.png"; 
-               "threat-model-dom0.png"; "threat-model.png"; 
-               "vapps-current.png"; "vapps-specialised-1.png"; 
-               "vapps-specialised-2.png"; "vapps-specialised-3.png"; 
-               "zero-copy-io.png"; "red-arrow.png"; "green-arrow.png"; 
+    assets = [ "arch2.png";
+               "block-storage.png";
+               "boot-time.png";
+               "cothreads.png";
+               "deens-performance.png";
+               "dns-all.png";
+               "dns-baseline.png";
+               "dns-deens.png";
+               "green-arrow.png";
                "key-insight.png";
-               "kloc.png"; "cothreads.png"; "scaling-instances.png";
-               "openflow-controller.png"; "thread-scaling.png"; "block-storage.png"
+               "kloc.png";
+               "memory-model.png";
+               "openflow-controller.png";
+               "red-arrow.png";
+               "scaling-instances.png";
+               "specialisation.png";
+               "thread-scaling.png";
+               "threat-model-dom0.png";
+               "threat-model.png";
+               "vapps-current.png";
+               "vapps-specialised-1.png";
+               "vapps-specialised-2.png";
+               "vapps-specialised-3.png";
+               "zero-copy-io.png";
              ]; 
   };
 ]

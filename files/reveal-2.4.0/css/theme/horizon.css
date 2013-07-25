@@ -13,6 +13,7 @@
  * GLOBAL STYLES
  *********************************************/
 body {
+/*
   background: #add9e4;
   background: -moz-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #f7fbfc), color-stop(100%, #add9e4));
@@ -20,8 +21,18 @@ body {
   background: -o-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
   background: radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background-color: #f7fbfc; }
+  background-color: #f7fbfc; 
+*/
+background-color: white;
+}
 
+.slide-number {
+position: fixed;
+bottom: 38px;
+right: 150px;
+color: #555555;
+font-size: 28px;
+}
 .reveal {
   font-family: "PT Sans", sans-serif;
   font-size: 32px;
@@ -43,10 +54,14 @@ body {
   text-shadow: none; }
 
 .reveal  {
-    background-color: white;
     width: 100%;
+background: url('horizon.png') left 130px bottom 25px  no-repeat,
+            url('uon.png') left 290px bottom 25px no-repeat,
+            url('ucam.png') left 450px bottom 25px  no-repeat;
+background-size: auto 50px;
 }
-.reveal .slides { width: 100%; }
+.reveal .slides { width: 100%; 
+}
 
 .reveal .slides>section {
     padding: 0;
@@ -185,10 +200,13 @@ p.bubble {
 }
 
 .reveal h2 {
-    padding: 1ex 1em 1ex 0.5em;
+    padding: 1ex 0.2em 1ex 1.6em;
     margin-bottom: 1ex;
     background-color: #2462aa;
-background-image: url('starburst.png');
+background-image: url('horizon-starburst.png');
+background-repeat: no-repeat;
+background-size: 2.5em;
+
 color: white;
 }
 .reveal small {

@@ -33,6 +33,17 @@ margin:0.07,
 				]
 			});
 
+    var slideNumber = document.querySelector('.slide-number');
+    var updateSlideNumber = function(event) {
+      slideNumber.textContent = 
+        (event.indexh > 0)?
+          event.indexh + "\u2014" + (event.indexv +1)
+          : "";
+    }
+
+    Reveal.addEventListener('ready', updateSlideNumber);
+    Reveal.addEventListener('slidechanged', updateSlideNumber);
+
 		</script>
 
 	</body>
