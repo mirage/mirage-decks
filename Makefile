@@ -19,10 +19,17 @@ clean:
 	$(RM) mir-www
 	$(RM) src/main.ml src/backend.ml src/filesystem_static.ml
 
-test: unix-socket-build unix-socket-run
-
 fs: 
 	mir-crunch -o src/filesystem_static.ml -name "static" ./files
+
+oscon13/complete:
+	sed -E 's@(src="|href="|src: ")@\1/Users/mort/research/projects/mirage/src/v2/mirage-decks/files/reveal-2.4.0/@g' files/templates/reveal-2.4.0-header.html \
+		>| files/slides/oscon13/complete.html \
+	&& cat files/slides/oscon13/index.html \
+		>> files/slides/oscon13/complete.html \
+	&& sed -E 's@(src="|href="|src: ")@\1/Users/mort/research/projects/mirage/src/v2/mirage-decks/files/reveal-2.4.0/@g' files/templates/reveal-2.4.0-footer.html \
+		>> files/slides/oscon13/complete.html
+
 
 xen-%:
 	$(MAKE) FLAGS=--xen $*
