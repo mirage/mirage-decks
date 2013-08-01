@@ -18,11 +18,25 @@ clean:
 	cd src && obuild clean
 	$(RM) mir-www
 	$(RM) src/main.ml src/backend.ml src/filesystem_static.ml
-
-test: unix-socket-build unix-socket-run
+	$(RM) files/slides/oscon13/complete.html
 
 fs: 
 	mir-crunch -o src/filesystem_static.ml -name "static" ./files
+
+oscon13/complete:
+	cd files/slides/oscon13 \
+	  && ln -sf ../../reveal-2.4.0/css \
+	  && ln -sf ../../reveal-2.4.0/js \
+	  && ln -sf ../../reveal-2.4.0/plugin \
+	  && ln -sf ../../reveal-2.4.0/lib
+
+	sed -E 's@(src="|href="|src: ")@\1/Users/mort/research/projects/mirage/src/v2/mirage-decks/files/reveal-2.4.0/@g' files/templates/reveal-2.4.0-header.html \
+		>| files/slides/oscon13/complete.html \
+	  && cat files/slides/oscon13/index.html \
+		>> files/slides/oscon13/complete.html \
+	  && sed -E 's@(src="|href="|src: ")@\1/Users/mort/research/projects/mirage/src/v2/mirage-decks/files/reveal-2.4.0/@g' files/templates/reveal-2.4.0-footer.html \
+		>> files/slides/oscon13/complete.html
+
 
 xen-%:
 	$(MAKE) FLAGS=--xen $*

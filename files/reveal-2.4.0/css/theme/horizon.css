@@ -1,318 +1,297 @@
 /**
- * Horizon DER theme for reveal.js. 
+ * Horizon DER theme for reveal.js.
  *
  * Copyright (C) 2013 Richard Mortier, mort@cantab.net
  *
- * Based on `sky` theme by Hakim El Hattab, http://hakim.se.
+ * Started from `sky` theme by Hakim El Hattab, http://hakim.se.
  *
  */
 
+/** debug */
+/*
+.reveal .slides { border: 3px solid green; }
+.reveal .slides section { border: 3px solid red; }
+.reveal .slides section>section { border: 3px solid blue; }
+*/
+
+/** fonts */
+
 @import url(horizon-fonts.css);
 
-/*********************************************
- * GLOBAL STYLES
- *********************************************/
-body {
-/*
-  background: #add9e4;
-  background: -moz-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #f7fbfc), color-stop(100%, #add9e4));
-  background: -webkit-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: -o-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: -ms-radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background: radial-gradient(center, circle cover, #f7fbfc 0%, #add9e4 100%);
-  background-color: #f7fbfc; 
-*/
-background-color: white;
+.reveal small {
+    color: #aaaaaa;
 }
 
-.slide-number {
-position: fixed;
-bottom: 38px;
-right: 150px;
-color: #555555;
-font-size: 28px;
-}
+/** slides */
+
 .reveal {
-  font-family: "PT Sans", sans-serif;
-  font-size: 32px;
-  font-weight: 200;
-  letter-spacing: -0.02em;
-  color: #333333; }
+    font-family: "PT Sans", sans-serif;
+    font-size: 24pt;
+    font-weight: 200;
+    letter-spacing: -0.02em;
+    color: #333333;
+    width: 100%;
+}
 
 .reveal .slides {
+    position: relative;
     text-align: left;
 }
 
-.reveal .slides .title {
+.reveal .slides section>section {
+    max-height: 400pt;
+}
+
+.reveal .slides section.title {
+    position: relative;
     text-align: center;
-}
-
-::selection {
-  color: white;
-  background: #134674;
-  text-shadow: none; }
-
-.reveal  {
     width: 100%;
-background: url('horizon.png') left 130px bottom 25px  no-repeat,
-            url('uon.png') left 290px bottom 25px no-repeat,
-            url('ucam.png') left 450px bottom 25px  no-repeat;
-background-size: auto 50px;
-}
-.reveal .slides { width: 100%; 
+    height: 100%;
 }
 
-.reveal .slides>section {
-    padding: 0;
-    width: 100%;
-}
-.reveal .slides>section>section {
-    padding: 0;
-    width: 100%;
-}
-
-.reveal section.title {
-    margin-top: 100px;
-}
-.reveal section.title h1 {
-    margin-bottom: 1em;
+.reveal .slides section.title h1 {
+    position: relative;
+    margin: 2ex 0 1ex;
     font-size: 2.5em;
 }
 
-/***********************************************************************
- * bubbles, from <http://nicolasgallagher.com/pure-css-speech-bubbles/> 
- ***********************************************************************/
+/** headers */
 
-p.bubble {
-    padding: 1em;
-    position: absolute;
-}
-
-/* THE SPEECH BUBBLE */
-
-.triangle-isosceles {
-	position:relative;
-	padding:15px;
-	margin:1em 0 3em;
-	color:#000;
-	background:#f3961c; /* default background for browsers without gradient support */
-	/* css3 */
-	/* background:-webkit-gradient(linear, 0 0, 0 100%, from(#f9d835), to(#f3961c)); */
-	/* background:-moz-linear-gradient(#f9d835, #f3961c); */
-	/* background:-o-linear-gradient(#f9d835, #f3961c); */
-	/* background:linear-gradient(#f9d835, #f3961c); */
-	-webkit-border-radius:10px;
-	-moz-border-radius:10px;
-	border-radius:10px;
-}
-
-/* Variant : for top positioned triangle */
-.triangle-isosceles.top {
-	/* background:-webkit-gradient(linear, 0 0, 0 100%, from(#f3961c), to(#f9d835)); */
-	/* background:-moz-linear-gradient(#f3961c, #f9d835); */
-	/* background:-o-linear-gradient(#f3961c, #f9d835); */
-	/* background:linear-gradient(#f3961c, #f9d835); */
-}
-
-/* Variant : for left/right positioned triangle */
-.triangle-isosceles.left {
-	margin-left:50px;
-	/* background:#f3961c; */
-}
-
-/* Variant : for right positioned triangle */
-.triangle-isosceles.right {
-	margin-right:50px;
-	background:#f3961c;
-}
-
-/* creates triangle */
-.triangle-isosceles:after {
-	content:"";
-	position:absolute;
-    display:block; 
-	border-style:solid;
-
-    top: auto;
-    right: auto;
-	
-	border-color:#f3961c transparent;
-    
-    border-width: 55px 20px 0 20px;
-    bottom: -50px;
-    left: 2em;
-    
-    /* reduce the damage in FF3.0 */
-    width:0;
-}
-
-/* Variant : top */
-.triangle-isosceles.top:after {
-	bottom:auto;
-	left:auto;
-	border-color:#f3961c transparent;
-    border-width: 0 20px 55px 20px;
-    top: -50px;
-    right: 2em;
-}
-
-/* Variant : left */
-.triangle-isosceles.left:after {
-	top: 2em; /* controls vertical position */
-	left:-50px; /* value = - border-left-width - border-right-width */
-	bottom:auto;
-	border-width:20px 55px 20px 0;
-	border-color:transparent #f3961c;
-}
-
-/* Variant : right */
-.triangle-isosceles.right:after {
-	top:2em; /* controls vertical position */
-	right:-50px; /* value = - border-left-width - border-right-width */
-	bottom:auto;
-    left:auto;
-	border-width:20px 0 20px 55px;
-	border-color:transparent #f3961c;
-}
-
-/** end bubbles *******************************************************/
-
-/*********************************************
- * HEADERS
- *********************************************/
 .reveal h1,
 .reveal h2,
 .reveal h3,
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  margin: 0 0 20px 0;
-  color: #333333;
-  font-family: "PT Sans Narrow", sans-serif;
-  line-height: 0.9em;
-  text-transform: uppercase;
-  text-shadow: none; 
+    margin: 0 0 20px 0;
+    color: #333333;
+    font-family: "PT Sans Narrow", sans-serif;
+    line-height: 0.9em;
+    text-transform: uppercase;
+    text-shadow: none;
 }
 
 .reveal h1 {
-  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2); 
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
 }
 
 .reveal h2 {
     padding: 1ex 0.2em 1ex 1.6em;
     margin-bottom: 1ex;
     background-color: #2462aa;
-background-image: url('horizon-starburst.png');
-background-repeat: no-repeat;
-background-size: 2.5em;
-
-color: white;
-}
-.reveal small {
-color: #aaaaaa;
-}
-.reveal h2 a:not(.image) {
-color: #aaaaaa;
+    background-image: url('horizon-starburst.png');
+    background-repeat: no-repeat;
+    background-size: 2.5em;
+    color: white;
 }
 
-/*********************************************
- * LINKS
- *********************************************/
-.reveal a:not(.image) {
-  color: #3b759e;
-  text-decoration: none;
-  -webkit-transition: color .15s ease;
-  -moz-transition: color .15s ease;
-  -ms-transition: color .15s ease;
-  -o-transition: color .15s ease;
-  transition: color .15s ease; }
+#footer {
+    background: 
+        url('horizon.png')   0px 0px no-repeat,
+        url('uon.png')     150px 0px no-repeat,
+        url('ucam.png')    310px 0px no-repeat;
+    background-size: auto 50px;
 
-.reveal a:not(.image):hover {
-  color: #74a7cb;
-  text-shadow: none;
-  border: none; }
+    width: 100%;
+    height: 50px;
 
-.reveal .roll span:after {
-  color: #fff;
-  background: #264c66; }
-
-/*********************************************
- * IMAGES
- *********************************************/
-.reveal section img {
-max-width:80%;
-max-height:80%;
-margin: 0 auto;
-display: block;
+    position: fixed;
+    bottom: 50%;
+    left: -50%;
 }
 
-.reveal section img {
+#slide-number {
+    position: relative;
+    width: 95%;
 
-  background: rgba(255, 255, 255, 0.12);
-/*
-  border: 3px solid #888888;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-*/
-  -webkit-transition: all .2s linear;
-  -moz-transition: all .2s linear;
-  -ms-transition: all .2s linear;
-  -o-transition: all .2s linear;
-  transition: all .2s linear; }
+    text-align: right;
+    vertical-align: middle;
+    line-height: 50px;
 
-.reveal a:hover img {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #3b759e;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.55); }
-
-.reveal section img.arrow {
-    border: 0; 
-    background: rgba(0,0,0,0); 
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    font-size: 24px;
+    color: #777;
 }
 
+/** links */
 
-/*********************************************
- * NAVIGATION CONTROLS
- *********************************************/
+.reveal a.roll {
+    text-decoration: none;
+}
+
+.reveal a.roll:hover {
+    text-decoration: none;
+}
+
+.reveal a.roll span:after {
+    content: attr(data-title);
+
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+}
+
+.reveal a.roll span:after { 
+    display: block;
+    position: absolute;
+    text-shadow: none;
+    background: rgba(0,0,0, 0.2);
+    font-weight: normal;
+
+    -webkit-backface-visibility: hidden;
+       -moz-backface-visibility: hidden;
+            backface-visibility: hidden;
+
+    -webkit-transform-origin: 50% 0%;
+       -moz-transform-origin: 50% 0%;
+        -ms-transform-origin: 50% 0%;
+            transform-origin: 50% 0%;
+
+    -webkit-transform: translate3d( 0px, 70%, 0px ) rotateX( -90deg );
+       -moz-transform: translate3d( 0px, 70%, 0px ) rotateX( -90deg );
+        -ms-transform: translate3d( 0px, 70%, 0px ) rotateX( -90deg );
+            transform: translate3d( 0px, 70%, 0px ) rotateX( -90deg );
+}
+
+.reveal h2 a.roll { color: #fff; }
+
+/** navigation controls */
+
 .reveal .controls div.navigate-left,
-.reveal .controls div.navigate-left.enabled {
-  border-right-color: #3b759e; }
+.reveal .controls div.navigate-left.enabled { border-right-color: #3b759e; }
+.reveal .controls div.navigate-left.enabled:hover { border-right-color: #74a7cb; }
 
 .reveal .controls div.navigate-right,
-.reveal .controls div.navigate-right.enabled {
-  border-left-color: #3b759e; }
+.reveal .controls div.navigate-right.enabled { border-left-color: #3b759e; }
+.reveal .controls div.navigate-right.enabled:hover { border-left-color: #74a7cb; }
 
 .reveal .controls div.navigate-up,
-.reveal .controls div.navigate-up.enabled {
-  border-bottom-color: #3b759e; }
+.reveal .controls div.navigate-up.enabled { border-bottom-color: #3b759e; }
+.reveal .controls div.navigate-up.enabled:hover { border-bottom-color: #74a7cb; }
 
 .reveal .controls div.navigate-down,
-.reveal .controls div.navigate-down.enabled {
-  border-top-color: #3b759e; }
+.reveal .controls div.navigate-down.enabled { border-top-color: #3b759e; }
+.reveal .controls div.navigate-down.enabled:hover { border-top-color: #74a7cb; }
 
-.reveal .controls div.navigate-left.enabled:hover {
-  border-right-color: #74a7cb; }
+/** progress bar */
 
-.reveal .controls div.navigate-right.enabled:hover {
-  border-left-color: #74a7cb; }
-
-.reveal .controls div.navigate-up.enabled:hover {
-  border-bottom-color: #74a7cb; }
-
-.reveal .controls div.navigate-down.enabled:hover {
-  border-top-color: #74a7cb; }
-
-/*********************************************
- * PROGRESS BAR
- *********************************************/
-.reveal .progress {
-  background: rgba(0, 0, 0, 0.2); }
-
+.reveal .progress { background: rgba(0, 0, 0, 0.2); }
 .reveal .progress span {
-  background: #3b759e;
-  -webkit-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-  -moz-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-  -ms-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-  -o-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
-  transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985); }
+    background: #3b759e;
+    -webkit-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+    -moz-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+    -ms-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+    -o-transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+    transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+}
+
+.reveal img {
+    max-width:80%;
+    max-height:80%;
+    margin: 0 auto;
+    display: block;
+}
+
+.reveal img.arrow {
+    position: relative;
+    display: inline;
+}
+
+/** bubbles based off <http://nicolasgallagher.com/pure-css-speech-bubbles/> */
+
+p.bubble {
+    position: relative;
+    color: #000;
+    background: #f3961c;
+
+    padding: 1ex 1em;
+
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+}
+
+p.bubble:after {
+    content: "";
+    position: absolute;
+    display: block;
+    border-style: solid;
+
+    top: auto;
+    right: auto;
+    bottom: -50px;
+    left: 2em;
+
+    border-color: #f3961c transparent;
+    border-width: 55px 20px 0 20px;
+    width:0; /* reduce the damage in FF3.0 */
+}
+
+p.bubble.top:after {
+    top: -50px;
+    right: 2em;
+    bottom:auto;
+    left:auto;
+    
+    border-width: 0 20px 55px 20px;
+}
+
+p.bubble.left:after {
+    top: 2em;
+    right: auto;
+    bottom: auto;
+    left: -50px;
+
+    border-color: transparent #f3961c;
+    border-width:20px 55px 20px 0;
+}
+
+p.bubble.right:after {
+    top: 2em;
+    right: -50px;
+    bottom: auto;
+    left: auto;
+
+    border-color: transparent #f3961c;
+    border-width: 20px 0 20px 55px;
+}
+
+/** print tweaks */
+
+@media print{
+    @page { 
+        size: a4 landscape;
+    }
+    
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .reveal { 
+        width: 100%;
+        height: 100%;
+    }
+
+    .reveal .slides {
+        text-align: left;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    #footer {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        left: auto;
+    }
+
+    #slide-number {
+        display: none;
+    }
+}
