@@ -50,18 +50,11 @@ type deck = {
 }
 
 let decks = [
-  { permalink = "revealjs";
-    given = date (1970, 01, 01);
-    speakers = [];
-    venue = "";
-    title = "Reveal.js sample";
-    assets = [];
-  };
   { permalink = "oscon13";
-    given = date (2013, 07, 18);
+    given = date (2013, 07, 26);
     speakers = [People.mort; People.anil];
     venue = "OSCON 2013";
-    title = "Mirage at OSCON 2013";
+    title = "Mirage: Extreme Specialisation of Cloud Appliances";
     assets = [ "arch2.png";
                "block-storage.png";
                "boot-time.png";
