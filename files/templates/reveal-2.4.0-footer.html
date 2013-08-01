@@ -1,5 +1,5 @@
+<div id="footer"><div id="slide-number"></div></div>
 			</div>
-
 		</div>
 
 		<script src="/lib/js/head.min.js"></script>
@@ -13,9 +13,8 @@
 				controls: true,
 				progress: true,
 				history: true,
-				center: false, // true,
-
-margin:0.07,
+				center: false,
+                margin:0.07,
 
 				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 				transition: Reveal.getQueryHash().transition || "default", // default/cube/page/concave/zoom/linear/fade/none
@@ -33,7 +32,7 @@ margin:0.07,
 				]
 			});
 
-    var slideNumber = document.querySelector(".slide-number");
+    var slideNumber = document.querySelector("#slide-number");
     var updateSlideNumber = function(event) {
       slideNumber.textContent = 
         (event.indexh > 0)?

@@ -50,9 +50,9 @@ html {
 
 /* SECTION 3: Set body font face, size, and color.
    Consider using a serif font for readability. */
-body, p, td, li, div {
-	font-size: 18pt;
-}
+/* body, p, td, li, div { */
+/* 	font-size: 18pt; */
+/* } */
 
 /* SECTION 4: Set heading font face, sizes, and color.
    Diffrentiate your headings from your body text.
@@ -137,6 +137,7 @@ ul, ol, div, p {
 	   -moz-transform: none !important;
 	    -ms-transform: none !important;
 	        transform: none !important;
+
 }
 .reveal section.stack {
 	margin: 0px !important;
