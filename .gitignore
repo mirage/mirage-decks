@@ -16,3 +16,9 @@ src/main.obuild
 src/backend.ml
 src/filesystem_static.ml
 src/mir-www
+
+files/slides/oscon13/js
+files/slides/oscon13/css
+files/slides/oscon13/plugin
+files/slides/oscon13/lib
+
