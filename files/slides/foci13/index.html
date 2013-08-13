@@ -31,7 +31,7 @@
       
       Centralised cloud-hosted services are convenient but create risks:
       
-      + Loss of data and services due to service shutdown
+      + Loss of data and services due to service shutdown<br />
         (whether for commercial or political reasons)
       + Global passive observers recording <del>&nbsp;all&nbsp;</del> 1.6%
         traffic
@@ -43,9 +43,9 @@
         <h3>Our Approach</h3>
         
         <p>
-          Use DNS to enable _personal clouds_, making it easy to build apps
-          that function securely and efficiently across our multiple personal
-          devices, wherever we are
+          Use DNS to enable _personal clouds_, making it easy to deploy apps
+          that function securely and efficiently on our own device network,
+          across the Internet edge
         </p>
       
       </div>
@@ -57,10 +57,20 @@
       ## Constraints
       
       + __Compatibility__. Can't require users to change all their apps
-      + __Security__. Need to control access to our personal devices: requires
-        _authentication_ and _confidentiality_
+      + __Security__. Need to control access to our personal devices: <br />
+        requires _authentication_ and _confidentiality_
       + __Connectivity__. Need to be able to interconnect devices whatever
         network is available
+    
+        <div class="fragment block">
+          <h3>Data vs Orchestration</h3>
+
+          <p>
+            What's the minimal network infrastructure that we can deploy to
+            represent individual users on the core Internet?
+          </p>
+        </div>
+    
     </script>
   </section>
 
@@ -73,8 +83,8 @@
       
       + Packet filtering makes tunnel setup dynamic <br />
         (Full-cone NAT? Is UDP blocked? IPSec?)
-      + Redirection and proxies (e.g., Wifi hotspots) require traversal
-      + Multipath is increasingly available (e.g., 3G + Wifi)
+      + Redirection and proxies (e.g., WiFi hotspots) require traversal
+      + Multipath is increasingly available (e.g., 3G + WiFi)
     </script>
   </section>
 </section>
@@ -99,8 +109,8 @@
 
       + Supported in almost every embedded device
       + Naturally hierarchical and cacheable
-      + Flexible and extensible
-      + Supports authentication (DNSSEC) and confidentiality (DNSCurve)
+      + Flexible and "extensible"
+      + Resolver infrastructure exists almost everywhere (even where censored)
     </script>
   </section>
 
@@ -110,7 +120,7 @@
 
       <p>
         <code class="bind">
-          _# host recoil.org_<br />
+          # host recoil.org<br />
           recoil.org has address 89.16.177.154<br />
           recoil.org mail is handled by 10 dark.recoil.org.<br />
           recoil.org mail is handled by 20 mx-caprica.easydns.com.
@@ -122,7 +132,7 @@
         
         <p>
           <code class="bind">
-            _# host ipad.home.anil.recoil.org_<br />
+            # host ipad.home.anil.recoil.org<br />
             ipad.home.anil.recoil.org has address 192.168.1.19
           </code>
         </p>
@@ -203,15 +213,15 @@
     <script type="text/template">
       ## Active Edge Resolution
 
+      + Incremental, parallel resolution via 0 TTL responses containing
+        multiple results
       + Bootstrap trusted public keys between devices via resurrecting
-        duckling
+        duckling; no passwords during resolution
       + Degrade gracefully from P2P to personal cloud service to shared
         provider
       + Resolution triggers tunnel establishment scripts; currently support
         (__L2__) Tuntap/SSH, OpenVPN, (__L3__) IPSec, (__L4+__) Privoxy/Tor
         via SOCKS
-      + Incremental, parallel resolution via 0 TTL responses containing
-        multiple results
       + Seamless operation with extra host support (e.g., OpenFlow)
     </script>
   </section>
@@ -225,6 +235,7 @@
       + TSIG/SIG0 DNSSEC signatures used to demonstrate subnamespace authority
       + Manage keys for SSH, PGP, *Curve in parallel
       + Provides low-friction revocation, making roll-over usable by mortals
+        (?) 
     </script>
   </section>
 
@@ -236,10 +247,12 @@
       Currently: Sockets API decouples <tt>getaddrinfo(3)</tt> from
       <tt>connect(2)</tt>, so less powerful 
 
+      &nbsp;
+
       With Signposts:
 
       + Applications bind names to flows in one call, separating connection
-        establishment from data transfer,
+        establishment from data transfer
       + Signpost nodes select environmentally optimal routes via long-poll
         DNSCurve updates
       + Signpost resolver proxies DNS on <tt>localhost</tt>, late-binding
@@ -287,15 +300,15 @@
       + Perspectives (<http://perspectives-project.org/>) offers a P2P
         trust network
       + Namecoin (<http://namecoin.info/>) provides decentralized naming
-        but has economic issues.
+        but has economic issues
 
       When widely deployed, a set of Signposts could help with:
 
       + Tor. Constructing a mix zone, perhaps using _Dustclounds_
-        (<http://anil.recoil.org/papers/2010-iswp-dustclouds.pdf>)
+        (http://anil.recoil.org/papers/2010-iswp-dustclouds.pdf)
 
       + Dissent (<http://dedis.cs.yale.edu/2010/anon/>), simplifying its use
-        by Average Joe. 
+        by Average Joe 
     </script>
   </section>
 
@@ -303,11 +316,15 @@
     <script type="text/template">
       ## __Thank you!__
 
-      <p style="font-size: 48px; font-weight: bold; 
-                display: float; margin-top: 3em; padding: 2ex 2em; 
-                text-align: center">
-        Thanks! Questions?
+      <p style="font-size: 54px; font-weight: bold; 
+                display: float; margin-top: 3em; padding: 2ex 1em; 
+                text-align: right">
+        Questions?
       </p>
+
+      https://github.com/signposts 
+
+      https://github.com/mirage
     </script>
   </section>
 </section>
