@@ -114,6 +114,13 @@ let index ~(path:string) ~(req:Cohttp.Request.t) =
 let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv
 
 let slides path fs deck = 
+  let template s vs = 
+    (* XXX. grim hack. abstract this. *)
+    let title_re = Re_str.regexp "{{ title }}" in
+    let replaced = Re_str.replace_first title_re deck.title s in
+    replaced
+  in
+
   lwt h = match_lwt fs#read Reveal.header with
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: header"
@@ -128,7 +135,7 @@ let slides path fs deck =
     | Some b -> string_of_stream b
     | None -> failwith "[slides] render: content"
   in 
-  let body = h ^ content ^ f in
+  let body = (template h deck) ^ content ^ f in
   CL.Server.respond_string ~status:`OK ~body ()
 
 let asset path fs deck = 
