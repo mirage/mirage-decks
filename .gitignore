@@ -11,6 +11,7 @@
 
 **/dist
 
+src/Makefile
 src/_build/
 src/main.native
 src/myocamlbuild.ml
