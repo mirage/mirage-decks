@@ -11,14 +11,19 @@
 
 **/dist
 
+src/Makefile
+src/_build/
+src/main.native
+src/myocamlbuild.ml
 src/main.ml
 src/main.obuild
 src/backend.ml
 src/filesystem_static.ml
 src/mir-www
 
-files/slides/oscon13/js
-files/slides/oscon13/css
-files/slides/oscon13/plugin
-files/slides/oscon13/lib
+files/slides/**/js
+files/slides/**/css
+files/slides/**/plugin
+files/slides/**/lib
+files/slides/**/complete.html
 
