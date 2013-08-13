@@ -33,7 +33,8 @@
       
       + Loss of data and services due to service shutdown
         (whether for commercial or political reasons)
-      + Global passive observers recording \st{~all~} 1.6\% traffic
+      + Global passive observers recording <del>&nbsp;all&nbsp;</del> 1.6%
+        traffic
       + Inefficient, inconvenient synchronisation in mobile and offline
         environments
       
@@ -72,8 +73,8 @@
       
       + Packet filtering makes tunnel setup dynamic <br />
         (Full-cone NAT? Is UDP blocked? IPSec?)
-      + Redirection and proxies (e.g.,~Wifi hotspots) require traversal
-      + Multipath is increasingly available (e.g.,~3G + Wifi)
+      + Redirection and proxies (e.g., Wifi hotspots) require traversal
+      + Multipath is increasingly available (e.g., 3G + Wifi)
     </script>
   </section>
 </section>
@@ -107,19 +108,21 @@
     <script type="text/template">
       ## DNS Today
 
-      ```
-      # host recoil.org
-      recoil.org has address 89.16.177.154
-      recoil.org mail is handled by 10 dark.recoil.org.
-      recoil.org mail is handled by 20 mx-caprica.easydns.com.
-      ```
+      <p>
+        <code class="bind">
+          _# host recoil.org_<br />
+          recoil.org has address 89.16.177.154<br />
+          recoil.org mail is handled by 10 dark.recoil.org.<br />
+          recoil.org mail is handled by 20 mx-caprica.easydns.com.
+        </code>
+      </p>
 
       <div class="fragment block">
         <h3>can't we have stronger DNS bindings between edge devices?</h3>
         
         <p>
-          <code class="objectivec">
-            # host ipad.home.anil.recoil.org
+          <code class="bind">
+            _# host ipad.home.anil.recoil.org_<br />
             ipad.home.anil.recoil.org has address 192.168.1.19
           </code>
         </p>
@@ -138,7 +141,7 @@
  
       > "DNS servers can play games. As long as they appear to deliver a
       > syntactically correct response to every query, they can fiddle the
-      > semantics."<span style="margin-left: auto">&mdash; RFC3234</span>
+      > semantics."<span style="padding-left: 1em">&mdash; RFC3234</span>
       
       <div class="fragment block">
         <h3>Names for The Average Joe</h3>
@@ -209,7 +212,7 @@
         via SOCKS
       + Incremental, parallel resolution via 0 TTL responses containing
         multiple results
-      + Seamless operation with extra host support (e.g.,~OpenFlow)
+      + Seamless operation with extra host support (e.g., OpenFlow)
     </script>
   </section>
  
@@ -230,8 +233,8 @@
     <script type="text/template">
       ## Programming Model
 
-      Currently: Sockets API decouples {\tt getaddrinfo(3)} from {\tt
-      connect(2)}, so less powerful
+      Currently: Sockets API decouples <tt>getaddrinfo(3)</tt> from
+      <tt>connect(2)</tt>, so less powerful 
 
       With Signposts:
 
@@ -239,8 +242,8 @@
         establishment from data transfer,
       + Signpost nodes select environmentally optimal routes via long-poll
         DNSCurve updates
-      + Signpost resolver proxies DNS on {\tt localhost}, late-binding lookups
-        only when traffic is sent (e.g.,~{\tt TCP SYN})
+      + Signpost resolver proxies DNS on <tt>localhost</tt>, late-binding
+        lookups only when traffic is sent (e.g., <tt>TCP SYN</tt>) 
     </script>
   </section>
 
@@ -253,13 +256,13 @@
       
       __Identity__. Automating key derivation & management
 
-      __Programming__. Exploring details, e.g.,~need to patch OpenSSL, provide
+      __Programming__. Exploring details, e.g., need to patch OpenSSL, provide
       local OpenFlow switch; more in _The Case for Reconfigurable I/O
       Channels_, RESoLVE 2012 (<http://anil.recoil.org/papers/>)
       
       __Implementation__. May be easier to support applications that use
-      sockets via lightweight VMs (e.g.,~<http://openmirage.org> with
-      _Message Switch_, <http://github.com/djs55/message-switch>
+      sockets via lightweight VMs (e.g., <http://openmirage.org> with
+      _Message Switch_, <http://github.com/djs55/message-switch>)
     </script>
   </section>
 </section>
@@ -269,7 +272,6 @@
     <script type="text/template">
       ## Conclusions
 
-      + Implications
       + Alternatives & Possibilities
       + Questions
     </script>
@@ -277,23 +279,23 @@
 
   <section data-markdown>
     <script type="text/template">
-      ## Implications: Alternatives & Possibilities
+      ## Alternatives & Possibilities
 
       Signpost uses DNS as a device-facing interface for compatibility -- but
       could support alternative mechanisms for upstream resolution:
 
-      + Perspectives (\url{http://perspectives-project.org/}) offers a P2P
+      + Perspectives (<http://perspectives-project.org/>) offers a P2P
         trust network
       + Namecoin (<http://namecoin.info/>) provides decentralized naming
         but has economic issues.
 
-        When widely deployed, a set of Signposts could help with:
+      When widely deployed, a set of Signposts could help with:
 
-        + Tor. Constructing a mix zone, perhaps using _Dustclounds_
-          (<http://anil.recoil.org/papers/2010-iswp-dustclouds.pdf>)
+      + Tor. Constructing a mix zone, perhaps using _Dustclounds_
+        (<http://anil.recoil.org/papers/2010-iswp-dustclouds.pdf>)
 
-        + Dissent (<http://dedis.cs.yale.edu/2010/anon/>), simplifying its
-          use by Average Joe.
+      + Dissent (<http://dedis.cs.yale.edu/2010/anon/>), simplifying its use
+        by Average Joe. 
     </script>
   </section>
 
@@ -301,7 +303,11 @@
     <script type="text/template">
       ## __Thank you!__
 
-      Questions?
+      <p style="font-size: 48px; font-weight: bold; 
+                display: float; margin-top: 3em; padding: 2ex 2em; 
+                text-align: center">
+        Thanks! Questions?
+      </p>
     </script>
   </section>
 </section>

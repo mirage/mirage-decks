@@ -110,6 +110,18 @@
     width: 90%;
 }
 
+.reveal .slides tt {
+    font-family: monospace;
+}
+
+.reveal .slides code.bind {
+    display: block;
+    font-size: 20pt;
+    background: #3F3F3F;
+    color: #DCDCDC;
+    padding: 1ex 1em;
+}
+
 #footer {
     background: 
         url('horizon.png')   0px 0px no-repeat,
