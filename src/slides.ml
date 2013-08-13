@@ -81,6 +81,14 @@ let decks = [
                "zero-copy-io.png";
              ]; 
   };
+  { permalink = "foci13";
+    given = date (2013, 08, 12);
+    speakers = [People.anil];
+    venue = "FOCI 2013";
+    title = "Lost in the Edge: Finding Your Way with Signposts";
+    assets = [ "nat.png"; "arch.png" ];
+  };
+
 ]
 
 let exists x = 

@@ -85,6 +85,31 @@
     color: white;
 }
 
+.reveal .block {
+    width: 93%;
+    margin: 0 auto;
+}
+.reveal .block h3 {
+    padding: 1ex 1em 0.5ex;
+    background: #2462aa;
+    margin: 0;
+    font-weight: bold;
+    font-size: 28pt;
+    color: white;
+    border-radius: 1ex 1ex 0 0;
+}
+
+.reveal .block p,
+.reveal .block pre {
+    padding: 0.5ex 1em 1ex;
+    background: #BDD0E6;
+    border-radius: 0 0 1ex 1ex;
+}
+
+.reveal blockquote {
+    width: 90%;
+}
+
 #footer {
     background: 
         url('horizon.png')   0px 0px no-repeat,
