@@ -11,6 +11,9 @@
 
 **/dist
 
+src/_build/
+src/main.native
+src/myocamlbuild.ml
 src/main.ml
 src/main.obuild
 src/backend.ml
