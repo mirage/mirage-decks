@@ -62,15 +62,15 @@
       + __Connectivity__. Need to be able to interconnect devices whatever
         network is available
     
-        <div class="fragment block">
-          <h3>Data vs Orchestration</h3>
-
-          <p>
-            What's the minimal network infrastructure that we can deploy to
-            represent individual users on the core Internet?
-          </p>
-        </div>
-    
+      <div class="fragment block">
+        <h3>Data vs Orchestration</h3>
+        
+        <p>
+          What's the minimal network infrastructure that we can deploy to
+          represent individual users on the core Internet?
+        </p>
+      </div>
+      
     </script>
   </section>
 
@@ -158,7 +158,7 @@
         
         <p>
           But there's nowhere for __individuals__ to easily host their own
-          little name services online. Change this, and everything improves.
+          little name services online. Change this, and things improve.
         </p>
       </div>
     </script>
@@ -202,10 +202,9 @@
       ![Signposts architecture](./arch.png)
 
       At the edge, devices interconnect using tunnels created in response to
-      authenticated, confidential DNSCurve queries.
+      authenticated, confidential DNSCurve queries. Connections
+      access-controlled via authenticated query source.
 
-      Signposts are your trusted devices; incoming connections are access
-      controlled via authenticated query source.
     </script>
   </section>
 
