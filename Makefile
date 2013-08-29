@@ -15,7 +15,7 @@ endif
 configure:
 	cd src && mirari configure $(BACKEND)
 
-fs: 
+fs:
 	mir-crunch -o src/filesystem_static.ml -name "static" ./files
 
 clean:
@@ -28,7 +28,7 @@ build: configure fs
 	cd src && mirari build $(BACKEND)
 
 run: build
-	cd src && mirari run $(BACKEND)
+	cd src && sudo mirari run $(BACKEND)
 
 page-%:
 	cd files/slides/$* \
