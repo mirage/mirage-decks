@@ -806,6 +806,7 @@ val resume : unit -> unit Lwt.t
     <div style="font-size: 24pt">
 	[http://github.com/xapi-project](http://github.com/xapi-project)
     <br />
+        <img src="jon-smallbw1.jpg" />
     </div>
   </script>
 </section>
@@ -833,12 +834,12 @@ val resume : unit -> unit Lwt.t
     <script type="text/template">
     ## What does the XenServer do?
 
-    + XmlRpc API
-    + VM metadata database
-    + Handles VM lifecycle operations (start/shutdown/migrate/suspend/etc.)
-    + Exposes various statistics
-    + Networking setup (including bonds, vlans, OpenVswitch/bridge)
-    + Storage manipulation
+    + __Handles VM lifecycle__ operations (start/shutdown/migrate/suspend/etc.)
+      + VM metadata database
+      + XmlRpc API
+      + Exposes various statistics
+    + __Networking setup___ (including bonds, vlans, OpenVswitch/bridge)
+    + __Storage manipulation__
       + Plugin based
       + NFS / LVM / iSCSI / Local Ext
       + Disk creation / destruction / resizing / CoW clones
@@ -885,11 +886,11 @@ val resume : unit -> unit Lwt.t
     <script type="text/template">
     ## History of the Xapi Project
 
-    + First appeart in XenServer 4.0 in 2007
-    + Open Sourced in 2009 - XCP 0.1
-    + Project Kronos, 2012 - Xapi in Debian / Ubuntu
-    + Transferred to Linux Foundation, April 2013
-    + OSS XenServer, June 2013
+    + __2007__: First appeared in XenServer 4.0
+    + __2009__: Open Sourced - XCP 0.1
+    + __2012__: Project Kronos - Xapi in Debian / Ubuntu
+    + __2013__: Transferred to Linux Foundation
+    + __2013__: OSS XenServer
     </script>
   </section>
 
@@ -897,10 +898,10 @@ val resume : unit -> unit Lwt.t
     <script type="text/template">
     ## Kronos Project
 
-    + Kronos: Project to get Xapi & friends into Debian.
+    + Project to get Xapi & friends into Debian.
     + First attempt to get things working outside of XenServer/XCP.
     + Xapi was a long way from being distro-agnostic!
-    + Success!
+      + __Success!__
 
     </script>
   </section>
@@ -923,13 +924,12 @@ val resume : unit -> unit Lwt.t
     <script type="text/template">
     ## What's been happening recently?
 
-    + Lots of sharing with MirageOS community.
     + Goal to become more distro-friendly.
-    + Split monolithic repositories on existing fault-lines.
-    + 2 repositories (libs and daemons) became ~50.
-    + Libraries became more generally reusable.
-    + Put as much as possible into OPAM for community.
-    + Becoming a better community member!
+    + Lots of sharing with MirageOS community.
+      + Split monolithic repositories on existing fault-lines.
+      + 2 repositories (libs and daemons) became ~50.
+      + Libraries became more generally reusable.
+      + Put as much as possible into OPAM for community.
     </script>
   </section>
 
@@ -938,13 +938,11 @@ val resume : unit -> unit Lwt.t
     ## xenserver-core
 
     + Packaging of the components of the Xapi Project.
-    + Targetting primarily CentOS 6.4.
-    + Secondary focus Ubuntu.
-    + Same codebase as XenServer is using (far far fewer patches).
-    + Proof-of-concept that the Xapi Project is usable on a "normal" Linux.
+      + Targetting primarily CentOS 6.4.
+      + Ubuntu also an important target.
+      + Same codebase as XenServer is using (fewer patches).
+    + Makes the Xapi Project usable on a "normal" Linux.
     + New components: ffs, xenserver-install-wizard, message-switch, xenopsd-libvirt
-    + It works!
-    + See Euan's talk later.
     </script>
   </section>
 
@@ -952,11 +950,10 @@ val resume : unit -> unit Lwt.t
     <script type="text/template">
       ## What next? Q4 2013
       
-      + Continue improving portability.
-      + libxenlight port.
-      + xenostats - efficient metrics gathering.
-      + xen-testvm - fast testing, using MirageOS.
-      + message-switch - in anticipation of the Windsor architecture.
+      + __libxenlight__ port.
+      + __xenostats__ - efficient metrics gathering.
+      + __xen-testvm__ - fast testing, using MirageOS.
+      + __message-switch__ - MirageOS + driver domain communication.
 
     </script>
   </section>
@@ -966,7 +963,6 @@ val resume : unit -> unit Lwt.t
     ## What next? 2014
 
     + Next XenServer release (at some point) - therefore lots of bug fixing!
-    + Better support for Unikernels.
     + Database improvements.
     + Continued cleansing of xen-api.git and of xapi (curretly contains Storage API server).
     + Windsor Architecture support.
