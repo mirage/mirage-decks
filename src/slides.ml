@@ -56,6 +56,9 @@ let decks = [
     venue = "XenSummit 2013";
     title = "MirageOS and XAPI 2013 Project Update";
     assets = [ "arch2.png";
+               "modules1.png";
+               "modules2.png";
+               "modules3.png";
                "block-storage.png";
                "boot-time.png";
                "cothreads.png";
