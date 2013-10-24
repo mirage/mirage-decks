@@ -629,3 +629,154 @@
             </script>
           </section>
         </section>
+
+<section data-markdown>
+  <script type="text/template">
+    ## Xapi Project Update
+
+    <div style="font-size: 24pt">
+	[http://github.com/xapi-project](http://github.com/xapi-project)
+    <br />
+    </div>
+  </script>
+</section>
+
+<section>
+  <section data-markdown> 
+    <script type="text/template">
+    ## What _is_ the Xapi Project?
+    
+    </script>
+  </section>
+
+  <section data-markdown>  
+    <script type="text/template">
+    ## What _is_ the Xapi Project?
+
+    + The core of a XenServer
+    + Not just the xapi daemon!
+	  
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## What does the XenServer do?
+
+    + XmlRpc API
+    + VM metadata database
+    + Handles VM lifecycle operations (start/shutdown/migrate/suspend/etc.)
+    + Exposes various statistics
+    + Networking setup (including bonds, vlans, OpenVswitch/bridge)
+    + Storage manipulation
+      + Plugin based
+      + NFS / LVM / iSCSI / Local Ext
+      + Disk creation / destruction / resizing / CoW clones
+    + Per-host VM memory ballooning
+    </script>
+  </section>
+  
+  <section data-markdown>
+    <script type="text/template">
+    ## What does the XenServer do?
+
+    + Disaster Recovery (DR)
+    + High Availability (HA)
+    + Live Storage Migration
+    + "Intellicache" - disk block caching
+    + ... and more!
+
+    It's a (productive) beast!
+    </script>
+  </script>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## XenServer Architecture
+
+    <img style="max-width: 78%;" src="architecture.png" />
+    
+    </script>
+
+    <script type="text/template">
+    ## Xapi Project 
+
+    <img style="max-width: 78%;" src="architecture.png" />
+    
+    </script>
+  </section>
+</section>
+
+<section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## History of the Xapi Project
+
+    + First appeart in XenServer 4.0 in 2007
+    + Open Sourced in 2009 - XCP 0.1
+    + Project Kronos, 2012 - Xapi in Debian / Ubuntu
+    + Transferred to Linux Foundation, April 2013
+    + OSS XenServer, June 2013
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Kronos Project
+
+    + Kronos: Project to get Xapi & friends into Debian.
+    + First attempt to get things working outside of XenServer/XCP.
+    + Xapi was a long way from being distro-agnostic!
+    + Success!
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Kronos Project - Lessons Learned.
+
+    + We had a very 'embedded' mentality.
+    + What got into Debian was really a fork.
+    + Not possible for Debian maintainers to maintain it!
+    + Therefore not sustainable.
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Linux Foundation
+
+    + Since joining LF:
+      + Goal to become more distro-friendly.
+      + Split monolithic repositories on existing fault-lines.
+      + 2 repositories (libs and daemons) became ~50.
+      + Libraries became more generally reusable.
+      + Put as much as possible into OPAM for community.
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+    ## xenserver-core
+
+    + Packaging of the components of the Xapi Project.
+    + Targetting primarily CentOS 6.4.
+    + Secondary focus Ubuntu.
+    + Proof-of-concept that the Xapi Project is usable on a "normal" Linux.
+    + It works!
+    </script>
+  </section>
+
+  <section type="text/template">
+
+  </section>
+</section>
+
+
+
+
+
