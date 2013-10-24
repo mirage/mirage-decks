@@ -123,10 +123,6 @@
 }
 
 #footer {
-    background: 
-        url('horizon.png')   0px 0px no-repeat,
-        url('uon.png')     150px 0px no-repeat,
-        url('ucam.png')    310px 0px no-repeat;
     background-size: auto 50px;
 
     width: 100%;
