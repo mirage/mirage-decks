@@ -20,6 +20,24 @@
 <section>
   <section data-markdown>
     <script type="text/template">
+    ## These Slides
+    
+    - Self-hosted on a 1MB Xen microkernel.
+    - Fully type-safe, including the device drivers and TCP stack.
+    - Running on open-source *XenServer-Core* on Ubuntu.
+    - Hosted online at <http://decks.openmirage.org> too with more slides.
+    
+    <br />
+
+    We'll explain how this all works during this talk!  Let's start with the MirageOS update, and then move to XenServer-Core.
+
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
       ## The Cloud Threat Model
 
       <img src="threat-model.png" />
@@ -157,11 +175,11 @@
       + Evaluation of these techniques using a functional programming language
         (OCaml)
         + Benefits of type-safety need not damage performance
-        + Static typing + modules = high level manipulation
+        + Static typing + modules = high level manipulation of OS constructs
 
       <br />
 
-      + Language extensions for systems programming in OCaml
+      + Precise source code dependency tracking of *all* the inputs to the deployed binary.
 
     </script>
   </section>
@@ -179,6 +197,7 @@
     </script>
   </section>
 
+   
   <section data-markdown>
     <script type="text/template">
       ## Specialised Virtual Appliances
@@ -211,6 +230,140 @@
 
     </script>
   </section>
+
+</section>
+
+<section>
+
+   <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code.
+ 
+      ```
+let main () =
+    lwt zones = read key "zones" "zone.db" in
+    Net.Manager.bind (fun mgr dev ->
+        let src = `any_addr, 53 in
+        Dns.Server.listen dev src zones
+    )
+```
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code.
+      - Write a configuration file for the compilation.
+
+      ```
+      # ip-use-dhcp: true
+      ip-address: 10.0.0.2
+      ip-netmask: 255.255.255.0
+      ip-gateway: 10.0.0.1
+      fs-static: ../storage
+      main-ip: Ping.main
+      depends: mirage-net
+      ```
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code.
+      - Write a configuration file for the compilation.
+      - Compile it under UNIX using the OPAM package manager.
+
+      ```
+$ opam install mirage-unix mirage-www
+      ```
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code.
+      - Write a configuration file for the compilation.
+      - Compile it under UNIX using the OPAM package manager.
+      - Once debugged, just recompile the same source code to Xen!
+
+      ```
+$ opam install mirage-xen mirage-www
+      ```
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code.
+      - Write a configuration file for the compilation.
+      - Compile it under UNIX using the OPAM package manager.
+      - Once debugged, just recompile the same source code to Xen!
+      - The magic happens via the OCaml module system.
+
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Modularizing the OS
+
+      <img src="modules1.png" />
+
+    </script>
+  </section>
+
+
+   <section data-markdown>
+    <script type="text/template">
+      ## Modularizing the OS
+
+      <img src="modules2.png" />
+      
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Modularizing the OS
+
+      <img src="modules3.png" />
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Xen module constraint tree
+
+      OPAM packages let us express constraints over operating system backend.
+
+      This can include Xen vs Linux dom0+Xen vs kFreeBSD.
+
+      Example repositories include:
+
+      - <https://github.com/mirage/ocaml-xenstore> : direct protocol, UNIX interface and Xen interface.
+      - <https://github.com/mirage/mirage-platform> : UNIX, Xen, NS3, kFreeBSD versions of Time, Ring and Evtchn
+      - <https://github.com/mirage/ocaml-xen-block-driver> : UNIX, Xen Blkfront/Blkback.
+      - <https://github.com/mirage/ocaml-vchan> : UNIX, Xen Vchan shared memory transport.
+      
+
+    </script>
+  </section>
+
 
 </section>
 
