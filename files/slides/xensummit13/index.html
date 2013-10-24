@@ -751,7 +751,8 @@ $ opam install mirage-xen mirage-www
 
     + The core of a XenServer
     + Not just the xapi daemon!
-	  
+    + A mix of a lot of OCaml, some python and glue.
+
     </script>
   </section>
 
@@ -799,7 +800,7 @@ $ opam install mirage-xen mirage-www
     <script type="text/template">
     ## Xapi Project 
 
-    <img style="max-width: 78%;" src="architecture.png" />
+    <img style="max-width: 78%;" src="architecture-xapi-project.png" />
     
     </script>
   </section>
@@ -842,21 +843,23 @@ $ opam install mirage-xen mirage-www
     </script>
   </section>
 
-  <section data-markdown>
-    <script type="text/template">
-    ## Linux Foundation
-
-    + Since joining LF:
-      + Goal to become more distro-friendly.
-      + Split monolithic repositories on existing fault-lines.
-      + 2 repositories (libs and daemons) became ~50.
-      + Libraries became more generally reusable.
-      + Put as much as possible into OPAM for community.
-    </script>
-  </section>
 </section>
 
 <section>
+  <section data-markdown>
+    <script type="text/template">
+    ## What's been happening recently?
+
+    + Lots of sharing with MirageOS community.
+    + Goal to become more distro-friendly.
+    + Split monolithic repositories on existing fault-lines.
+    + 2 repositories (libs and daemons) became ~50.
+    + Libraries became more generally reusable.
+    + Put as much as possible into OPAM for community.
+    + Becoming a better community member!
+    </script>
+  </section>
+
   <section data-markdown>
     <script type="text/template">
     ## xenserver-core
@@ -864,16 +867,54 @@ $ opam install mirage-xen mirage-www
     + Packaging of the components of the Xapi Project.
     + Targetting primarily CentOS 6.4.
     + Secondary focus Ubuntu.
+    + Same codebase as XenServer is using (far far fewer patches).
     + Proof-of-concept that the Xapi Project is usable on a "normal" Linux.
+    + New components: ffs, xenserver-install-wizard, message-switch, xenopsd-libvirt
     + It works!
+    + See Euan's talk later.
     </script>
   </section>
 
-  <section type="text/template">
+  <section data-markdown>
+    <script type="text/template">
+      ## What next? Q4 2013
+      
+      + Continue improving portability.
+      + libxenlight port.
+      + xenostats - efficient metrics gathering.
+      + xen-testvm - fast testing, using MirageOS.
+      + message-switch - in anticipation of the Windsor architecture.
 
+    </script>
   </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## What next? 2014
+
+    + Next XenServer release (at some point) - therefore lots of bug fixing!
+    + Better support for Unikernels.
+    + Database improvements.
+    + Continued cleansing of xen-api.git and of xapi (curretly contains Storage API server).
+    + Windsor Architecture support.
+    + XenStore Mirage VM in XenServer.
+    </script>
+  </section>
+
 </section>
 
+<section data-markdown>
+
+  <script type="text/template">
+    ## Join in!
+   
+    + Mirage 1.0 out December 2013.
+    + xenserver-core releases often - testing to come.
+    + All development open and on GitHub <http://github.com/xapi-project>, <http://github.com/mirage>
+    + Pull requests welcome!
+  </script>
+
+</section>
 
 
 
