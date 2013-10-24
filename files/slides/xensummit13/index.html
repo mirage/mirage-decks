@@ -1,6 +1,6 @@
 <section data-markdown class="title center">
   <script type="text/template">
-    # __MirageOS__ and _XAPI Project_<br />Updates and Cool Stuff Happening<br />
+    # __MirageOS__ and _XAPI Project_<br />Updates and Cool Stuff<br />
 	
     Anil Madhavapeddy <small>University of Cambridge</small> [@avsm](http://twitter.com/avsm) 
     <br />
@@ -237,6 +237,29 @@
 
    <section data-markdown>
     <script type="text/template">
+      ## MirageOS 1.0 - December 2013
+
+      - Goal is to sort out all the tooling to make it *usable* for production.
+      - It's not just the source code: tools matter too.
+      - Lots of progress this year though:
+          - over 50 libraries in open-source.
+          - new OPAM package manager that works over GitHub.
+          - Travis CI test integration.
+      - OPAM now has over 1800 packages (530 unique), so lots of enthusiasm from the OCaml community.
+    </script>
+  </section>
+
+   <section data-markdown>
+    <script type="text/template">
+      ## MirageOS 1.0 - December 2013
+
+<iframe width="600" height="400" src="//www.youtube.com/embed/2Mx8Bd5JYyo" frameborder="0" allowfullscreen></iframe>
+      
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
       ## MirageOS Workflow
 
       - Write a normal bit of OCaml source code.
@@ -360,10 +383,60 @@ $ opam install mirage-xen mirage-www
       - <https://github.com/mirage/ocaml-xen-block-driver> : UNIX, Xen Blkfront/Blkback.
       - <https://github.com/mirage/ocaml-vchan> : UNIX, Xen Vchan shared memory transport.
       
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Example: Blkfront
+
+      ```
+type features = {
+  barrier : bool;
+  removable : bool;
+  sector_size : int64;
+  sectors : int64;
+  readwrite: bool;
+}
+
+type t
+type id = string
+exception IO_error of string
+
+val create : id:id -> Devices.blkif Lwt.t
+val enumerate : unit -> id list Lwt.t
+val write_page : t -> int64 -> Io_page.t -> unit Lwt.t
+val read_512 : t -> int64 -> int64 -> Cstruct.t Lwt_stream.t
+val resume : unit -> unit Lwt.t
+       ```
+
+    </script>
+  </section>
+</section>
+
+<section>
+ 
+  <section data-markdown>
+    <script type="text/template">
+      ## Cool Uses of Mirage So Far
+
+      - All our homepages moving onto little self-contained kernels.
+      - Built custom block backends that do wonderful things.
+      - Self-scaling servers that spawn VMs in response to demand.
+      - Self-updated VMs that watch GitHub and recompile in response.
+      - ARM Raspberry Pi HTTP servers.
+      - Custom DNS servers that do route discovery and network configuration.
 
     </script>
   </section>
 
+  <section data-markdown>
+    <script type="text/template">
+      ## Compiler in the Middle
+
+      <img src="uniarch.png" height="500" />
+    </script>
+  </section>
 
 </section>
 
