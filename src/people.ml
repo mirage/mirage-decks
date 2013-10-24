@@ -42,4 +42,11 @@ let vb = {
   email     = Some "vb@luminar.eu.org";
 }
 
+let jon = {
+  Atom.name = "Jon Ludlam";
+  uri       = Some "http://jon.recoil.org";
+  email     = Some "jon@recoil.org"
+}
+
+
 let rights = Some "All rights reserved by the author"

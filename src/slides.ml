@@ -50,6 +50,37 @@ type deck = {
 }
 
 let decks = [
+  { permalink = "xensummit13";
+    given = date (2013, 10, 25);
+    speakers = [People.anil; People.jon];
+    venue = "XenSummit 2013";
+    title = "MirageOS and XAPI 2013 Project Update";
+    assets = [ "arch2.png";
+               "block-storage.png";
+               "boot-time.png";
+               "cothreads.png";
+               "deens-performance.png";
+               "dns-all.png";
+               "dns-baseline.png";
+               "dns-deens.png";
+               "green-arrow.png";
+               "key-insight.png";
+               "kloc.png";
+               "memory-model.png";
+               "openflow-controller.png";
+               "red-arrow.png";
+               "scaling-instances.png";
+               "specialisation.png";
+               "thread-scaling.png";
+               "threat-model-dom0.png";
+               "threat-model.png";
+               "vapps-current.png";
+               "vapps-specialised-1.png";
+               "vapps-specialised-2.png";
+               "vapps-specialised-3.png";
+               "zero-copy-io.png";
+             ];
+  };
   { permalink = "oscon13";
     given = date (2013, 07, 26);
     speakers = [People.mort; People.anil];
@@ -126,6 +157,7 @@ let exists x =
   List.exists (fun e -> x = "/slides/" ^ e.permalink) decks
 
 let index ~(path:string) ~(req:Cohttp.Request.t) = 
+  let title p = p.title ^ " (" ^ p.venue ^ ")" in
   Html.(
     "<!doctype html>\n"
     ^ (html 
