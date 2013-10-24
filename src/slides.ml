@@ -59,6 +59,8 @@ let decks = [
                "modules1.png";
                "modules2.png";
                "modules3.png";
+               "architecture-xapi-project.png";
+               "architecture.png";
                "block-storage.png";
                "boot-time.png";
                "cothreads.png";
