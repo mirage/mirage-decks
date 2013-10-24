@@ -58,7 +58,7 @@ let decks = [
     assets = [ "arch2.png";
                "modules1.png";
                "modules2.png";
-               "modules3.png";
+               "modules3.png"; "uniarch.png";
                "architecture-xapi-project.png";
                "architecture.png";
                "block-storage.png";

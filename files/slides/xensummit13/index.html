@@ -401,15 +401,12 @@ type features = {
 
 type t
 type id = string
-
 exception IO_error of string
 
 val create : id:id -> Devices.blkif Lwt.t
 val enumerate : unit -> id list Lwt.t
-
 val write_page : t -> int64 -> Io_page.t -> unit Lwt.t
 val read_512 : t -> int64 -> int64 -> Cstruct.t Lwt_stream.t
-
 val resume : unit -> unit Lwt.t
        ```
 
@@ -427,15 +424,17 @@ val resume : unit -> unit Lwt.t
       - Built custom block backends that do wonderful things.
       - Self-scaling servers that spawn VMs in response to demand.
       - Self-updated VMs that watch GitHub and recompile in response.
+      - ARM Raspberry Pi HTTP servers.
+      - Custom DNS servers that do route discovery and network configuration.
 
     </script>
-  </script>
+  </section>
 
   <section data-markdown>
     <script type="text/template">
       ## Compiler in the Middle
 
-      <img src="uniarch.png" />
+      <img src="uniarch.png" height="500" />
     </script>
   </section>
 
