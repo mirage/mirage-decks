@@ -23,7 +23,7 @@
     ## These Slides
     
     - Self-hosted on a 1MB Xen microkernel.
-    - Fully type-safe, including the device drivers and TCP stack.
+    - Fully type-safe OCaml, including the device drivers and TCP stack.
     - Running on open-source *XenServer-Core* on Ubuntu.
     - Hosted online at <http://decks.openmirage.org> too with more slides.
     
@@ -222,6 +222,10 @@
     </script>
   </section>
 
+</section>
+
+<section>
+
   <section data-markdown>
     <script type="text/template">
       ## Progressive Specialisation
@@ -231,21 +235,21 @@
     </script>
   </section>
 
-</section>
-
-<section>
-
    <section data-markdown>
     <script type="text/template">
       ## MirageOS 1.0 - December 2013
 
-      - Goal is to sort out all the tooling to make it *usable* for production.
-      - It's not just the source code: tools matter too.
-      - Lots of progress this year though:
-          - over 50 libraries in open-source.
-          - new OPAM package manager that works over GitHub.
-          - Travis CI test integration.
-      - OPAM now has over 1800 packages (530 unique), so lots of enthusiasm from the OCaml community.
+      - It's not just the source code: __tools matter__ too.
+          - Release efforts are focussed around usability of build/deployment.
+      - Lots of progress this year:
+          - over 50 OCaml libraries released (TCP/IP, Xen drivers, protocols)
+          - new OPAM package manager that works via GitHub: <http://opam.ocaml.org>
+          - Travis continuous test integration.
+
+      <br />
+
+      - OPAM now has over 1800 packages (530 unique) - lots of enthusiasm from the OCaml community!
+      - O'Reilly Real World OCaml released: <http://realworldocaml.org>
     </script>
   </section>
 
@@ -305,6 +309,7 @@ let main () =
 
       ```
 $ opam install mirage-unix mirage-www
+$ mirari run --unix
       ```
 
     </script>
@@ -321,6 +326,8 @@ $ opam install mirage-unix mirage-www
 
       ```
 $ opam install mirage-xen mirage-www
+$ mirari run --xen
+$ xl create -c mirage-www.conf
       ```
 
     </script>
@@ -372,11 +379,9 @@ $ opam install mirage-xen mirage-www
     <script type="text/template">
       ## Xen module constraint tree
 
-      OPAM packages let us express constraints over operating system backend.
+      OPAM packages figure out what to install for a target.  This can include Xen vs Linux dom0+Xen vs kFreeBSD.
 
-      This can include Xen vs Linux dom0+Xen vs kFreeBSD.
-
-      Example repositories include:
+      Example repositories:
 
       - <https://github.com/mirage/ocaml-xenstore> : direct protocol, UNIX interface and Xen interface.
       - <https://github.com/mirage/mirage-platform> : UNIX, Xen, NS3, kFreeBSD versions of Time, Ring and Evtchn
@@ -420,12 +425,15 @@ val resume : unit -> unit Lwt.t
     <script type="text/template">
       ## Cool Uses of Mirage So Far
 
-      - All our homepages moving onto little self-contained kernels.
-      - Built custom block backends that do wonderful things.
-      - Self-scaling servers that spawn VMs in response to demand.
-      - Self-updated VMs that watch GitHub and recompile in response.
-      - ARM Raspberry Pi HTTP servers.
-      - Custom DNS servers that do route discovery and network configuration.
+      - __Personal Hosting__ on the cloud
+        - Our homepages moving onto little self-contained kernels.
+        - Self-scaling servers that spawn VMs in response to demand.
+        - ARM Raspberry Pi HTTP servers.
+      - __Custom Middlebox Services__
+        - Built custom Xen block backends that do wonderful things.
+        - Custom DNS servers that do route discovery and network configuration.
+      - __More Secure Services__
+        - Self-updated VMs that watch GitHub and recompile in seconds.
 
     </script>
   </section>
@@ -743,6 +751,25 @@ val resume : unit -> unit Lwt.t
         <section>
           <section data-markdown>
             <script type="text/template">
+              ## Mirage Online
+
+              + Website, <http://www.openmirage.org>
+              + Code, <http://github.com/mirage>
+              + O'Reilly OCaml book, <http://realworldocaml.org>
+              
+              <br />
+              
+              + OPAM package manager
+                + Allows constraints to be applied to package installation
+                + __Very__ useful for managing assembly of the many small OCaml
+                  modules that construct a Mirage appliance
+                + <http://opam.ocaml.org>
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
               ## Summary
 
               + __OCaml is the baseline language for all new code__
@@ -778,25 +805,6 @@ val resume : unit -> unit Lwt.t
             </script>
           </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Mirage Online
-
-              + Website, <http://www.openmirage.org>
-              + Code, <http://github.com/mirage>
-              + O'Reilly OCaml book, <http://realworldocaml.org>
-              
-              <br />
-              
-              + OPAM package manager
-                + Allows constraints to be applied to package installation
-                + __Very__ useful for managing assembly of the many small OCaml
-                  modules that construct a Mirage appliance
-                + <http://opam.ocamlpro.com>
-
-            </script>
-          </section>
-
         </section>
 
 <section data-markdown>
@@ -814,14 +822,14 @@ val resume : unit -> unit Lwt.t
 <section>
   <section data-markdown> 
     <script type="text/template">
-    ## What _is_ the Xapi Project?
+    ## What __is__ the Xapi Project?
     
     </script>
   </section>
 
   <section data-markdown>  
     <script type="text/template">
-    ## What _is_ the Xapi Project?
+    ## What __is__ the Xapi Project?
 
     + The core of a XenServer
     + Not just the xapi daemon!
@@ -838,7 +846,7 @@ val resume : unit -> unit Lwt.t
       + VM metadata database
       + XmlRpc API
       + Exposes various statistics
-    + __Networking setup___ (including bonds, vlans, OpenVswitch/bridge)
+    + __Networking setup__ (including bonds, vlans, OpenVSwitch/bridge)
     + __Storage manipulation__
       + Plugin based
       + NFS / LVM / iSCSI / Local Ext
