@@ -52,6 +52,46 @@ type deck = {
 }
 
 let decks = [
+  { permalink = "fb13";
+    given = date (2013, 11, 14);
+    speakers = [People.anil];
+    venue = "Facebook HQ";
+    title = "MirageOS: compiling functional library operating systems";
+    assets = [ "arch2.png";
+               "modules1.png";
+               "modules2.png";
+               "modules3.png";
+               "uniarch1a.png";
+               "uniarch1b.png";
+               "uniarch1c.png";
+               "uniarch1d.png";
+               "architecture.png"; "rwo.jpg";
+               "block-storage.png";
+               "boot-time.png";
+               "cothreads.png";
+               "deens-performance.png";
+               "dns-all.png";
+               "dns-baseline.png";
+               "dns-deens.png";
+               "green-arrow.png";
+               "key-insight.png";
+               "kloc.png";
+               "memory-model.png";
+               "openflow-controller.png";
+               "red-arrow.png";
+               "scaling-instances.png";
+               "specialisation.png";
+               "thread-scaling.png";
+               "threat-model-dom0.png";
+               "threat-model.png";
+               "vapps-current.png";
+               "vapps-specialised-1.png";
+               "vapps-specialised-2.png";
+               "vapps-specialised-3.png";
+               "zero-copy-io.png";
+             ];
+  };
+ 
   { permalink = "qcon13";
     given = date (2013, 11, 11);
     speakers = [People.anil];
