@@ -94,6 +94,7 @@ let _ =
   OS.Main.at_enter (fun () ->
     let fs = ref [] in
     lwt env = OS.Env.argv () in
+    let env = [| "-simple_kv_ro"; "static:../files" |] in
     Array.iteri (fun i -> function
       |"-simple_kv_ro" -> begin
          match Re_str.(split_delim (Re_str.regexp_string ":") env.(i+1)) with
