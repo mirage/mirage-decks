@@ -1231,7 +1231,34 @@ end
 
         </script>
       </section>
-      
+
+      <section data-markdown>
+        <script type="text/template">
+          ## Kernel Memory Management
+
+          <img src="memory-model.png" />
+
+
+          <p class="fragment bubble"
+             style="top: -410pt; left: 195pt; width: 20em; font-size: 20pt">
+            Compiled native source code and runtime statically linked and boots
+            directly into Xen.
+          </p>
+          
+          <p class="fragment bubble  right"
+             style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
+            IO memory is mapped into a reserved area and can be distinguished.
+          </p>
+
+          <p class="fragment bubble  left"
+             style="top: -280pt; left: 320pt; width: 12em; font-size: 20pt">
+            OCaml heap is contiguous, with simpler write barriers as a result.
+          </p>
+
+        </script>
+      </section>
+
+
       <section data-markdown>
         <script type="text/template">
           ## Buffer Management <small>Zero-Copy IO</small>
