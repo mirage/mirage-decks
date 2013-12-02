@@ -434,9 +434,9 @@ The toplevel will report the following type:
 		val return :  α -> α t
 	end
 
-    `Lwt` (Light Weight Thread) monad represents a *future computation* that is held in the box.
+    The `Lwt` (Light Weight Thread) monad signature above represents a *future computation* that is held in the box.
 
-    Can operate over futures by using `bind` to operate over its eventual value.
+    Can construct *futures* and compute using them by using `bind` to operate over its eventual value.
 
     </script>
   </section>
@@ -445,19 +445,19 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Constant threads
 
-    Build a constant thread by using `return`.
-
-	# open Lwt ;;
-	# let future_int = return 1 ;;
+	open Lwt ;;
+	let future_int = return 1 ;;
 	val future_int : int Lwt.t = <abstr>
 
-	# let future_fruit = return "apple" ;;
+    Build a constant thread by using `return`.
+
+	let future_fruit = return "apple" ;;
 	val future_fruit : string Lwt.t = <abstr>
 
-    Threads are first-class OCaml values and use the full range of OCaml
-    types.
+    Threads are first-class OCaml values and parametric polymorphism lets you
+    distinguish different types of threads.
 
-    No system threads are involved.
+    No system threads are involved at all; this is sequential code.
 
     </script>
   </section>
@@ -466,25 +466,26 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-    The monad needs to be *executed* to retrieve the contents.
-
 	module OS = struct
 		val sleep : float -> unit Lwt.t
 		val run : 'a Lwt.t -> 'a
 	end
  
-    The `run` function takes a future and unpacks the real value.
+    The monad needs to be *executed* to retrieve the future contents.
 
-	# let t =
-		  OS.sleep 1.0 >>= fun () ->
-		  print_endline "start";
-		  OS.sleep 2.0 >>= fun () ->
-		  print_endline "woken up";
-		  return () ;;
+	let t =
+	  OS.sleep 1.0 >>= fun () ->
+	  print_endline ">> start";
+	  OS.sleep 2.0 >>= fun () ->
+	  print_endline ">> woken up";
+	  return () ;;
 	val t : unit Lwt.t = <abstr>
-	# OS.run t ;;
-	start
-	woken up
+
+	OS.run t ;;
+	>> start
+	>> woken up
+
+    The `run` function takes a future and unpacks the real value.
 
     </script>
   </section>
@@ -524,14 +525,32 @@ The toplevel will report the following type:
 	val wait : unit -> 'a t * 'a u
 	val wakeup : 'a u -> 'a -> unit
 
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Wakeners and tasks
+
+    Each thread executes until it needs to wait on a resource.  It creates
+    a *task* to let it be woken up in the future.
+
+	type 'a t  (* thread *)
+	type 'a u  (* wakener *)
+	val wait : unit -> 'a t * 'a u
+	val wakeup : 'a u -> 'a -> unit
+
     Tasks are a pair: a thread that sleeps until it is fulfilled via its wakener by calling `wakeup` on it.
 
-	# let thread1 =
-		t >>= fun x ->
-		print_endline x; return ()
-	  and thread2 = 
-		Lwt_unix.sleep 2.0 >>= fun () ->
-		Lwt.wakeup u "x"; return ()
+	let t1 =
+	  t >>= fun x ->
+	  print_endline x;
+	  return ()
+	and t2 = 
+	  OS.sleep 2.0 >>= fun () ->
+	  wakeup u "x";
+	  return ()
 
     </script>
   </section>
@@ -544,33 +563,10 @@ The toplevel will report the following type:
 
     - Create a `t` thread and a wakener `u`.
     - Insert `u` into a priority queue of timeouts, ordered by duration.
-    - The application sleeps on `t`
+    - The application sleeps on `t` until `u` is invoked by the scheduler.
 
     <br />
-    The priority queue is a standard data structure:
-
-	module Sleep_queue =
-		Lwt_pqueue.Make(struct
-			type t = sleeper
-			let compare { time = t1 } { time = t2 } = compare t1 t2
-		end)
-	end
-
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-    ## Wakeners: building a timer
-
-    Wakeners are enough to build our `OS.time` function:
-
-    - Create a `t` thread and a wakener `u`.
-    - Insert `u` into a priority queue of timeouts, ordered by duration.
-    - The application sleeps on `t`
-
-    <br />
-    The priority queue is a standard data structure:
+    The priority queue is a standard data structure ordered by the duration of the sleeping thread.
 
 	module Sleep_queue =
 		Lwt_pqueue.Make(struct
