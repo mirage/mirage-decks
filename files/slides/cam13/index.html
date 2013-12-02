@@ -269,7 +269,7 @@ The toplevel will report the following type:
 		val return :  α -> α t
 	end
 
-    `bind` is associative.
+    `bind` is associative (in an odd way).
 
 	(u >>= f) >>= g
 	 u >>= (fun x -> f x) >>= g
@@ -287,14 +287,180 @@ The toplevel will report the following type:
 </section>
 
 <section>
+
   <section data-markdown>
     <script type="text/template">
     ## Cooperative Concurrency
 
-    There are quite a few uses for monads, but we'll use this to build up concurrency (essential in an OS).
+    There are quite a few uses for monads; we'll use this to build a cooperative concurrency model for our OS.
+
+	module Lwt = struct
+		type α t
+		val bind : α t -> (α -> β t) -> β t
+		val return :  α -> α t
+	end
+
+    `Lwt` (Light Weight Thread) monad represents a *future computation* that is held in the box.
+
+    Can operate over futures by using `bind` to operate over its eventual value.
 
     </script>
   </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Constant threads
+
+    Build a constant thread by using `return`.
+
+	# open Lwt ;;
+	# let future_int = return 1 ;;
+	val future_int : int Lwt.t = <abstr>
+
+	# let future_fruit = return "apple" ;;
+	val future_fruit : string Lwt.t = <abstr>
+
+    Threads are first-class OCaml values and use the full range of OCaml
+    types.
+
+    No system threads are involved.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Concurrency: executing
+
+    The monad needs to be *executed* to retrieve the contents.
+
+	module OS = struct
+		val sleep : float -> unit Lwt.t
+		val run : 'a Lwt.t -> 'a
+	end
+ 
+    The `run` function takes a future and unpacks the real value.
+
+	# let t =
+		  OS.sleep 1.0 >>= fun () ->
+		  print_endline "start";
+		  OS.sleep 2.0 >>= fun () ->
+		  print_endline "woken up";
+		  return () ;;
+	val t : unit Lwt.t = <abstr>
+	# OS.run t ;;
+	start
+	woken up
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Representation of a thread
+
+	type 'a t = {
+		| Return of 'a
+		| Fail of exn
+		| Sleep of 'a sleeper
+
+	and sleeper = {
+		waiters : 'a waiter_set;
+		<...etc>
+	}
+
+    Thread has three main states:
+
+    - It has **completed** and contains a concrete `Return` value.
+    - It has **failed** and contains a concrete `Fail` exception.
+    - It is **blocked** and waiting on another thread.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Wakeners and tasks
+
+    Each thread executes until it needs to wait on a resource.  It creates
+    a *task* to let it be woken up in the future.
+
+	type 'a t  (* thread *)
+	type 'a u  (* wakener *)
+	val wait : unit -> 'a t * 'a u
+	val wakeup : 'a u -> 'a -> unit
+
+    Tasks are a pair: a thread that sleeps until it is fulfilled via its wakener by calling `wakeup` on it.
+
+	# let thread1 =
+		t >>= fun x ->
+		print_endline x; return ()
+	  and thread2 = 
+		Lwt_unix.sleep 2.0 >>= fun () ->
+		Lwt.wakeup u "x"; return ()
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Wakeners: building a timer
+
+    Wakeners are enough to build our `OS.time` function:
+
+    - Create a `t` thread and a wakener `u`.
+    - Insert `u` into a priority queue of timeouts, ordered by duration.
+    - The application sleeps on `t`
+
+    <br />
+    The priority queue is a standard data structure:
+
+	module Sleep_queue =
+		Lwt_pqueue.Make(struct
+			type t = sleeper
+			let compare { time = t1 } { time = t2 } = compare t1 t2
+		end)
+	end
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Wakeners: building a timer
+
+    Wakeners are enough to build our `OS.time` function:
+
+    - Create a `t` thread and a wakener `u`.
+    - Insert `u` into a priority queue of timeouts, ordered by duration.
+    - The application sleeps on `t`
+
+    <br />
+    The priority queue is a standard data structure:
+
+	module Sleep_queue =
+		Lwt_pqueue.Make(struct
+			type t = sleeper
+			let compare { time = t1 } { time = t2 } = compare t1 t2
+		end)
+	end
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Wakeners: running under Unix
+
+    The `OS.main` function runs until all threads are blocked,
+    and then drops into the `select` function to wait for the next timeout.
+
+    TODO: diagram
+
+    </script>
+  </section>
+
+
 </section>
 
 
