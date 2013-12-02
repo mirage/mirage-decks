@@ -22,6 +22,140 @@
 <section>
   <section data-markdown>
     <script type="text/template">
+    ## These Slides Are...
+    
+    - Hosted on a <b>small Xen microkernel written in statically
+    type-safe OCaml</b>, including the device drivers and TCP stack.
+    - The application code was just a <b>couple of source files</b>, with
+    all the hard work done in the MirageOS toolchain.
+    - The kernel is <b>running on the public cloud</b> on Amazon EC2, with
+    the binaries tracked in GitHub.
+
+    <br />
+
+    I'll explain how this all fits together works during this talk!
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## What is an Operating System?
+   
+    > "An operating system is a collection of software that manages computer
+    > hardware resources and provides common services for computer programs."
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## What is an Operating System?
+   
+    > "An operating system is a collection of software that manages computer
+    > hardware resources and provides common services for computer programs."
+
+    While this traditionally means a monolithic OS such as Linux or Windows,
+    it can also describe a **library operating system**.
+
+    - Every OS service exposed as a library with few ambient services.
+    - Application links directly with the drivers to boot (a *"unikernel"*)
+    - A natural fit to the ML module system.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## A Minimal Kernel
+
+    A simple OCaml program like this is easy to run without Unix.
+
+	let rec qsort = function
+		| [] -> []
+		| pivot :: rest ->
+			let is_less x = x < pivot in
+			let left, right = List.partition is_less rest in
+			qsort left @ [pivot] @ qsort right
+
+    **Why?**
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## A Minimal Kernel
+
+    A simple OCaml program like this is easy to run without Unix.
+
+	let rec qsort = function
+		| [] -> []
+		| pivot :: rest ->
+			let is_less x = x < pivot in
+			let left, right = List.partition is_less rest in
+			qsort left @ [pivot] @ qsort right
+
+    **Why?** It runs sequentially, meaning that it only needs:
+
+    - to run as native code
+    - a garbage collector
+    - a console log to record output
+    - no concurrency
+    - no significant network or disk I/O
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## A Minimal Kernel
+
+    A simple OCaml program like this is easy to run without Unix.
+
+	let rec qsort = function
+		| [] -> []
+		| pivot :: rest ->
+			let is_less x = x < pivot in
+			let left, right = List.partition is_less rest in
+			qsort left @ [pivot] @ qsort right
+
+    **Why?** It runs sequentially, meaning that it only needs:
+
+    - <s>to run as native code</s> &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; **`ocamlopt -output-obj`**
+    - <s>a garbage collector</s> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;**link OCaml runtime to Xen MiniOS**
+    - <s>a console log to record output</s> &nbsp; **log to virtual machine console**
+    - no concurrency
+    - no significant network or disk I/O
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## A Minimal Kernel
+
+    A simple OCaml program like this is easy to run without Unix.
+
+	let rec qsort = function
+		| [] -> []
+		| pivot :: rest ->
+			let is_less x = x < pivot in
+			let left, right = List.partition is_less rest in
+			qsort left @ [pivot] @ qsort right
+
+    **Why?** It runs sequentially, meaning that it only needs:
+
+    - <s>to run as native code</s> &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; **`ocamlopt -output-obj`**
+    - <s>a garbage collector</s> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;**link OCaml runtime to Xen MiniOS**
+    - <s>a console log to record output</s> &nbsp; **log to virtual machine console**
+    - **implement language-level concurrency via monads**
+    - **build device drivers via modular blocks**
+    </script>
+  </section>
+</section>
+
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
     ## Monads
 
 	module type MONAD = sig
@@ -463,26 +597,6 @@ The toplevel will report the following type:
 
 </section>
 
-
-<section>
-  <section data-markdown>
-    <script type="text/template">
-    ## These Slides Are...
-    
-    - Hosted on a <b>small Xen microkernel written in statically
-    type-safe OCaml</b>, including the device drivers and TCP stack.
-    - The application code was just a <b>couple of source files</b>, with
-    all the hard work done in the MirageOS toolchain.
-    - The kernel is <b>running on the public cloud</b> on Amazon EC2, with
-    the binaries tracked in GitHub.
-
-    <br />
-
-    I'll explain how this all fits together works during this talk!
-
-    </script>
-  </section>
-</section>
 
 <section>
   <section data-markdown>
