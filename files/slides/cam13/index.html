@@ -26,8 +26,10 @@
     
     - Hosted on a <b>small Xen microkernel written in statically
     type-safe OCaml</b>, including the device drivers and TCP stack.
+
     - The application code was just a <b>couple of source files</b>, with
     all the hard work done in the MirageOS toolchain.
+
     - The kernel is <b>running on the public cloud</b> on Amazon EC2, with
     the binaries tracked in GitHub.
 
@@ -38,6 +40,181 @@
     </script>
   </section>
 
+
+  <section data-markdown>
+    <script type="text/template">
+      ## OS Virtualization (Xen)
+
+      <img src="threat-model.png" />
+      
+      <div class="fragment">
+        <img class="arrow" 
+             style="top: -320pt; left: 290pt; height: 6cm;"
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="top: -190pt; left: 180pt; height: 6cm;
+                    -webkit-transform: rotate(-90deg)" 
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="top: -190pt; left: 180pt; height: 6cm;
+                    -webkit-transform: rotate(-90deg);"
+             src="red-arrow.png" />
+
+        <p class="bubble left"
+           style="top: -344pt; left: 600pt; width: 4em" >
+          Internet<br />
+          SAN/NAS<br />
+          Tenants<br />
+          SDN
+        </p>
+      </div>
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## The Cloud Threat Model
+
+      <img src="threat-model.png" />
+
+       
+      <div class="fragment">
+        <img class="arrow" 
+             style="top: -320pt; left: 290pt; height: 6cm" 
+             src="green-arrow.png" />
+         
+        <img class="arrow" 
+             style="top: -190pt; left: 180pt; height: 6cm; 
+                    -webkit-transform: rotate(-90deg)" 
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="top: -190pt; left: 180pt; height: 6cm; 
+                    -webkit-transform: rotate(-90deg)"
+             src="red-arrow.png" />
+
+        <p class="bubble  right" 
+           style="top: -440pt; left: -5pt; width: 11em">
+          Type-safety in the application layer defeats several external threats.
+        </p>
+     </div>
+        
+      <div class="fragment">        
+        <img class="arrow" 
+             style="top: -482pt; left: 307pt; height: 6cm; 
+                    -webkit-transform: rotate(-90deg)"
+             src="green-arrow.png" />
+      
+        <p class="bubble "
+           style="top: -730pt; left: 370pt; width: 12em">
+          Type-safety in the kernel will make all external I/O safe, but at what
+          cost?
+        </p>
+      </div>
+      
+    </script>
+  </section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Target the hypervisor
+
+      <img src="key-insight.png" />
+      <p class="fragment bubble "
+         style="top: -270pt; left: 190pt; width: 15.5em">
+        Virtual machines are UNIX processes &ldquo;done right&rdquo; on the
+        cloud. 
+      </p>   
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Key Design Insights
+
+      <img src="key-insight.png" />
+        
+      <p class="bubble"
+         style="top: -330pt; left: 220pt; width: 15em">
+        The hypervisor gifts us a stable hardware interface. Cures the curse
+        of research operating systems! 
+      </p>
+      
+      <p class="bubble left"
+         style="top: -320pt; left: 380pt; width: 12em">
+        Protocol-level compatibility between special-purpose cloud
+        appliances, e.g. a webserver, a database VM. 
+      </p>
+      
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Current Virtual Appliances
+
+      <img src="vapps-current.png" />
+
+      Compiler has to stop at userspace.
+
+      Every level has a different API, calling convention, and privilege requirements.
+      
+    </script>
+  </section>
+
+   
+  <section data-markdown>
+    <script type="text/template">
+      ## Specialised Virtual Appliances
+
+      <img src="vapps-specialised-1.png" />
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Specialised Virtual Appliances
+
+      <img src="vapps-specialised-2.png" />
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Specialised Virtual Appliances
+
+      <img src="vapps-specialised-3.png" />
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Contributions
+      
+      + The unikernel approach to building single-purpose appliances        
+        + Library OS + high level programming interface
+        + Single-address space layout
+
+      <br />
+
+      + Evaluation of these techniques using a functional programming language
+        (OCaml)
+        + Benefits of type-safety need not damage performance
+        + Static typing + modules = high level manipulation of OS constructs
+
+      <br />
+
+      + Precise source code dependency tracking of *all* the inputs to the deployed binary.
+
+    </script>
+  </section>
+
+
+</section>
+
+
+<section>
   <section data-markdown>
     <script type="text/template">
     ## What is an Operating System?
@@ -55,6 +232,7 @@
     > "An operating system is a collection of software that manages computer
     > hardware resources and provides common services for computer programs."
 
+    <br />
     While this traditionally means a monolithic OS such as Linux or Windows,
     it can also describe a **library operating system**.
 
@@ -104,6 +282,55 @@
     - no significant network or disk I/O
     </script>
   </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## A Minimal Kernel
+
+    A simple OCaml program like this is easy to run without Unix.
+
+	let rec qsort = function
+		| [] -> []
+		| pivot :: rest ->
+			let is_less x = x < pivot in
+			let left, right = List.partition is_less rest in
+			qsort left @ [pivot] @ qsort right
+
+    **Why?** It runs sequentially, meaning that it only needs:
+
+    - <s>to run as native code</s> &nbsp; &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; **`ocamlopt -output-obj`**
+    - <s>a garbage collector</s> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;**link OCaml runtime to Xen MiniOS**
+    - <s>a console log to record output</s> &nbsp; **log to virtual machine console**
+    - no concurrency
+    - no significant network or disk I/O
+    </script>
+  </section>
+
+   <section data-markdown>
+        <script type="text/template">
+          ## Kernel Memory Management
+
+          <img src="memory-model.png" />
+
+
+          <p class="fragment bubble"
+             style="top: -410pt; left: 195pt; width: 20em; font-size: 20pt">
+            Compiled native source code and runtime statically linked and boots
+            directly into Xen.
+          </p>
+          
+          <p class="fragment bubble  right"
+             style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
+            IO memory is mapped into a reserved area and can be distinguished.
+          </p>
+
+          <p class="fragment bubble  left"
+             style="top: -280pt; left: 320pt; width: 12em; font-size: 20pt">
+            OCaml heap is contiguous, with simpler write barriers as a result.
+          </p>
+
+        </script>
+      </section>
 
   <section data-markdown>
     <script type="text/template">
@@ -255,23 +482,23 @@ The toplevel will report the following type:
 
     Some simple uses of these definitions:
 
-	# open OptionMonad ;;
-	# bind
-		(return 1)
-		(fun c -> return (c+1)) ;;
+	open OptionMonad ;;
+	bind
+	  (return 1)
+	  (fun c -> return (c+1)) ;;
 	- : int option = Some 2
 
-	# bind
-		None
-		(fun c -> return (c+1)) ;;
+	bind
+	  None
+	  (fun c -> return (c+1)) ;;
 	- : int option = None
 
     Binds can be chained to link the results.
 
-	# bind (
-		bind
-		  (Some 1)  
-		  (fun c -> return (c+1)) 
+	bind (
+	  bind
+		(Some 1)  
+		(fun c -> return (c+1)) 
 	  ) (fun c -> return (c+1)) ;;
 	- : int option = Some 3
 
@@ -284,12 +511,12 @@ The toplevel will report the following type:
  
     Infix operators make chaining `bind` more natural:
 
-	# let (>>=) = bind ;;
+	let (>>=) = bind ;;
 	val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
-	# return 1 >>= fun c ->
-	  return (c+1) >>= fun c ->
-	  return (c+1) ;;
+	return 1 >>= fun c ->
+	return (c+1) >>= fun c ->
+	return (c+1) ;;
 	- : int option = Some 3
 
     </script>
@@ -301,22 +528,22 @@ The toplevel will report the following type:
  
     Infix operators make chaining `bind` more natural:
 
-	# let (>>=) = bind ;;
+	let (>>=) = bind ;;
 	val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
-	# return 1 >>= fun c ->
-	  return (c+1) >>= fun c ->
-	  return (c+1) ;;
+	return 1 >>= fun c ->
+	return (c+1) >>= fun c ->
+	return (c+1) ;;
 	- : int option = Some 3
 
     Or define a `maybe_add` function to be even more succinct.
 
-	# let maybe_add c = return c + 1 ;;
+	let maybe_add c = return c + 1 ;;
 	val maybe_add : int -> int option = <fun>
 
-	# return 1
-	  >>= maybe_add
-	  >>= maybe_add
+	return 1
+	>>= maybe_add
+	>>= maybe_add
 	- : int option = Some 3
 	
     </script>
@@ -462,6 +689,7 @@ The toplevel will report the following type:
     </script>
   </section>
 
+
   <section data-markdown>
     <script type="text/template">
     ## Concurrency: executing
@@ -492,13 +720,67 @@ The toplevel will report the following type:
 
   <section data-markdown>
     <script type="text/template">
+    ## Joinad: not quite a monad
+
+	module Lwt = struct
+		type α t
+		val bind : α t -> (α -> β t) -> β t
+		val return :  α -> α t
+
+		val join : unit t list -> unit t
+		val choose : α t list -> α t
+	end
+
+    We extend the `MONAD` signature with:
+
+    - `join` to wait for a list of threads to terminate.
+    - `choose` to return as soon as one thread of a list completes.
+    - `join` is also defined as the `<&>` operator, and `choose` as `<?>`.
+
+    <br/>
+    *(see [tomasp.net](http://tomasp.net) and [tryjoinads.org](http://tryjoinads.org) for more background)*
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Example: flip a coin
+
+	module Lwt = struct
+		type α t
+		val bind : α t -> (α -> β t) -> β t
+		val return :  α -> α t
+
+		val join : unit t list -> unit t
+		val choose : α t list -> α t
+	end
+
+    Using `choose` to pick the first thread in a coin flip:
+
+	let flip_a_coin () =
+	  let heads =
+		OS.sleep 1.0 >>= fun () ->
+		return (OS.log "Heads") in
+	  let tails =
+		OS.sleep 2.0 >>= fun () ->
+		return (OS.log "Tails") in
+	  heads <&> tails
+	
+    </script>
+  </section>
+
+
+
+  <section data-markdown>
+    <script type="text/template">
     ## Representation of a thread
 
 	type 'a t = {
 		| Return of 'a
 		| Fail of exn
 		| Sleep of 'a sleeper
-
+	}
 	and sleeper = {
 		waiters : 'a waiter_set;
 		<...etc>
@@ -559,14 +841,15 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Wakeners: building a timer
 
-    Wakeners are enough to build our `OS.time` function:
+    Wakeners are enough to build our `OS.sleep` function:
 
-    - Create a `t` thread and a wakener `u`.
+    - Call `sleep` with `t` seconds as an argument.
+    - Create a thread `t` and a wakener `u`.
     - Insert `u` into a priority queue of timeouts, ordered by duration.
     - The application sleeps on `t` until `u` is invoked by the scheduler.
 
     <br />
-    The priority queue is a standard data structure ordered by the duration of the sleeping thread.
+    The priority queue is a standard data structure ordered by duration.
 
 	module Sleep_queue =
 		Lwt_pqueue.Make(struct
@@ -580,204 +863,65 @@ The toplevel will report the following type:
 
   <section data-markdown>
     <script type="text/template">
-    ## Wakeners: running under Unix
+    ## Wakeners: running in Unix
 
     The `OS.main` function runs until all threads are blocked,
     and then drops into the `select` function to wait for the next timeout.
 
-    TODO: diagram
+	run main thread (threads register timeouts)
+	if result is Blocked then
+		T = head of priority queue
+		select() for T seconds
+		wakeup timeouts
+	repeat until main thread result is Done or Fail
 
-    </script>
-  </section>
-
-
-</section>
-
-
-<section>
-  <section data-markdown>
-    <script type="text/template">
-      ## The Cloud Threat Model
-
-      <img src="threat-model.png" />
-      
-      <div class="fragment">
-        <img class="arrow" 
-             style="top: -320pt; left: 290pt; height: 6cm;"
-             src="red-arrow.png" />
-        
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm;
-                    -webkit-transform: rotate(-90deg)" 
-             src="red-arrow.png" />
-        
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm;
-                    -webkit-transform: rotate(-90deg);"
-             src="red-arrow.png" />
-
-        <p class="bubble left"
-           style="top: -344pt; left: 600pt; width: 4em" >
-          Internet<br />
-          SAN/NAS<br />
-          Tenants<br />
-          SDN
-        </p>
-      </div>
+     - This lets our sequential code be fully concurrent, without preemptive system threads.
+     - Number of threads limited only by OCaml heap size.
+	
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
-      ## The Cloud Threat Model
+    ## Wakeners: running in Xen
 
-      <img src="threat-model.png" />
+    Lwt uses the `select` system call in Unix, which blocks the process until some IO event (or a timeout) occurs.
 
-       
-      <div class="fragment">
-        <img class="arrow" 
-             style="top: -320pt; left: 290pt; height: 6cm" 
-             src="green-arrow.png" />
-         
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm; 
-                    -webkit-transform: rotate(-90deg)" 
-             src="red-arrow.png" />
-        
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm; 
-                    -webkit-transform: rotate(-90deg)"
-             src="red-arrow.png" />
+    **But how does this translate to Xen?**
 
-        <p class="bubble  right" 
-           style="top: -440pt; left: -5pt; width: 11em">
-          Type-safety in the application layer defeats several external threats.
-        </p>
-     </div>
-        
-      <div class="fragment">        
-        <img class="arrow" 
-             style="top: -482pt; left: 307pt; height: 6cm; 
-                    -webkit-transform: rotate(-90deg)"
-             src="green-arrow.png" />
-      
-        <p class="bubble "
-           style="top: -730pt; left: 370pt; width: 12em">
-          Type-safety in the kernel will make all external I/O safe, but at what
-          cost?
-        </p>
-      </div>
-      
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
-      ## The Cloud Threat Model
+    ## Wakeners: running in Xen
 
-      <img src="threat-model.png" />
+    Lwt uses the `select` system call in Unix, which blocks the process until some IO event (or a timeout) occurs.
 
-      <p class="bubble left"
-         style="top: -290pt; left: 380pt; width: 14.5em" >
-        Most attacks never come from <strong>within</strong> a guest, only
-        from external traffic. So why all these privilege checks?
-      </p>
-    </script>
-  </section>
+    Xen has an equivalent *VM block instruction* which suspends the whole VM until a device interrupt or timeout.
 
-  <section data-markdown>
-    <script type="text/template">
-      ## Key Design Insights
+    > **processes in Unix** <=> **Virtual Machines in Xen**
 
-      <img src="threat-model.png" />
-        
-      <p class="bubble"
-         style="top: -200pt; left: 120pt; width: 15em">
-        The hypervisor gifts us a stable hardware interface. Cures the curse
-        of library operating systems! 
-      </p>
-      
-      <p class="bubble left"
-         style="top: -460pt; left: 400pt; width: 12em">
-        Protocol-level compatibility between special-purpose cloud
-        appliances, e.g. a webserver, a database VM. 
-      </p>
-      
-    </script>
-  </section>
-</section>
-
-<section>
-  <section data-markdown>
-    <script type="text/template">
-      ## Unikernels!
-
-      <img src="key-insight.png" />
-      <p class="fragment bubble "
-         style="top: -270pt; left: 190pt; width: 15.5em">
-        Virtual machines are UNIX processes &ldquo;done right&rdquo; on the
-        cloud. 
-      </p>   
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Current Virtual Appliances
-
-      <img src="vapps-current.png" />
-
-      Compiler has to stop at userspace.
-
-      Every level has a different API, calling convention, and privilege requirements.
-      
-    </script>
-  </section>
-
+    > **`select` in Unix** <=> **block entire virtual machine in Xen**
    
-  <section data-markdown>
-    <script type="text/template">
-      ## Specialised Virtual Appliances
-
-      <img src="vapps-specialised-1.png" />
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
-      ## Specialised Virtual Appliances
+    ## Wakeners: running in Xen
 
-      <img src="vapps-specialised-2.png" />
-    </script>
-  </section>
+    Lwt uses the `select` system call in Unix, which blocks the process until some IO event (or a timeout) occurs.
 
-  <section data-markdown>
-    <script type="text/template">
-      ## Specialised Virtual Appliances
+    Xen has an equivalent *VM block instruction* which suspends the whole VM until a device interrupt or timeout.
 
-      <img src="vapps-specialised-3.png" />
-    </script>
-  </section>
+    > **processes in Unix** <=> **Virtual Machines in Xen**
 
-  <section data-markdown>
-    <script type="text/template">
-      ## Contributions
-      
-      + The unikernel approach to building single-purpose appliances        
-        + Library OS + high level programming interface
-        + Single-address space layout
-
-      <br />
-
-      + Evaluation of these techniques using a functional programming language
-        (OCaml)
-        + Benefits of type-safety need not damage performance
-        + Static typing + modules = high level manipulation of OS constructs
-
-      <br />
-
-      + Precise source code dependency tracking of *all* the inputs to the deployed binary.
-
+    > **`select` in Unix** <=> **block entire virtual machine in Xen**
+  
+    Our Xen VM can use this abstraction for all its I/O and timing.
+ 
+    **Question: What is the major downside of this approach?**
     </script>
   </section>
 
@@ -1088,32 +1232,6 @@ end
         </script>
       </section>
       
-      <section data-markdown>
-        <script type="text/template">
-          ## Memory Management <small>Specialised!</small>
-
-          <img src="memory-model.png" />
-
-
-          <p class="fragment bubble"
-             style="top: -410pt; left: 195pt; width: 20em; font-size: 20pt">
-            Compiled native source code and runtime statically linked with random
-            start offset.
-          </p>
-          
-          <p class="fragment bubble  right"
-             style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
-            IO memory is mapped into a reserved area and can be distinguished.
-          </p>
-
-          <p class="fragment bubble  left"
-             style="top: -280pt; left: 320pt; width: 12em; font-size: 20pt">
-            OCaml heap is contiguous, with simpler write barriers as a result.
-          </p>
-
-        </script>
-      </section>
-
       <section data-markdown>
         <script type="text/template">
           ## Buffer Management <small>Zero-Copy IO</small>
