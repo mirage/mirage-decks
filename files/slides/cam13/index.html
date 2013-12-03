@@ -681,10 +681,49 @@ The toplevel will report the following type:
 	let future_fruit = return "apple" ;;
 	val future_fruit : string Lwt.t = <abstr>
 
+	let future_lang = return `OCaml ;;
+	val future_lang : [> `OCaml] Lwt.t = <abstr>
+
     Threads are first-class OCaml values and parametric polymorphism lets you
     distinguish different types of threads.
 
     No system threads are involved at all; this is sequential code.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Concurrency: executing
+
+	module OS = struct
+		val sleep : float -> unit Lwt.t
+		val run : 'a Lwt.t -> 'a
+	end
+ 
+    The monad needs to be *executed* to retrieve the future contents.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Concurrency: executing
+
+	module OS = struct
+		val sleep : float -> unit Lwt.t
+		val run : 'a Lwt.t -> 'a
+	end
+ 
+    The monad needs to be *executed* to retrieve the future contents.
+
+	let t =
+	  OS.sleep 1.0 >>= fun () ->
+	  print_endline ">> start";
+	  OS.sleep 2.0 >>= fun () ->
+	  print_endline ">> woken up";
+	  return () ;;
+	val t : unit Lwt.t = <abstr>
 
     </script>
   </section>
