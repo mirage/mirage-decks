@@ -1083,6 +1083,10 @@ The toplevel will report the following type:
 
     > **`select` in Unix** <=> **block entire virtual machine in Xen**
    
+	module OS = struct
+		val sleep : float -> unit Lwt.t
+		val run : 'a Lwt.t -> 'a
+	end
     </script>
   </section>
 
@@ -1451,10 +1455,12 @@ end
           <script type="text/template">
             ## Optional VM Sealing
 
-            + Single address-space and no dynamic loading
+            + **Single address-space** and *no dynamic loading*
               + `W^X` address space
               + Address offsets are randomized at compile-time
-    
+
+            <br />
+
             + Dropping page table privileges:
               + Added freeze hypercall called just before app starts
               + Subsequent page table updates are rejected by Xen
@@ -1463,7 +1469,7 @@ end
             
             <br />
 
-            + Very easy in unikernels due to focus on _compile-time specialisation_
+            + Very easy in unikernels due to focus on __compile-time specialisation__
             instead of _run-time complexity_
             
           </script>
@@ -1649,23 +1655,18 @@ end
       + Unikernels are small and can be tracked in GitHub!
         + For Mirage website, source is committed to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**
         + Pull requests to source are built by **[Travis-CI](https://travis-ci.org)**
-        + Resulting unikernel committed to **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
+        + Resulting binary committed to **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
         + Cloud toolstack spawns VMs based on pushes there.
 
     </script>
   </section>
-
-
-
-
-
 </section>
 
 
   <section>
    <section data-markdown>
      <script type="text/template">
-      ## Experiences with OCaml
+      ## Experiences
 
       + __OCaml is the baseline language for all new code__
         + Our C runtime is small, and getting smaller.
@@ -1681,7 +1682,8 @@ end
       </script>
     </section>
 
-    <section data-markdown>
+<!--
+     <section data-markdown>
       <script type="text/template">
        ## Pure OCaml Code <small>[github.com/mirage](http://github.com/mirage)</small>
               
@@ -1697,8 +1699,7 @@ end
           + [arakoon.org](http://arakoon.org): multi-Paxos distributed k/v store
       </script>
     </section>
-
-
+-->
     <section data-markdown>
     <script type="text/template">
       ## MirageOS 1.0 - December 2013
@@ -1707,30 +1708,58 @@ end
           - Release efforts are focussed around usability of build/deployment.
           - OPAM 1.1 package manager that works via GitHub: **<https://opam.ocaml.org>**
           - over 50 OCaml libraries released (TCP/IP, Xen drivers, protocols)
-          - Travis continuous test integration.
 
       <br />
 
-      - O'Reilly **Real World OCaml** released: 
-          - **<http://realworldocaml.org>**
-      - OPAM now has **over 1800 packages** (530 unique) 
+      - OPAM now has **over 1800 packages** (559 unique) 
           - lots of enthusiasm from the OCaml community!
+          - growing corpus of re-usable code
+          - a single place to discover functionality
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
-      ## Cool Uses of Mirage So Far
+      ## OPAM Package Growth
 
-      - __Personal Hosting__ on the cloud
+      <img src="packages.png" />
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+      ## To the Edge of the Cloud
+
+      The library OS approach is far more general than just cloud programming.
+
+      - **ARMv6/Raspberry Pi** - needs device drivers for framebuffer/USB
+      - **kernel/FreeBSD** - OS environment is a kernel module
+      - **JavaScript/browser** - map WebSockets/HTML5 Storage
+      - **ARMv8/Xen** - emerging support for new ARM hypervisors
+      - **VMWare/KVM/LXC** - more hypervisor boot libraries
+      - **Unix/Capsicum/CHERI** - secure capability hardware
+     
+    </script>
+  </section>
+ 
+  <section data-markdown>
+    <script type="text/template">
+      ## Use Cases that Drive Us
+
+      - __Personal Hosting__ ([User Centric Networking](http://usercentricnetworking.eu))
         - Our homepages moving onto little self-contained kernels.
         - Self-scaling servers that spawn VMs in response to demand.
-        - ARM Raspberry Pi HTTP servers.
-      - __Custom Middlebox Services__
-        - Built custom Xen block backends that do wonderful things.
-        - Custom DNS servers that do route discovery and network configuration.
-      - __More Secure Services__
-        - Self-updated VMs that watch GitHub and recompile in seconds.
+        - ARM Raspberry Pi protocol servers.
+        - Security less of a problem due to dependency tracking.
+
+      <br />
+
+      - __Network as a Service__
+        - Data centre applications customize their network needs.
+        - Operations over big data can specialize to workloads.
+        - Exploring the hardware/software divide.
+      
 
     </script>
   </section>
@@ -1746,30 +1775,29 @@ end
       - __Configuration Language__
         - Very raw in 1.0, but usecases will drive it.
         - All the policy has been pushed out here.
-      - __More backend targets integrated__
-        - JavaScript and FreeBSD kernel module backends exist out-of-tree.
+      - __More seamless interoperability__
         - Combine with other languages (**[ocamllabs/ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes)**)
-        - More boot libraries (KVM, VirtualBox, Docker, rPi, Xen/ARM)
+        - More boot libraries (KVM, VirtualBox, Docker, rPi, Xen/ARM).
+        - Scheduling in such extremely distributed systems.
 
     </script>
   </section>
 
-
-   <section data-markdown>
+  <section data-markdown>
       <script type="text/template">
-      <img width="250" src="rwo.jpg" style="margin-left: 680px; margin-top: 150px; position: fixed" />
+      <img width="220" src="rwo.jpg" style="margin-left: 680px; margin-top: 150px; position: fixed" />
       ## MirageOS Online
 
       + Website, <http://www.openmirage.org>
       + Code, <http://github.com/mirage>
       + O'Reilly OCaml book, <http://realworldocaml.org>
      
-      <br />         
-
       + All development open and on GitHub:
          + **<https://github.com/mirage>**
          + **<https://github.com/xapi-project>**
          + **<https://github.com/xenserver>**
+
+      On behalf the core team of Thomas Gazagnaire, David Scott, Richard Mortier and Jon Ludlam, with extensive contributions from Haris Rotsos, Balraj Singh, Amir Chaudhry, Leo White, Jeremy Yallop, David Sheets and Vincent Bernardoff.  Professorial prodding from Jon Crowcroft and Steven Hand.
       </script>
    </section>
 
