@@ -52,6 +52,46 @@ type deck = {
 }
 
 let decks = [
+  { permalink = "clweds13";
+    given = date (2013, 12, 04);
+    speakers = [People.anil];
+    venue = "Cambridge Computer Laboratory";
+    title = "MirageOS: a functional library operating system";
+    assets = [ "arch2.png";
+               "modules1.png";
+               "modules2.png";
+               "modules3.png";
+               "uniarch1a.png";
+               "uniarch1b.png";
+               "uniarch1c.png";
+               "uniarch1d.png";
+               "architecture.png"; "rwo.jpg";
+               "block-storage.png"; "architecture-xapi-project.png";
+               "boot-time.png";
+               "cothreads.png";
+               "deens-performance.png";
+               "dns-all.png";
+               "dns-baseline.png";
+               "dns-deens.png";
+               "green-arrow.png";
+               "key-insight.png";
+               "kloc.png";
+               "memory-model.png";
+               "openflow-controller.png";
+               "red-arrow.png";
+               "scaling-instances.png";
+               "specialisation.png";
+               "thread-scaling.png";
+               "threat-model-dom0.png";
+               "threat-model.png";
+               "vapps-current.png";
+               "vapps-specialised-1.png";
+               "vapps-specialised-2.png";
+               "vapps-specialised-3.png";
+               "zero-copy-io.png";
+             ];
+  };
+ 
   { permalink = "cam13";
     given = date (2013, 12, 03);
     speakers = [People.anil];

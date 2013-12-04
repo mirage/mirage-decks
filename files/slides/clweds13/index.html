@@ -161,19 +161,43 @@
     - Now open-source and deployed on millions of hosts worldwide.
     - Huge cloud providers such as [Rackspace](http://rackspace.com) use it.
 
+    <div class="fragment">
     <br />
-    > While Xen is used to manage millions of our customer's virtual machines,
-    > how we do we manage and secure Xen itself?
-    >
-    > We need to build a "**distributed system in a box**" that breaks up the
-    > monolithic systems software into components that run
-    > with minimal privilege, yet are still easy to develop, deploy and debug.
-
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-*-- David J. Scott, Principal Architect, XenServer* 
-
+    <blockquote>While Xen is used to manage millions of our customer's virtual machines,
+    how we do we manage and secure Xen itself?
+    <br /><br />
+    We need to build a "**distributed system in a box**" that breaks up the
+    monolithic systems software into components that run
+    with minimal privilege, yet are still easy to develop, deploy and debug.
+    </blockquote><br />
+    <p align="right">- David J. Scott, Principal Architect, XenServer</p>
+    </div>
    </script>
   </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xen: the Challenge
+
+    - **XenServer** is a complete distribution of the Xen hypervisor.
+    - Now open-source and deployed on millions of hosts worldwide.
+    - Huge cloud providers such as [Rackspace](http://rackspace.com) use it.
+
+    <br />
+    The XenServer software stack is around ~200k lines of OCaml code.
+
+    - a distributed database
+    - APIs for XML-RPC
+    - fault tolerance algorithms
+    - datacentre management UI
+    - storage and network configuration plugins
+
+    <br />
+    *(source: [ICFP 2010 experience report](http://anil.recoil.org/papers/2010-icfp-xen.pdf))*
+    </div>
+   </script>
+  </section>
+
 
   <section data-markdown>
     <script type="text/template">
@@ -274,13 +298,10 @@
     <script type="text/template">
       ## Target the hypervisor
 
-      <br />
-
       <img src="key-insight.png" />
       <p class="fragment bubble "
-         style="top: -270pt; left: 190pt; width: 15.5em">
-        Virtual machines are UNIX processes &ldquo;done right&rdquo; on the
-        cloud. 
+         style="top: -320pt; left: 190pt; width: 14.5em">
+        UNIX processes get mapped onto many small, independent, Virtual Machines forming a distributed system.
       </p>   
     </script>
   </section>
