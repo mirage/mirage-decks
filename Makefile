@@ -1,45 +1,38 @@
-# Define a BACKEND variable
+# OASIS_START
+# DO NOT EDIT (digest: bc1e05bfc8b39b664f29dae8dbd3ebbb)
 
-PLATFORM := $(shell opam list --installed --short mirage-xen)
-NET := $(shell opam list --installed --short mirage-net-socket)
+SETUP = ocaml setup.ml
 
-ifeq ($(strip $(PLATFORM)),mirage-xen)
-	BACKEND := --xen
-else
-	BACKEND := --unix
-    ifeq ($(strip $(NET)),mirage-net-socket)
-        BACKEND += --socket
-    endif
-endif
+build: setup.data
+	$(SETUP) -build $(BUILDFLAGS)
 
-configure:
-	cd src && mirari configure $(BACKEND)
+doc: setup.data build
+	$(SETUP) -doc $(DOCFLAGS)
 
-fs:
-	mir-crunch -o src/filesystem_static.ml -name "static" ./files
+test: setup.data build
+	$(SETUP) -test $(TESTFLAGS)
 
-clean:
-	cd src && mirari clean
-	$(RM) mir-www
-	$(RM) src/main.ml src/backend.ml src/filesystem_static.ml
-	$(RM) files/slides/oscon13/complete.html
+all: 
+	$(SETUP) -all $(ALLFLAGS)
 
-build: configure fs
-	cd src && mirari build $(BACKEND)
+install: setup.data
+	$(SETUP) -install $(INSTALLFLAGS)
 
-run: build
-	cd src && sudo mirari run $(BACKEND)
+uninstall: setup.data
+	$(SETUP) -uninstall $(UNINSTALLFLAGS)
 
-page-%:
-	cd files/slides/$* \
-	  && ln -sf ../../reveal-2.4.0/css \
-	  && ln -sf ../../reveal-2.4.0/js \
-	  && ln -sf ../../reveal-2.4.0/plugin \
-	  && ln -sf ../../reveal-2.4.0/lib
+reinstall: setup.data
+	$(SETUP) -reinstall $(REINSTALLFLAGS)
 
-	sed -E 's@(src="|href="|src: ")@\1/Users/mort/research/projects/mirage/src/v2/mirage-decks/files/reveal-2.4.0/@g' files/templates/reveal-2.4.0-header.html \
-		>| files/slides/$*/complete.html \
-	  && cat files/slides/$*/index.html \
-		>> files/slides/$*/complete.html \
-	  && sed -E 's@(src="|href="|src: ")@\1/Users/mort/research/projects/mirage/src/v2/mirage-decks/files/reveal-2.4.0/@g' files/templates/reveal-2.4.0-footer.html \
-		>> files/slides/$*/complete.html
+clean: 
+	$(SETUP) -clean $(CLEANFLAGS)
+
+distclean: 
+	$(SETUP) -distclean $(DISTCLEANFLAGS)
+
+setup.data:
+	$(SETUP) -configure $(CONFIGUREFLAGS)
+
+.PHONY: build doc test all install uninstall reinstall clean distclean configure
+
+# OASIS_STOP
