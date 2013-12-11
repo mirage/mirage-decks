@@ -1,6 +1,6 @@
 open Mirage
 
-let fs =
+let static =
   Driver.KV_RO {
     KV_RO.name = "files";
     dirname    = "../files";
@@ -15,5 +15,5 @@ let http =
 
 let () =
   Job.register [
-    "Site.Main", [Driver.console; fs; http]
+    "Site.Main", [Driver.console; static; http]
   ]

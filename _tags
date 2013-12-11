@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 3da7691a9f7850f5a51d06ccc53bde7c)
+# DO NOT EDIT (digest: f542667710cd3e858ab583246698d66b)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -13,7 +13,7 @@
 ".git": not_hygienic
 "_darcs": -traverse
 "_darcs": not_hygienic
-# Executable mirage
+# Executable mirage_decks
 <lib/main.{native,byte}>: pkg_mirage
 <lib/main.{native,byte}>: pkg_cmdliner
 <lib/main.{native,byte}>: pkg_cohttp

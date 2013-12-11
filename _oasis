@@ -7,9 +7,10 @@ License:     ISC
 Plugins:     META (0.3), DevFiles (0.3)
 BuildTools:  ocamlbuild
 
-Executable mirage
+Executable mirage_decks
   CompiledObject:     best
   Path:               lib
   MainIs:             main.ml
-  Install:            true
-  BuildDepends:       mirage, cmdliner, cohttp, cohttp.mirage-unix, cowabloga, omd
+  Install:            false
+  BuildDepends:       mirage, cmdliner, cohttp, cohttp.mirage-unix,
+    cowabloga, omd
