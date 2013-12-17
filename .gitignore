@@ -26,3 +26,4 @@ files/slides/**/plugin
 files/slides/**/lib
 files/slides/**/complete.html
 
+/src/mir-main
