@@ -18,6 +18,7 @@
 open Mirage_types.V1
 open Lwt
 
+let (|>) x f = f x
 let sp = Printf.sprintf
 
 module Main
@@ -48,13 +49,10 @@ struct
     in
 
     let callback conn_id ?body req =
-      let path = Uri.path (S.Request.uri req) in
-      let path_elem =
-        let rec remove_empty_tail = function
-          | [] | [""] -> []
-          | hd::tl    -> hd :: remove_empty_tail tl
-        in
-        remove_empty_tail (Re_str.(split_delim (regexp_string "/") path))
+      let path = req |> S.Request.uri |> Uri.path in
+      let cpts = path
+          |> Re_str.(split_delim (regexp_string "/"))
+          |> List.filter (fun e -> e <> "")
       in
       C.log_s c (sp "URL: '%s'" path)
       >> try_lwt
@@ -62,8 +60,8 @@ struct
         S.respond_string ~status:`OK ~body ()
       with
       | Failure m ->
-        Printf.printf "EXN: '%s'%!" m;
-        Slides.dispatch read_slides req path_elem
+        Printf.printf "EXN: '%s'\n%!" m;
+        Slides.dispatch read_slides req cpts
     in
 
     let conn_closed conn_id () =
