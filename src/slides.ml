@@ -55,7 +55,6 @@ module Deck = struct
         )
       | n -> n
 
-
   end
 
   type t = {
@@ -413,7 +412,8 @@ let deck ~req ~path =
 
 let dispatch read_slides req path =
   Printf.(eprintf "DISPATCH: %s\n%!"
-            (String.concat " :: " (List.map (fun c -> sprintf "'%s'" c) path)
+            (sprintf "[ %s ]"
+               (String.concat "; " (List.map (fun c -> sprintf "'%s'" c) path))
             ));
   let body = match path with
     | [] | [""] | ["index.html"] -> index ~req ~path
