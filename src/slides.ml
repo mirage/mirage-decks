@@ -1,3 +1,8 @@
+open Mirage_types.V1
+open Cohttp_mirage
+open Cow
+
+(*
 open Cow
 open Lwt
 open Printf
@@ -7,6 +12,8 @@ module C = Cohttp
 
 open Unix_files
 
+*)
+
 type date = {
   year: int;
   month: int;
@@ -15,6 +22,7 @@ type date = {
 
 let date (year, month, day) = { year; month; day }
 
+(*
 module Html = struct
 
   let html_t = ["content-type", "text/html"]
@@ -41,6 +49,7 @@ module Html = struct
 
   let link ?cl ?id u s = wrap "a" ~literals:[ (sprintf "href='%s'" u) ] s
 end
+*)
 
 type deck = {
   permalink: string;
@@ -288,6 +297,7 @@ let decks = [
                "zero-copy-io.png";
              ];
   };
+
   { permalink = "oscon13";
     given = date (2013, 07, 26);
     speakers = [People.mort; People.anil];
@@ -319,6 +329,7 @@ let decks = [
                "zero-copy-io.png";
              ];
   };
+
   { permalink = "jslondon13";
     given = date (2013, 08, 29);
     speakers = [People.anil];
@@ -361,6 +372,7 @@ let decks = [
 
 ]
 
+(*
 let exists x =
   List.exists (fun e -> x = "/slides/" ^ e.permalink) decks
 
@@ -381,8 +393,6 @@ let index ~(path:string) ~(req:Cohttp.Request.t) =
                ))
          ))
   )
-
-let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv
 
 let slides path fs deck =
   let template s vs =
@@ -418,3 +428,20 @@ let asset path fs deck =
   in
   let headers = C.Header.of_list Html.octets_t in
   CL.Server.respond_string ~headers ~status:`OK ~body ()
+*)
+
+let dispatch read_slides req = function
+  | [] | [""] | ["index.html"] ->
+    (* slides index page *)
+    Server.respond_string
+      ~status:`Not_found
+      ~body:"<p>slides index page</p>" ()
+  | deck :: [] | deck :: [ "index.html" ] ->
+    (* deck index *)
+    Server.respond_string
+      ~status:`Not_found
+      ~body:"<p>deck index page</p>" ()
+  | deck :: tl ->
+    Server.respond_string
+      ~status:`Not_found
+      ~body:"<p>slide</p>" ()

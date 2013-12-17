@@ -16,37 +16,65 @@
  *)
 
 open Mirage_types.V1
-
 open Lwt
 
-let (>>>) x f =
-  x >>= function
-  | `Error _ -> failwith "error"
-  | `Ok x    -> f x
+let sp = Printf.sprintf
 
+module Main
+  (C: CONSOLE) (ASSETS: KV_RO) (SLIDES: KV_RO) (S: Cohttp_lwt.Server) =
+struct
 
-module Main (C: CONSOLE) (FS: KV_RO) (Server: Cohttp_lwt.Server) = struct
+  let start c assets slides http =
+    let read_assets name =
+      ASSETS.size assets name >>= function
+      | `Error (ASSETS.Unknown_key _) ->
+        fail (Failure ("read_assets_size " ^ name))
+      | `Ok size ->
+        ASSETS.read assets name 0 (Int64.to_int size) >>= function
+        | `Error (ASSETS.Unknown_key _) ->
+          fail (Failure ("read_assets " ^ name))
+        | `Ok bufs -> return (Cstruct.copyv bufs)
+    in
 
-  let respond_string body =
-    Server.respond_string ~status:`OK ~body ()
-
-  let start c fs http =
+    let read_slides name =
+      SLIDES.size slides name >>= function
+      | `Error (SLIDES.Unknown_key _) ->
+        fail (Failure ("read_slides_size " ^ name))
+      | `Ok size ->
+        SLIDES.read slides name 0 (Int64.to_int size) >>= function
+        | `Error (SLIDES.Unknown_key _) ->
+          fail (Failure ("read_slides " ^ name))
+        | `Ok bufs -> return (Cstruct.copyv bufs)
+    in
 
     let callback conn_id ?body req =
-      let path = Uri.path (Server.Request.uri req) in
-      C.log_s c (Printf.sprintf "Got a request for %s\n" path) >>= fun () ->
-      FS.size fs path                    >>> fun s ->
-      FS.read fs path 0 (Int64.to_int s) >>> fun v ->
-      let r = String.concat "" (List.map Cstruct.to_string v) in
-      respond_string r
+      let path = Uri.path (S.Request.uri req) in
+      let path_elem =
+        let rec remove_empty_tail = function
+          | [] | [""] -> []
+          | hd::tl    -> hd :: remove_empty_tail tl
+        in
+        remove_empty_tail (Re_str.(split_delim (regexp_string "/") path))
+      in
+      C.log_s c (sp "URL: '%s'" path)
+      >> try_lwt
+        read_assets path >>= fun body ->
+        S.respond_string ~status:`OK ~body ()
+      with
+      | Failure m ->
+        Printf.printf "EXN: '%s'%!" m;
+        Slides.dispatch read_slides req path_elem
     in
 
     let conn_closed conn_id () =
-      Printf.eprintf "conn %s closed\n%!" (Cohttp.Connection.to_string conn_id)
+      (* XXX shouldn't i be able to use the Console logging here?
+            C.log_s c (sp "conn %s closed\n%!" (Cohttp.Connection.to_string conn_id))
+      *)
+      Printf.printf "conn %s closed\n%!" (Cohttp.Connection.to_string conn_id)
     in
 
     let spec = {
-      Server.callback;
+      S.callback;
       conn_closed;
     } in
     http spec
