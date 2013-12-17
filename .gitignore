@@ -1,29 +1,10 @@
 .DS_Store
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
-.*.swp
-**/dist
+
+src/main.ml
 
 src/_build/
+
+src/mir-main
 src/main.native
-src/myocamlbuild.ml
-src/main.ml
-src/main.obuild
-src/backend.ml
-src/filesystem_static.ml
-src/mir-www
 
-files/slides/**/js
-files/slides/**/css
-files/slides/**/plugin
-files/slides/**/lib
-files/slides/**/complete.html
-
-/src/mir-main
+assets/reveal-2.4.0/css/reveal.css
