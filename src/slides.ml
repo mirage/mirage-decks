@@ -430,18 +430,26 @@ let asset path fs deck =
   CL.Server.respond_string ~headers ~status:`OK ~body ()
 *)
 
-let dispatch read_slides req = function
-  | [] | [""] | ["index.html"] ->
-    (* slides index page *)
-    Server.respond_string
-      ~status:`Not_found
-      ~body:"<p>slides index page</p>" ()
-  | deck :: [] | deck :: [ "index.html" ] ->
-    (* deck index *)
-    Server.respond_string
-      ~status:`Not_found
-      ~body:"<p>deck index page</p>" ()
-  | deck :: tl ->
-    Server.respond_string
-      ~status:`Not_found
-      ~body:"<p>slide</p>" ()
+
+let index ~req ~path =
+  let open Cowabloga in
+  let content =
+    let decks = List.map (fun d ->
+      <:html<
+        <li><a href="$str:d.permalink$">$str:d.title$ ($str:d.venue$)</a></li>
+      >>) decks
+    in
+    <:html< <ul>$list:decks$</ul> >>
+  in
+  let title = "openmirage.org | decks" in
+  Foundation.(page ~body:(body ~title ~headers:[] ~content))
+
+let dispatch read_slides req path =
+  let body = match path with
+      | [] | [""] | ["index.html"] -> index ~req ~path
+      | deck :: [] | deck :: [ "index.html" ] ->
+        Cow.Html.to_string <:html< <p>deck index</p> >>
+      | deck :: tl ->
+        Cow.Html.to_string <:html< <p>slide</p> >>
+  in
+  Server.respond_string ~status:`OK ~body ()

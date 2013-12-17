@@ -1,3 +1,4 @@
+(*
 (** based off mirage-skeleton/static_website *)
 
 open Printf
@@ -22,7 +23,7 @@ let rec remove_empty_tail = function
 let not_found req =
   CL.Server.respond_not_found ~uri:(CL.Request.uri req) ()
 
-type handler = 
+type handler =
   | Static of string
   | Slides of Slides.deck
   | Assets of Slides.deck
@@ -37,10 +38,10 @@ let handler_to_string = function
   | Unknown s -> sprintf "Unknown(%s)" s
 
 let urlmap =
-  let decks = 
+  let decks =
       List.map (fun d -> (["/" ^ d.Slides.permalink ^ "/"], Slides d)) Slides.decks
   in
-  let assets = 
+  let assets =
     List.map (fun d ->
       (List.map (fun a -> "/" ^ d.Slides.permalink ^ "/" ^ a) d.Slides.assets), Assets d)
       Slides.decks
@@ -49,24 +50,28 @@ let urlmap =
   @ (List.map (fun (p, h) -> ([p], Static h)) Reveal.urls)
   @ decks
   @ assets
-    
-let _ = 
-  printf "[urlmap] : %s\n%!" 
+
+let _ =
+  printf "[urlmap] : %s\n%!"
     (String.concat "\n\t"
-       (List.map (fun (ps, h) -> 
+       (List.map (fun (ps, h) ->
          sprintf "%s -> %s" (String.concat "; " ps) (handler_to_string h))
           urlmap))
-    
-let resolve path = 
+
+let resolve path =
   try
-    let (_, f) = 
+    let (_, f) =
       List.find (fun (ps, _) -> List.exists (fun p -> path=p) ps) urlmap
     in
     f
-  with Not_found -> Unknown path  
+  with Not_found -> Unknown path
+*)
 
-(* main callback function *)
-let t conn_id ?body req =
+let t req = function
+  | [] | [""] | [""; "index.html" ] ->
+    dyn ~headers:["content-type", "text/html"] req
+
+
   let path = Uri.path (CL.Request.uri req) in
   let path_elem =
     remove_empty_tail (Re_str.(split_delim (regexp_string "/") path))
@@ -76,30 +81,29 @@ let t conn_id ?body req =
     OS.Devices.find_kv_ro "static" >>=
     function
     | None   -> Printf.printf "fatal error, static kv_ro not found\n%!"; exit 1
-    | Some x -> return x 
+    | Some x -> return x
   in
   (* determine if it is static or dynamic content *)
   match_lwt static#read ("/static" ^ path) with
   | Some body ->
      lwt body = string_of_stream body in
      CL.Server.respond_string ~status:`OK ~body ()
-  | None -> 
+  | None ->
       let h = resolve path in
       printf "[dispatch] '%s' -> %s\n%!" path (handler_to_string h);
       match h with
-        | Static filename -> 
+        | Static filename ->
             (static#read filename >>= function
               | Some b ->
                   lwt body = string_of_stream b in
                   CL.Server.respond_string ~status:`OK ~body ()
               | None -> not_found req
             )
-        
-        | Dynamic handler -> 
+
+        | Dynamic handler ->
             let body = handler path req in
             CL.Server.respond_string ~status:`OK ~body ()
-        
+
         | Slides deck -> Slides.slides path static deck
         | Assets deck -> Slides.asset path static deck
         | Unknown _ -> not_found req
-        
