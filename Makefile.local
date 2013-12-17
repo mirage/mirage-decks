@@ -40,10 +40,6 @@ run: build
 clean:
 	$(MIRAGE) clean src/config.ml --no-opam
 
-# fs:
-# 	crunch -o src/filesystem_static.ml -name "static" ./files
-
-
 setup-clean: distclean
 	$(RM) Makefile.bak
 	oasis setup-clean

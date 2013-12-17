@@ -1,9 +1,15 @@
 open Mirage
 
-let static =
+let assets =
   Driver.KV_RO {
-    KV_RO.name = "files";
-    dirname    = "../files";
+    KV_RO.name = "assets";
+    dirname    = "../assets";
+  }
+
+let slides =
+  Driver.KV_RO {
+    KV_RO.name = "slides";
+    dirname    = "../slides";
   }
 
 let http =
@@ -15,5 +21,5 @@ let http =
 
 let () =
   Job.register [
-    "Site.Main", [Driver.console; static; http]
+    "Site.Main", [Driver.console; assets; slides; http]
   ]
