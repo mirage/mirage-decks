@@ -16,7 +16,7 @@
  *)
 
 open Mirage_types.V1
-open Cohttp_mirage
+open Cohttp
 open Cow
 
 module Deck = struct
@@ -409,14 +409,3 @@ let deck ~req ~path =
   in
   let title = "openmirage.org | decks" in
   Foundation.(page ~body:(body ~title ~headers:[] ~content))
-
-let dispatch read_slides req path =
-  Printf.(eprintf "DISPATCH: %s\n%!"
-            (sprintf "[ %s ]"
-               (String.concat "; " (List.map (fun c -> sprintf "'%s'" c) path))
-            ));
-  let body = match path with
-    | [] | [""] | ["index.html"] -> index ~req ~path
-    | d :: [] | d :: [ "index.html" ] -> deck ~req ~path:d
-  in
-  Server.respond_string ~status:`OK ~body ()

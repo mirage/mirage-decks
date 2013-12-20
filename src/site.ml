@@ -22,8 +22,10 @@ let (|>) x f = f x
 let sp = Printf.sprintf
 
 module Main
-  (C: CONSOLE) (ASSETS: KV_RO) (SLIDES: KV_RO) (S: Cohttp_lwt.Server) =
-struct
+         (C: CONSOLE)
+         (ASSETS: KV_RO)
+         (SLIDES: KV_RO)
+         (S: Cohttp_lwt.Server) = struct
 
   let start c assets slides http =
     let read_assets name =
@@ -48,20 +50,35 @@ struct
         | `Ok bufs -> return (Cstruct.copyv bufs)
     in
 
+    let dispatch read_slides req path =
+      Printf.(
+        eprintf "DISPATCH: %s\n%!"
+          (sprintf "[ %s ]"
+             (String.concat "; " (List.map (fun c -> sprintf "'%s'" c) path))
+          ));
+      let body = match path with
+        | [] | [""] | ["index.html"] -> Slides.index ~req ~path
+        | d :: [] | d :: [ "index.html" ] -> Slides.deck ~req ~path:d
+      in
+      S.respond_string ~status:`OK ~body ()
+    in
+
     let callback conn_id ?body req =
       let path = req |> S.Request.uri |> Uri.path in
       let cpts = path
-          |> Re_str.(split_delim (regexp_string "/"))
-          |> List.filter (fun e -> e <> "")
+                 |> Re_str.(split_delim (regexp_string "/"))
+                 |> List.filter (fun e -> e <> "")
       in
       C.log_s c (sp "URL: '%s'" path)
-      >> try_lwt
-        read_assets path >>= fun body ->
-        S.respond_string ~status:`OK ~body ()
-      with
-      | Failure m ->
-        Printf.printf "EXN: '%s'\n%!" m;
-        Slides.dispatch read_slides req cpts
+      >> (
+        try_lwt
+          read_assets path >>= fun body ->
+          S.respond_string ~status:`OK ~body ()
+        with
+        | Failure m ->
+          Printf.printf "EXN: '%s'\n%!" m;
+          dispatch read_slides req cpts
+      )
     in
 
     let conn_closed conn_id () =
