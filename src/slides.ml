@@ -403,13 +403,64 @@ let index ~req ~path =
   let title = "openmirage.org | decks" in
   return (Foundation.(page ~body:(body ~title ~headers:[] ~content)))
 
+module Reveal = struct
+
+  let t ~deck ~slides =
+    let open Deck in
+    let speakers = deck.speakers
+           |> List .map (fun p -> p.Atom.name)
+           |> String.concat ", "
+    in
+    let description = deck.venue in
+    let title =
+      "openmirage.org | decks | " ^ " [ " ^ deck.permalink ^ " ]" ^ deck.title
+    in
+    <:html<
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+          <title>$str:title$</title>
+          <meta name="description" content="$str:description$" />
+          <meta name="author" content="$str:speakers$" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+          <meta name="viewport"
+                content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+          <link rel="stylesheet" href="/reveal-2.4.0/css/reveal.min.css"> </link>
+          <link rel="stylesheet" href="/reveal-2.4.0/lib/css/zenburn.css"> </link>
+          <link rel="stylesheet" href="/reveal-2.4.0/css/print/pdf.css"
+                media="print"> </link>
+          <link rel="stylesheet" href="/reveal-2.4.0/css/theme/horizon.css" id="theme"
+                media="all"> </link>
+
+          <!--[if lt IE 9]>
+              <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
+          <![endif]-->
+        </head>
+        <body>
+          <div class="reveal">
+            <div class="slides">
+              $slides$
+              <div id="footer"><div id="slide-number"> </div></div>
+            </div>
+          </div>
+
+          <script src="/reveal-2.4.0/lib/js/head.min.js"> </script>
+          <script src="/reveal-2.4.0/js/reveal.min.js"> </script>
+          <script src="/reveal-2.4.0/js/init.js"> </script>
+        </body>
+      </html>
+    >>
+
+end
+
 let deck readf ~req ~path =
   let open Cowabloga in
   let d = List.find (fun d -> d.Deck.permalink = path) decks in
-
-  let title =
-    "openmirage.org | decks | " ^ d.Deck.permalink ^ " | " ^ d.Deck.title
+  lwt body =
+    readf (d.Deck.permalink ^ "/index.html") >>= fun slides ->
+    return (Reveal.t d slides)
   in
-  lwt s = readf d.Deck.permalink in
-  lwt content = return (<:html< $str:s$ >>) in
-  return (Foundation.(page ~body:(body ~title ~headers:[] ~content)))
+  return (Foundation.page ~body)

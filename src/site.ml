@@ -22,10 +22,7 @@ let (|>) x f = f x
 let sp = Printf.sprintf
 
 module Main
-         (C: CONSOLE)
-         (ASSETS: KV_RO)
-         (SLIDES: KV_RO)
-         (S: Cohttp_lwt.Server) = struct
+  (C: CONSOLE) (ASSETS: KV_RO) (SLIDES: KV_RO) (S: Cohttp_lwt.Server) = struct
 
   let start c assets slides http =
     let read_assets name =
@@ -47,7 +44,9 @@ module Main
         SLIDES.read slides name 0 (Int64.to_int size) >>= function
         | `Error (SLIDES.Unknown_key _) ->
           fail (Failure ("read_slides " ^ name))
-        | `Ok bufs -> return (Cstruct.copyv bufs)
+        | `Ok bufs ->
+          let slides = Cstruct.copyv bufs in
+          return (Cow.Html.of_string slides)
     in
 
     let dispatch read_slides req path =
@@ -56,13 +55,21 @@ module Main
           (sprintf "[ %s ]"
              (String.concat "; " (List.map (fun c -> sprintf "'%s'" c) path))
           ));
-      lwt body = match path with
+
+      let page =
+        let respond_ok body =
+          lwt body = body in
+          S.respond_string ~status:`OK ~body ()
+        in
+        match path with
         | [] | [""] | ["index.html"] ->
-          Slides.index ~req ~path
+          Slides.index ~req ~path |> respond_ok
         | d :: [] | d :: [ "index.html" ] ->
-          Slides.deck read_slides ~req ~path:(d ^ "/index.html")
+          Printf.eprintf "slides!  '%s'\n%!" d;
+          Slides.deck read_slides ~req ~path:d |> respond_ok
+        | x -> S.respond_not_found ~uri:(S.Request.uri req) ()
       in
-      S.respond_string ~status:`OK ~body ()
+      page
     in
 
     let callback conn_id ?body req =
