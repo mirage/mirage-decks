@@ -456,11 +456,15 @@ module Reveal = struct
 
 end
 
-let deck readf ~req ~path =
+let deck readf ~deck =
   let open Cowabloga in
-  let d = List.find (fun d -> d.Deck.permalink = path) decks in
+  let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   lwt body =
     readf (d.Deck.permalink ^ "/index.html") >>= fun slides ->
-    return (Reveal.t d slides)
+    return (Reveal.t d (Cow.Html.of_string slides))
   in
   return (Foundation.page ~body)
+
+let asset readf ~deck ~asset =
+  let d = List.find (fun d -> d.Deck.permalink = deck) decks in
+  readf (d.Deck.permalink ^ "/" ^ asset)

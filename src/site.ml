@@ -44,9 +44,7 @@ module Main
         SLIDES.read slides name 0 (Int64.to_int size) >>= function
         | `Error (SLIDES.Unknown_key _) ->
           fail (Failure ("read_slides " ^ name))
-        | `Ok bufs ->
-          let slides = Cstruct.copyv bufs in
-          return (Cow.Html.of_string slides)
+        | `Ok bufs -> return (Cstruct.copyv bufs)
     in
 
     let dispatch read_slides req path =
@@ -62,11 +60,12 @@ module Main
           S.respond_string ~status:`OK ~body ()
         in
         match path with
-        | [] | [""] | ["index.html"] ->
+        | [] | [""] ->
           Slides.index ~req ~path |> respond_ok
-        | d :: [] | d :: [ "index.html" ] ->
-          Printf.eprintf "slides!  '%s'\n%!" d;
-          Slides.deck read_slides ~req ~path:d |> respond_ok
+        | deck :: [] ->
+          Slides.deck read_slides ~deck |> respond_ok
+        | deck :: asset :: [] ->
+          Slides.asset read_slides ~deck ~asset |> respond_ok
         | x -> S.respond_not_found ~uri:(S.Request.uri req) ()
       in
       page
@@ -79,7 +78,8 @@ module Main
                  |> List.filter (fun e -> e <> "")
       in
       C.log_s c (sp "URL: '%s'" path)
-      >> try_lwt
+      >>
+      try_lwt
         read_assets path >>= fun body ->
         S.respond_string ~status:`OK ~body ()
       with
