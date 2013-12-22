@@ -56,9 +56,11 @@ module Main
           (sprintf "[ %s ]"
              (String.concat "; " (List.map (fun c -> sprintf "'%s'" c) path))
           ));
-      let body = match path with
-        | [] | [""] | ["index.html"] -> Slides.index ~req ~path
-        | d :: [] | d :: [ "index.html" ] -> Slides.deck ~req ~path:d
+      lwt body = match path with
+        | [] | [""] | ["index.html"] ->
+          Slides.index ~req ~path
+        | d :: [] | d :: [ "index.html" ] ->
+          Slides.deck read_slides ~req ~path:(d ^ "/index.html")
       in
       S.respond_string ~status:`OK ~body ()
     in
@@ -70,15 +72,13 @@ module Main
                  |> List.filter (fun e -> e <> "")
       in
       C.log_s c (sp "URL: '%s'" path)
-      >> (
-        try_lwt
-          read_assets path >>= fun body ->
-          S.respond_string ~status:`OK ~body ()
-        with
-        | Failure m ->
-          Printf.printf "EXN: '%s'\n%!" m;
-          dispatch read_slides req cpts
-      )
+      >> try_lwt
+        read_assets path >>= fun body ->
+        S.respond_string ~status:`OK ~body ()
+      with
+      | Failure m ->
+        Printf.printf "CATCH: '%s'\n%!" m;
+        dispatch read_slides req cpts
     in
 
     let conn_closed conn_id () =

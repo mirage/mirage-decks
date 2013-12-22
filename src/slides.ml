@@ -18,6 +18,7 @@
 open Mirage_types.V1
 open Cohttp
 open Cow
+open Lwt
 
 module Deck = struct
   module Date = struct
@@ -400,12 +401,15 @@ let index ~req ~path =
     <:html< <ul>$list:decks$</ul> >>
   in
   let title = "openmirage.org | decks" in
-  Foundation.(page ~body:(body ~title ~headers:[] ~content))
+  return (Foundation.(page ~body:(body ~title ~headers:[] ~content)))
 
-let deck ~req ~path =
+let deck readf ~req ~path =
   let open Cowabloga in
-  let content =
-    <:html< <p>XXX</p> >>
+  let d = List.find (fun d -> d.Deck.permalink = path) decks in
+
+  let title =
+    "openmirage.org | decks | " ^ d.Deck.permalink ^ " | " ^ d.Deck.title
   in
-  let title = "openmirage.org | decks" in
-  Foundation.(page ~body:(body ~title ~headers:[] ~content))
+  lwt s = readf d.Deck.permalink in
+  lwt content = return (<:html< $str:s$ >>) in
+  return (Foundation.(page ~body:(body ~title ~headers:[] ~content)))
