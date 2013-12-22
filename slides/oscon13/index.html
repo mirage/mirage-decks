@@ -412,17 +412,14 @@
   <section data-markdown="">
     <script type="text/template">
       ## DNS Server Code
-
       <pre style="box-shadow: none">
-        <code class="ocaml">
-
-          let main () =
-            lwt zones = read key "zones" "zone.db" in
-            Net.Manager.bind (fun mgr dev ->
-              let src = `any_addr, 53 in
-              Dns.Server.listen dev src zones
-            )
-
+        <code style="font-size: 32px; line-height: 1.35; padding-left: 1em">
+let main () =
+  lwt zones = read key "zones" "zone.db" in
+  Net.Manager.bind (fun mgr dev ->
+    let src = `any_addr, 53 in
+    Dns.Server.listen dev src zones
+  )
         </code>
       </pre>
 
@@ -432,7 +429,7 @@
       </p>
 
       <p class="fragment bubble "
-         style="top: -420pt; left:400pt; width:10em">
+         style="top: -430pt; left:400pt; width:10em">
         Statically evaluated configuration
       </p>
 
