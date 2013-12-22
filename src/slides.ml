@@ -415,6 +415,7 @@ module Reveal = struct
     let title =
       "openmirage.org | decks | " ^ " [ " ^ deck.permalink ^ " ]" ^ deck.title
     in
+    let base = "/" ^ deck.permalink ^ "/" in
     <:html<
       <html lang="en">
         <head>
@@ -434,6 +435,8 @@ module Reveal = struct
                 media="print"> </link>
           <link rel="stylesheet" href="/reveal-2.4.0/css/theme/horizon.css" id="theme"
                 media="all"> </link>
+
+          <base href=$str:base$ />
 
           <!--[if lt IE 9]>
               <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
