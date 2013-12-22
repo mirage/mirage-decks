@@ -37,6 +37,9 @@ let http =
   }
 
 let () =
+  add_to_opam_packages ["cow"; "cowabloga"];
+  add_to_ocamlfind_libraries ["cow.syntax"; "cowabloga"];
+
   Job.register [
     "Site.Main", [Driver.console; assets; slides; http]
   ]
