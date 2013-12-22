@@ -43,7 +43,7 @@ module Deck = struct
       <:xml<
         <span class="date">
           <span class="month">$xml_of_month d.month$</span>
-          <span class="day">$int:d.day$</span>
+          <span class="day">$int:d.day$</span>,
           <span class="year">$int:d.year$</span>
         </span>
       >>
