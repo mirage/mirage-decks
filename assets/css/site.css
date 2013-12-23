@@ -17,5 +17,10 @@
  */
 
 #footer {
+    z-index: 98;
+}
+.reveal a {
+    position: relative;
+    float: left;
     z-index: 99;
 }
