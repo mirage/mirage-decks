@@ -1,5 +1,6 @@
-PKG mirage
-PKG lwt
+PKG cohttp
 PKG cow
 PKG cowabloga
-REC
+PKG cstruct
+PKG lwt
+PKG mirage

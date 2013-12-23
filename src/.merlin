@@ -1,6 +1,1 @@
-PKG mirage
-PKG lwt
-PKG cow
-PKG cowabloga
-PKG cstruct
 REC
