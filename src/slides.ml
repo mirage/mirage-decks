@@ -188,6 +188,7 @@ module Reveal = struct
                 media="print"> </link>
           <link rel="stylesheet" href="/reveal-2.4.0/css/theme/horizon.css" id="theme"
                 media="all"> </link>
+          <link rel="stylesheet" href="/css/site.css" media="all"> </link>
 
           <base href=$str:base$ />
 
@@ -199,7 +200,11 @@ module Reveal = struct
           <div class="reveal">
             <div class="slides">
               $slides$
-              <div id="footer"><div id="slide-number"> </div></div>
+              <div id="footer">
+
+              <a id="index" href="/"> <img src="/img/home.png" /> </a>
+                <div id="slide-number"> </div>
+              </div>
             </div>
           </div>
 

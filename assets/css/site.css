@@ -16,33 +16,6 @@
  * 02111-1307, USA.
  */
 
-.row.top-bar {
-    max-width: 62.5rem;
-}
-
-.top-bar > [data-magellan-expedition] {
-    /* small-10 small-offset-1 */
-    min-width: 66.66667%;
-    width: 66.66667%;
-    max-width: 66.66667%;
-    z-index: 50;
-}
-
-.top-bar > [data-magellan-expedition].fixed {
-    background: #eee;
-    width: 66.66667%;
-    max-width: 62.5rem;
-    margin-left: 10%;
-    z-index: 50;
-}
-
-pre>code {
-  font-size: 0.65rem;
-  font-weight: normal;
-  overflow-x: scroll;
-}
-
-footer div.text-right[role="copyright"] {
-  background: #eee;
-  padding: 1ex 1em 1ex 0;
+#footer {
+    z-index: 99;
 }
