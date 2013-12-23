@@ -1,14 +1,14 @@
 <section data-markdown class="title center">
   <script type="text/template">
     # __Mirage__: <br />Extreme Specialisation of<br /> Cloud Appliances
-
-    Anil Madhavapeddy <small>University of Cambridge</small> [@avsm](http://twitter.com/avsm)
+	
+    Anil Madhavapeddy <small>University of Cambridge</small> [@avsm](http://twitter.com/avsm) 
     <br />
-    Richard Mortier <small>University of Nottingham</small> [@mort\_\_\_](http://twitter.com/mort___)
+    Richard Mortier <small>University of Nottingham</small> [@mort\_\_\_](http://twitter.com/mort___) 
     <br />
     Dave Scott <small>Citrix Systems R&D</small> [@mugofsoup](http://twitter.com/mugofsoup)
     <br />
-
+    
     <div style="font-size: 24pt">
       [http://openmirage.org](http://openmirage.org)
       <br />
@@ -25,18 +25,18 @@
       ## The Cloud Threat Model
 
       <img src="threat-model.png" />
-
+      
       <div class="fragment">
-        <img class="arrow"
+        <img class="arrow" 
              style="top: -320pt; left: 290pt; height: 6cm;"
              src="red-arrow.png" />
-
-        <img class="arrow"
+        
+        <img class="arrow" 
              style="top: -190pt; left: 180pt; height: 6cm;
-                    -webkit-transform: rotate(-90deg)"
+                    -webkit-transform: rotate(-90deg)" 
              src="red-arrow.png" />
-
-        <img class="arrow"
+        
+        <img class="arrow" 
              style="top: -190pt; left: 180pt; height: 6cm;
                     -webkit-transform: rotate(-90deg);"
              src="red-arrow.png" />
@@ -58,41 +58,41 @@
 
       <img src="threat-model.png" />
 
-
+       
       <div class="fragment">
-        <img class="arrow"
-             style="top: -320pt; left: 290pt; height: 6cm"
+        <img class="arrow" 
+             style="top: -320pt; left: 290pt; height: 6cm" 
              src="green-arrow.png" />
-
-        <img class="arrow"
-             style="top: -190pt; left: 180pt; height: 6cm;
+         
+        <img class="arrow" 
+             style="top: -190pt; left: 180pt; height: 6cm; 
+                    -webkit-transform: rotate(-90deg)" 
+             src="red-arrow.png" />
+        
+        <img class="arrow" 
+             style="top: -190pt; left: 180pt; height: 6cm; 
                     -webkit-transform: rotate(-90deg)"
              src="red-arrow.png" />
 
-        <img class="arrow"
-             style="top: -190pt; left: 180pt; height: 6cm;
-                    -webkit-transform: rotate(-90deg)"
-             src="red-arrow.png" />
-
-        <p class="bubble  right"
+        <p class="bubble  right" 
            style="top: -440pt; left: -5pt; width: 11em">
           Type-safety in the application layer defeats several external threats.
         </p>
      </div>
-
-      <div class="fragment">
-        <img class="arrow"
-             style="top: -482pt; left: 307pt; height: 6cm;
+        
+      <div class="fragment">        
+        <img class="arrow" 
+             style="top: -482pt; left: 307pt; height: 6cm; 
                     -webkit-transform: rotate(-90deg)"
              src="green-arrow.png" />
-
+      
         <p class="bubble "
            style="top: -730pt; left: 370pt; width: 12em">
           Type-safety in the kernel will make all external I/O safe, but at what
           cost?
         </p>
       </div>
-
+      
     </script>
   </section>
 
@@ -115,19 +115,19 @@
       ## Key Design Insights
 
       <img src="threat-model.png" />
-
+        
       <p class="bubble"
          style="top: -200pt; left: 120pt; width: 15em">
         The hypervisor gifts us a stable hardware interface. Cures the curse
-        of library operating systems!
+        of library operating systems! 
       </p>
-
+      
       <p class="bubble left"
          style="top: -460pt; left: 400pt; width: 12em">
         Protocol-level compatibility between special-purpose cloud
-        appliances, e.g. a webserver, a database VM.
+        appliances, e.g. a webserver, a database VM. 
       </p>
-
+      
     </script>
   </section>
 </section>
@@ -141,16 +141,16 @@
       <p class="fragment bubble "
          style="top: -270pt; left: 190pt; width: 15.5em">
         Virtual machines are UNIX processes &ldquo;done right&rdquo; on the
-        cloud.
-      </p>
+        cloud. 
+      </p>   
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
       ## Contributions
-
-      + The unikernel approach to building single-purpose appliances
+      
+      + The unikernel approach to building single-purpose appliances        
         + Library OS + high level programming interface
         + Single-address space layout
 
@@ -177,7 +177,7 @@
       Compiler has to stop at userspace.
 
       Every level has a different API, calling convention, and privilege requirements.
-
+      
     </script>
   </section>
 
@@ -274,7 +274,7 @@
       real-time._
     </script>
   </section>
-
+  
   <section data-markdown>
     <script type="text/template">
       ## How Large is Large?
@@ -282,7 +282,7 @@
       <img src="kloc.png">
       </script>
     </section>
-
+    
     <section data-markdown>
       <script type="text/template">
         ## Event Driven Co-Threads
@@ -291,7 +291,7 @@
 
         _Garbage collected heap management is more efficient in a single
         address-space environment. Thread latency can be reduced by eliminating
-        multiple levels of scheduling._
+        multiple levels of scheduling._ 
 
       </script>
     </section>
@@ -304,19 +304,19 @@
 
         _Threads are heap allocated values, so benefit from the faster garbage
         collection cycle in the Mirage Xen version, and the scheduler can be
-        overridden by application-specific needs._
+        overridden by application-specific needs._ 
 
       </script>
     </section>
-
+    
     <section data-markdown>
       <script type="text/template">
         ## Block Storage
 
         <img style="max-width: 78%;" src="block-storage.png" />
-
+        
         _Additionally, reading __from__ a Mirage NAS-like storage VM achieves
-        942MiB/s buffered, and 1.8GiB/s unbuffered._
+        942MiB/s buffered, and 1.8GiB/s unbuffered._ 
 
         </script>
       </section>
@@ -336,7 +336,7 @@
 
         </script>
       </section>
-
+      
       <section data-markdown>
         <script type="text/template">
           ## Memory Management <small>Specialised!</small>
@@ -349,7 +349,7 @@
             Compiled native source code and runtime statically linked with random
             start offset.
           </p>
-
+          
           <p class="fragment bubble  right"
              style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
             IO memory is mapped into a reserved area and can be distinguished.
@@ -379,18 +379,18 @@
             + Single address-space and no dynamic loading
               + `W^X` address space
               + Address offsets are randomized at compile-time
-
+    
             + Dropping page table privileges:
               + Added freeze hypercall called just before app starts
               + Subsequent page table updates are rejected by Xen
               + Exception for I/O mappings if they are non-exec and do not modify
-                any existing mappings
-
+                any existing mappings 
+            
             <br />
 
             + Very easy in unikernels due to focus on _compile-time specialisation_
             instead of _run-time complexity_
-
+            
           </script>
         </section>
       </section>
@@ -400,13 +400,13 @@
           <script type="text/template">
             ## Macrobenchmarks
 
-            We have implemented several larger appliances.
+            We have implemented several larger appliances. 
 
             We discuss _deens_, our DNS server in detail here.
 
             We also have:
 
-            + a simple webserver,
+            + a simple webserver, 
             + an OpenFlow Switch, and
             + an OpenFlow Controller.
 
@@ -419,17 +419,17 @@
 
             <pre style="box-shadow: none">
               <code style="font-size:32px; line-height:1.1">
-
+                
             let main () =
-              lwt zones = read key "zones" "zone.db" in
+              lwt zones = read key "zones" "zone.db" in 
               Net.Manager.bind (fun mgr dev ->
                 let src = `any_addr, 53 in
-                Dns.Server.listen dev src zones
+                Dns.Server.listen dev src zones   
               )
 
               </code>
             </pre>
-
+            
             <p class="fragment bubble "
                style="top: -360pt; left:70pt; width:10em">
               Cooperative threads as functions
@@ -449,7 +449,7 @@
                style="top:-310pt; left:0pt; width: 10em">
               Libraries directly link to network stack
             </p>
-
+            
           </script>
         </section>
 
@@ -472,7 +472,7 @@
             <img style="max-width: 85%" src="dns-deens.png" />
 
             _Comparing against __Mirage__ appliance, with and without simple
-            memoisation. This __algorithmic__ optimisation added just 6 lines of code._
+            memoisation. This __algorithmic__ optimisation added just 6 lines of code._ 
           </script>
         </section>
 
@@ -481,13 +481,13 @@
             ## DNS Server Performance <small>C/miniOS</small>
 
             <img style="max-width: 85%" src="dns-all.png" />
-
+            
             _A rudimentary C-based appliance linking NSD directly against
             MiniOS. Poor user-space library performance
             vastly outweighs language effects._
           </script>
         </section>
-
+        
         <section data-markdown>
           <script type="text/template">
             ## Scaling <small>via Parallel Instances</small>
@@ -501,7 +501,7 @@
 
           </script>
         </section>
-
+        
         <section data-markdown>
           <script type="text/template">
             ## Openflow Controller
@@ -510,7 +510,7 @@
 
               _OpenFlow controller is competitive with NOX (C++), but much higher
               level. Applications can link directly against the switch to route their
-              data._
+              data._ 
 
             </script>
           </section>
@@ -537,16 +537,16 @@
           <section data-markdown>
             <script type="text/template">
               ## Pure OCaml Code <small>[github.com/mirage](http://github.com/mirage)</small>
-
+              
               + Device drivers
                 + netfront, blkfront
                 + xenstore
-
+              
               + Networking/Communication
                 + IP/TCP/UDP/DHCP/DNS(SEC) (v4)
                 + HTTP, SSH, OpenFlow (controller/switch)
                 + vchan IPC
-
+              
               + Storage
                 + NFS, FAT32
                 + <http://arakoon.org> distributed k/v store
@@ -561,9 +561,9 @@
               + Website, <http://www.openmirage.org>
               + Code, <http://github.com/mirage>
               + O'Reilly OCaml book, <http://realworldocaml.org>
-
+              
               <br />
-
+              
               + OPAM package manager
                 + Allows constraints to be applied to package installation
                 + __Very__ useful for managing assembly of the many small OCaml
@@ -583,7 +583,7 @@
                 + Formal method integration easier or harder?
               + __Coordination &mdash; planetary scale computers__
                 + Resources are highly elastic now.
-                + How to coordinate a million microkernels?
+                + How to coordinate a million microkernels? 
                 + &ldquo;Warehouse Scale Computing&rdquo;
               + __Library Applications &mdash; where are they?__
                 + Irminsule, a git-like functional distributed database
@@ -608,25 +608,25 @@
                 + Joint with University of Cambridge & Imperial College
                 + Network virtualisation for millions of microkernel apps
                 + Need Mirage hackers, network protocol experts, graph theorists
-
+              
             </script>
           </section>
 
           <section data-markdown>
             <script type="text/template">
               ## <http://twitter.com/mort___>
-
-              <p style="font-size: 48px; font-weight: bold;
-                        display: float; margin-top: 3em; padding: 2ex 2em;
+              
+              <p style="font-size: 48px; font-weight: bold; 
+                        display: float; margin-top: 3em; padding: 2ex 2em; 
                         text-align: center">
                 Thanks! Questions?
               </p>
 
               <p style="font-size: 40px;
-                        display: float; padding: 2ex 2em;
+                        display: float; padding: 2ex 2em; 
                         text-align: center">
                 (...and please rate the talk!)
-              </p>
+              </p>      
 
             </script>
           </section>

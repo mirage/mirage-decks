@@ -2,7 +2,7 @@
   <script type="text/template">
     # My Other Internet is a<br />__Mirage__
 
-    Anil Madhavapeddy <small>University of Cambridge</small> [@avsm](http://twitter.com/avsm)
+    Anil Madhavapeddy <small>University of Cambridge</small> [@avsm](http://twitter.com/avsm) 
     <br />
     <div style="font-size: 24pt">
       [http://openmirage.org](http://openmirage.org)
@@ -87,22 +87,22 @@
              src="red-arrow.png" />
 
         <img class="arrow"
-             style="top: -190pt; left: 180pt; height: 6cm;
+             style="top: -190pt; left: 180pt; height: 6cm; 
                     -webkit-transform: rotate(-90deg)"
              src="red-arrow.png" />
 
-        <p class="bubble  right"
+        <p class="bubble  right" 
            style="top: -440pt; left: -5pt; width: 11em">
           Type-safety in the application layer defeats several external threats.
         </p>
      </div>
-
-      <div class="fragment">
-        <img class="arrow"
-             style="top: -482pt; left: 307pt; height: 6cm;
+        
+      <div class="fragment">        
+        <img class="arrow" 
+             style="top: -482pt; left: 307pt; height: 6cm; 
                     -webkit-transform: rotate(-90deg)"
              src="green-arrow.png" />
-
+      
         <p class="bubble "
            style="top: -730pt; left: 370pt; width: 12em">
           Type-safety in the kernel will make all external I/O safe, but at what
@@ -308,7 +308,7 @@
 
         _Garbage collected heap management is more efficient in a single
         address-space environment. Thread latency can be reduced by eliminating
-        multiple levels of scheduling._
+        multiple levels of scheduling._ 
 
       </script>
     </section>
@@ -321,7 +321,7 @@
 
         _Threads are heap allocated values, so benefit from the faster garbage
         collection cycle in the Mirage Xen version, and the scheduler can be
-        overridden by application-specific needs._
+        overridden by application-specific needs._ 
 
       </script>
     </section>
@@ -333,7 +333,7 @@
         <img style="max-width: 78%;" src="block-storage.png" />
 
         _Additionally, reading __from__ a Mirage NAS-like storage VM achieves
-        942MiB/s buffered, and 1.8GiB/s unbuffered._
+        942MiB/s buffered, and 1.8GiB/s unbuffered._ 
 
         </script>
       </section>
@@ -401,7 +401,7 @@
               + Added freeze hypercall called just before app starts
               + Subsequent page table updates are rejected by Xen
               + Exception for I/O mappings if they are non-exec and do not modify
-                any existing mappings
+                any existing mappings 
 
             <br />
 
@@ -417,13 +417,13 @@
           <script type="text/template">
             ## Macrobenchmarks
 
-            We have implemented several larger appliances.
+            We have implemented several larger appliances. 
 
             We discuss _deens_, our DNS server in detail here.
 
             We also have:
 
-            + a simple webserver,
+            + a simple webserver, 
             + an OpenFlow Switch, and
             + an OpenFlow Controller.
 
@@ -438,10 +438,10 @@
               <code style="font-size:32px; line-height:1.1">
 
             let main () =
-              lwt zones = read key "zones" "zone.db" in
+              lwt zones = read key "zones" "zone.db" in 
               Net.Manager.bind (fun mgr dev ->
                 let src = `any_addr, 53 in
-                Dns.Server.listen dev src zones
+                Dns.Server.listen dev src zones   
               )
 
               </code>
@@ -489,7 +489,7 @@
             <img style="max-width: 85%" src="dns-deens.png" />
 
             _Comparing against __Mirage__ appliance, with and without simple
-            memoisation. This __algorithmic__ optimisation added just 6 lines of code._
+            memoisation. This __algorithmic__ optimisation added just 6 lines of code._ 
           </script>
         </section>
 
@@ -527,7 +527,7 @@
 
               _OpenFlow controller is competitive with NOX (C++), but much higher
               level. Applications can link directly against the switch to route their
-              data._
+              data._ 
 
             </script>
           </section>
@@ -600,7 +600,7 @@
                 + Formal method integration easier or harder?
               + __Coordination &mdash; planetary scale computers__
                 + Resources are highly elastic now.
-                + How to coordinate a million microkernels?
+                + How to coordinate a million microkernels? 
                 + &ldquo;Warehouse Scale Computing&rdquo;
               + __Library Applications &mdash; where are they?__
                 + Irminsule, a git-like functional distributed database
@@ -615,7 +615,7 @@
               + OCaml Labs, Computer Laboratory, Cambridge, UK
                 + <http://ocaml.io>
                 + Real world functional programming with OCaml
-                + Lots of internship opportunities
+                + Lots of internship opportunities 
 
               <br />
 
@@ -632,8 +632,8 @@
             <script type="text/template">
               ## <http://twitter.com/avsm>
 
-              <p style="font-size: 48px; font-weight: bold;
-                        display: float; margin-top: 3em; padding: 2ex 2em;
+              <p style="font-size: 48px; font-weight: bold; 
+                        display: float; margin-top: 3em; padding: 2ex 2em; 
                         text-align: center">
                 Thanks! Questions?
               </p>

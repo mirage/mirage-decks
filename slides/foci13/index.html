@@ -4,11 +4,11 @@
 
     Charalampos Rotsos, Heidi Howard, David Sheets, <br />
     Richard Mortier,<small>University of Nottingham, UK</small><br />
-    __Anil Madhavapeddy__,<small><anil@recoil.org></small><br />
+    __Anil Madhavapeddy__,<small><anil@recoil.org></small><br /> 
     Amir Chaudhry, Jon Crowcroft
-
+    
     <small>University of Cambridge, UK</small>
-
+    
     [http://anil.recoil.org/papers/2013-foci-slides.pdf](
       http://anil.recoil.org/papers/2013-foci-slides.pdf)
   </script>
@@ -18,36 +18,36 @@
   <section data-markdown>
     <script type="text/template">
       ## Introduction
-
+      
       + What is the challenges?
       + What is our approach?
       + What are the constraints?
     </script>
   </section>
-
+  
   <section data-markdown>
     <script type="text/template">
       ## The Challenge
-
+      
       Centralised cloud-hosted services are convenient but create risks:
-
+      
       + Loss of data and services due to service shutdown<br />
         (whether for commercial or political reasons)
       + Global passive observers recording <del>&nbsp;all&nbsp;</del> 1.6%
         traffic
       + Inefficient, inconvenient synchronisation in mobile and offline
         environments
-
+      
       <div class="fragment block">
-
+        
         <h3>Our Approach</h3>
-
+        
         <p>
           Use DNS to enable _personal clouds_, making it easy to deploy apps
           that function securely and efficiently on our own device network,
           across the Internet edge
         </p>
-
+      
       </div>
     </script>
   </section>
@@ -55,22 +55,22 @@
   <section data-markdown>
     <script type="text/template">
       ## Constraints
-
+      
       + __Compatibility__. Can't require users to change all their apps
       + __Security__. Need to control access to our personal devices: <br />
         requires _authentication_ and _confidentiality_
       + __Connectivity__. Need to be able to interconnect devices whatever
         network is available
-
+    
       <div class="fragment block">
         <h3>Data vs Orchestration</h3>
-
+        
         <p>
           What's the minimal network infrastructure that we can deploy to
           represent individual users on the core Internet?
         </p>
       </div>
-
+      
     </script>
   </section>
 
@@ -80,7 +80,7 @@
 
       + Network Address Translation (NAT) killed end-to-end IP addressing
         ![Impact of NAT](./nat.png)
-
+      
       + Packet filtering makes tunnel setup dynamic <br />
         (Full-cone NAT? Is UDP blocked? IPSec?)
       + Redirection and proxies (e.g., WiFi hotspots) require traversal
@@ -129,7 +129,7 @@
 
       <div class="fragment block">
         <h3>can't we have stronger DNS bindings between edge devices?</h3>
-
+        
         <p>
           <code class="bind">
             # host ipad.home.anil.recoil.org<br />
@@ -148,14 +148,14 @@
       by the query source so the nearest CDN node can serve data
 
       Indeed,
-
+ 
       > "DNS servers can play games. As long as they appear to deliver a
       > syntactically correct response to every query, they can fiddle the
       > semantics."<span style="padding-left: 1em">&mdash; RFC3234</span>
-
+      
       <div class="fragment block">
         <h3>Names for The Average Joe</h3>
-
+        
         <p>
           But there's nowhere for __individuals__ to easily host their own
           little name services online. Change this, and things improve.
@@ -171,7 +171,7 @@
       __Authentication__. DNSSEC provides a standard, deployed security model
       where identity chains are established by trusting the registrars or
       other trust anchors
-
+      
       __Confidentiality__. DNSCurve adds confidentiality, repudiability,
       integrity, and authentication to name resolution through an Elliptic
       Curve Cryptographic tunnel; can trade compatibility against overhead,
@@ -224,7 +224,7 @@
       + Seamless operation with extra host support (e.g., OpenFlow)
     </script>
   </section>
-
+ 
   <section data-markdown>
     <script type="text/template">
       ## Identity Management
@@ -234,7 +234,7 @@
       + TSIG/SIG0 DNSSEC signatures used to demonstrate subnamespace authority
       + Manage keys for SSH, PGP, *Curve in parallel
       + Provides low-friction revocation, making roll-over usable by mortals
-        (?)
+        (?) 
     </script>
   </section>
 
@@ -244,7 +244,7 @@
       ## Programming Model
 
       Currently: Sockets API decouples <tt>getaddrinfo(3)</tt> from
-      <tt>connect(2)</tt>, so less powerful
+      <tt>connect(2)</tt>, so less powerful 
 
       &nbsp;
 
@@ -255,7 +255,7 @@
       + Signpost nodes select environmentally optimal routes via long-poll
         DNSCurve updates
       + Signpost resolver proxies DNS on <tt>localhost</tt>, late-binding
-        lookups only when traffic is sent (e.g., <tt>TCP SYN</tt>)
+        lookups only when traffic is sent (e.g., <tt>TCP SYN</tt>) 
     </script>
   </section>
 
@@ -265,13 +265,13 @@
 
       __Resolution__. Looking to more efficient path establishment than "try
       everything at once"
-
+      
       __Identity__. Automating key derivation & management
 
       __Programming__. Exploring details, e.g., need to patch OpenSSL, provide
       local OpenFlow switch; more in _The Case for Reconfigurable I/O
       Channels_, RESoLVE 2012 (<http://anil.recoil.org/papers/>)
-
+      
       __Implementation__. May be easier to support applications that use
       sockets via lightweight VMs (e.g., <http://openmirage.org> with
       _Message Switch_, <http://github.com/djs55/message-switch>)
@@ -307,7 +307,7 @@
         (http://anil.recoil.org/papers/2010-iswp-dustclouds.pdf)
 
       + Dissent (<http://dedis.cs.yale.edu/2010/anon/>), simplifying its use
-        by Average Joe
+        by Average Joe 
     </script>
   </section>
 
@@ -315,13 +315,13 @@
     <script type="text/template">
       ## __Thank you!__
 
-      <p style="font-size: 54px; font-weight: bold;
-                display: float; margin-top: 3em; padding: 2ex 1em;
+      <p style="font-size: 54px; font-weight: bold; 
+                display: float; margin-top: 3em; padding: 2ex 1em; 
                 text-align: right">
         Questions?
       </p>
 
-      https://github.com/signposts
+      https://github.com/signposts 
 
       https://github.com/mirage
     </script>
