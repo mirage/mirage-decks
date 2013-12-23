@@ -158,7 +158,7 @@ let index ~req ~path =
 
 module Reveal = struct
 
-  let t ~deck ~slides =
+  let head ~deck =
     let open Deck in
     let speakers = deck.speakers
            |> List .map (fun p -> p.Atom.name)
@@ -170,7 +170,6 @@ module Reveal = struct
     in
     let base = "/" ^ deck.permalink ^ "/" in
     <:html<
-      <html lang="en">
         <head>
           <meta charset="utf-8" />
           <title>$str:title$</title>
@@ -196,23 +195,6 @@ module Reveal = struct
               <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
           <![endif]-->
         </head>
-        <body>
-          <div class="reveal">
-            <div class="slides">
-              $slides$
-              <div id="footer">
-
-              <a id="index" href="/"> <img src="/img/home.png" /> </a>
-                <div id="slide-number"> </div>
-              </div>
-            </div>
-          </div>
-
-          <script src="/reveal-2.4.0/lib/js/head.min.js"> </script>
-          <script src="/reveal-2.4.0/js/reveal.min.js"> </script>
-          <script src="/reveal-2.4.0/js/init.js"> </script>
-        </body>
-      </html>
     >>
 
 end
@@ -220,11 +202,12 @@ end
 let deck readf ~deck =
   let open Cowabloga in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  lwt body =
-    readf (d.Deck.permalink ^ "/index.html") >>= fun slides ->
-    return (Reveal.t d (Cow.Html.of_string slides))
-  in
-  return (Foundation.page ~body)
+  lwt preamble = readf "templates/preamble.html" in
+  let head = Cow.Html.to_string (Reveal.head d) in
+  lwt bodyh = readf "templates/reveal-2.4.0-header.html" in
+  lwt body = readf (d.Deck.permalink ^ "/index.html") in
+  lwt bodyf = readf "templates/reveal-2.4.0-footer.html" in
+  return (preamble ^ head ^ bodyh ^ body ^ bodyf)
 
 let asset readf ~deck ~asset =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
