@@ -23,4 +23,5 @@ opam --version
 opam --git-version
 
 eval `opam config env`
+opam install mirage
 make MODE=$MIRAGE_BACKEND
