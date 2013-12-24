@@ -1,8 +1,0 @@
-true: package(fd-send-recv)
-true: package(cohttp.mirage)
-true: package(uri)
-true: package(re)
-true: package(cow)
-true: package(lwt)
-"slides.ml": package(cow.syntax)
-not <filesystem_static.*>: syntax(camlp4o), package(lwt.syntax)

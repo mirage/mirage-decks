@@ -1,380 +1,216 @@
+(*
+ * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ *)
+
+open Mirage_types.V1
+open Cohttp
 open Cow
 open Lwt
-open Printf
 
-module CL = Cohttp_lwt_mirage
-module C = Cohttp
+let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 
-open Unix_files
+module Deck = struct
+  module Date = struct
 
-type date = {
-  year: int;
-  month: int;
-  day: int;
-} with xml
+    type t = {
+      year: int;
+      month: int;
+      day: int;
+    } with xml
 
-let date (year, month, day) = { year; month; day }
+    let t (year, month, day) = { year; month; day }
 
-module Html = struct
+    let to_html d =
+      let xml_of_month m =
+        let str = match m with
+          | 1  -> "Jan" | 2  -> "Feb" | 3  -> "Mar" | 4  -> "Apr"
+          | 5  -> "May" | 6  -> "Jun" | 7  -> "Jul" | 8  -> "Aug"
+          | 9  -> "Sep" | 10 -> "Oct" | 11 -> "Nov" | 12 -> "Dec"
+          | _  -> "???" in
+        <:xml<$str:str$>>
+      in
+      <:xml<
+        <span class="date">
+          <span class="month">$xml_of_month d.month$</span>
+          <span class="day">$int:d.day$</span>,
+          <span class="year">$int:d.year$</span>
+        </span>
+      >>
 
-  let html_t = ["content-type", "text/html"]
-  let atom_t = ["content-type", "application/atom+xml; charset=UTF-8"]
-  let octets_t = ["content-type", "application/octet-stream"]
-  
-  let wrap ?(cl="") ?(id="") ?(literals=[]) tag body =
-    let cl = match cl with "" -> "" | s -> sprintf "class='%s'" s in
-    let id = match id with "" -> "" | s -> sprintf "id='%s'" s in
-    sprintf "<%s>\n\
-  %s\n\
-  </%s>\n" (String.concat " " ([ tag; id; cl ] @ literals)) body tag
+    let compare {year=ya;month=ma;day=da} {year=yb;month=mb;day=db} =
+      match ya - yb with
+      | 0 -> (match ma - mb with
+          | 0 -> da - db
+          | n -> n
+        )
+      | n -> n
 
-  let html = wrap "html" ~literals:["lang=en"]
-  let head ?cl ?id ?literals body = wrap "head" ?cl:None ?id:None ?literals:None body
-  
-  let body = wrap "body"
+  end
 
-  let title = wrap "title"
-  let div = wrap "div"
+  type t = {
+    permalink: string;
+    given: Date.t;
+    speakers: Atom.author list;
+    venue: string;
+    title: string;
+  }
 
-  let ul = wrap "ul"
-  let li = wrap "li"
-  
-  let link ?cl ?id u s = wrap "a" ~literals:[ (sprintf "href='%s'" u) ] s
+  let compare a b = Date.compare b.given a.given
+
 end
 
-type deck = {
-  permalink: string;
-  given: date;
-  speakers: Atom.author list;
-  venue: string;
-  title: string;
-  assets: string list;
-}
+let decks =
+  let open Deck in
+  [{ permalink = "clweds13";
+     given = Date.t (2013, 12, 04);
+     speakers = [People.anil];
+     venue = "Wednesday Seminar, Cambridge Computer Laboratory";
+     title = "MirageOS: a functional library operating system";
+   };
 
-let decks = [
-  { permalink = "clweds13";
-    given = date (2013, 12, 04);
-    speakers = [People.anil];
-    venue = "Cambridge Computer Laboratory";
-    title = "MirageOS: a functional library operating system";
-    assets = [ "arch2.png";
-               "modules1.png";
-               "modules2.png";
-               "modules3.png"; "packages.png";
-               "uniarch1a.png";
-               "uniarch1b.png";
-               "uniarch1c.png";
-               "uniarch1d.png";
-               "architecture.png"; "rwo.jpg";
-               "block-storage.png"; "architecture-xapi-project.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
- 
-  { permalink = "cam13";
-    given = date (2013, 12, 03);
-    speakers = [People.anil];
-    venue = "Cambridge Computer Laboratory";
-    title = "Modular Operating System Construction";
-    assets = [ "arch2.png";
-               "modules1.png";
-               "modules2.png";
-               "modules3.png";
-               "uniarch1a.png";
-               "uniarch1b.png";
-               "uniarch1c.png";
-               "uniarch1d.png";
-               "architecture.png"; "rwo.jpg";
-               "block-storage.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
- 
-  { permalink = "fb13";
-    given = date (2013, 11, 14);
-    speakers = [People.anil];
-    venue = "Facebook HQ";
-    title = "MirageOS: compiling functional library operating systems";
-    assets = [ "arch2.png";
-               "modules1.png";
-               "modules2.png";
-               "modules3.png";
-               "uniarch1a.png";
-               "uniarch1b.png";
-               "uniarch1c.png";
-               "uniarch1d.png";
-               "architecture.png"; "rwo.jpg";
-               "block-storage.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
- 
-  { permalink = "qcon13";
-    given = date (2013, 11, 11);
-    speakers = [People.anil];
-    venue = "QCon 2013";
-    title = "MirageOS: developer tools of tomorrow";
-    assets = [ "arch2.png";
-               "modules1.png";
-               "modules2.png";
-               "modules3.png";
-               "uniarch1a.png";
-               "uniarch1b.png";
-               "uniarch1c.png";
-               "uniarch1d.png";
-               "architecture.png"; "rwo.jpg";
-               "block-storage.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
- 
-  { permalink = "xensummit13";
-    given = date (2013, 10, 25);
-    speakers = [People.anil; People.jon];
-    venue = "XenSummit 2013";
-    title = "MirageOS and XAPI 2013 Project Update";
-    assets = [ "arch2.png";
-               "modules1.png";
-               "modules2.png";
-               "modules3.png"; "uniarch.png"; "jon-smallbw1.jpg";
-               "architecture-xapi-project.png";
-               "architecture.png";
-               "block-storage.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
-  { permalink = "oscon13";
-    given = date (2013, 07, 26);
-    speakers = [People.mort; People.anil];
-    venue = "OSCON 2013";
-    title = "Mirage: Extreme Specialisation of Cloud Appliances";
-    assets = [ "arch2.png";
-               "block-storage.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
-  { permalink = "jslondon13";
-    given = date (2013, 08, 29);
-    speakers = [People.anil];
-    venue = "Jane Street London 2013";
-    title = "My Other Internet is a Mirage";
-    assets = [ "arch2.png";
-               "block-storage.png";
-               "boot-time.png";
-               "cothreads.png";
-               "deens-performance.png";
-               "dns-all.png";
-               "dns-baseline.png";
-               "dns-deens.png";
-               "green-arrow.png";
-               "key-insight.png";
-               "kloc.png";
-               "memory-model.png";
-               "openflow-controller.png";
-               "red-arrow.png";
-               "scaling-instances.png";
-               "specialisation.png";
-               "thread-scaling.png";
-               "threat-model-dom0.png";
-               "threat-model.png";
-               "vapps-current.png";
-               "vapps-specialised-1.png";
-               "vapps-specialised-2.png";
-               "vapps-specialised-3.png";
-               "zero-copy-io.png";
-             ];
-  };
-  { permalink = "foci13";
-    given = date (2013, 08, 12);
-    speakers = [People.anil];
-    venue = "FOCI 2013";
-    title = "Lost in the Edge: Finding Your Way with Signposts";
-    assets = [ "nat.png"; "arch.png" ];
-  };
+   { permalink = "cam13";
+     given = Date.t (2013, 12, 03);
+     speakers = [People.anil];
+     venue = "ACS Lecture, Cambridge Computer Laboratory";
+     title = "Modular Operating System Construction";
+   };
 
-]
+   { permalink = "fb13";
+     given = Date.t (2013, 11, 14);
+     speakers = [People.anil];
+     venue = "Facebook HQ";
+     title = "MirageOS: compiling functional library operating systems";
+   };
 
-let exists x = 
-  List.exists (fun e -> x = "/slides/" ^ e.permalink) decks
+   { permalink = "fop13";
+     given = Date.t (2013, 11, 29);
+     speakers = [People.mort];
+     venue = "FP Lab 2013";
+     title = "MirageOS: Tomorrow's Cloud, Today";
+   };
 
-let index ~(path:string) ~(req:Cohttp.Request.t) = 
-  let title p = p.title ^ " (" ^ p.venue ^ ")" in
-  Html.(
-    "<!doctype html>\n"
-    ^ (html 
-         ((head 
-             ("<meta charset='utf-8'>\n"
-              ^ title "Mirage Decks :: Index"
-             ))
-          ^ (body 
-               (ul
-                  (String.concat "\n" 
-                     (List.map (fun p -> li (link (p.permalink ^ "/") p.title)) 
-                        decks))
-               ))
-         ))
-    )
+   { permalink = "qcon13";
+     given = Date.t (2013, 11, 11);
+     speakers = [People.anil];
+     venue = "QCon 2013";
+     title = "MirageOS: developer tools of tomorrow";
+   };
 
-let string_of_stream s = Lwt_stream.to_list s >|= Cstruct.copyv
+   { permalink = "xensummit13";
+     given = Date.t (2013, 10, 25);
+     speakers = [People.anil; People.jon];
+     venue = "XenSummit 2013";
+     title = "MirageOS and XAPI 2013 Project Update";
+   };
 
-let slides path fs deck = 
-  let template s vs = 
-    (* XXX. grim hack. abstract this. *)
-    let title_re = Re_str.regexp "{{ title }}" in
-    let replaced = Re_str.replace_first title_re deck.title s in
-    replaced
+   { permalink = "oscon13";
+     given = Date.t (2013, 07, 26);
+     speakers = [People.mort; People.anil];
+     venue = "OSCON 2013";
+     title = "Mirage: Extreme Specialisation of Cloud Appliances";
+   };
+
+   { permalink = "jslondon13";
+     given = Date.t (2013, 08, 29);
+     speakers = [People.anil];
+     venue = "Jane Street London 2013";
+     title = "My Other Internet is a Mirage";
+   };
+
+   { permalink = "foci13";
+     given = Date.t (2013, 08, 12);
+     speakers = [People.anil];
+     venue = "FOCI 2013";
+     title = "Lost in the Edge: Finding Your Way with Signposts";
+   };
+  ]
+
+let index ~req ~path =
+  let open Cowabloga in
+  let content =
+    let decks = decks
+                |> List.sort Deck.compare
+                |> List.map (fun d ->
+                    <:html<
+                      <li>
+                        $Deck.Date.to_html d.Deck.given$
+                        <a href="$str:d.Deck.permalink$">
+                          $str:d.Deck.title$ ($str:d.Deck.venue$)
+                        </a>
+                      </li>
+                    >>)
+    in
+    <:html< <ul>$list:decks$</ul> >>
   in
+  let title = "openmirage.org | decks" in
+  return (Foundation.(page ~body:(body ~title ~headers:[] ~content)))
 
-  lwt h = match_lwt fs#read Reveal.header with
-    | Some b -> string_of_stream b
-    | None -> failwith "[slides] render: header"
-  in 
-  lwt f = match_lwt fs#read Reveal.footer with
-    | Some b -> string_of_stream b
-    | None -> failwith "[slides] render: footer"
-  in 
-  let path = "/slides" ^ path ^ "index.html" in
-  printf "[slides] path:'%s'\n%!" path;
-  lwt content = match_lwt fs#read path with
-    | Some b -> string_of_stream b
-    | None -> failwith "[slides] render: content"
-  in 
-  let body = (template h deck) ^ content ^ f in
-  CL.Server.respond_string ~status:`OK ~body ()
+module Reveal = struct
 
-let asset path fs deck = 
-  let path = "/slides" ^ path in
-  printf "[asset] path:'%s'\n%!" path;
-  lwt body = match_lwt fs#read path with
-    | Some b -> string_of_stream b
-    | None -> failwith "[slides] render: asset"
-  in 
-  let headers = C.Header.of_list Html.octets_t in
-  CL.Server.respond_string ~headers ~status:`OK ~body ()
+  let head ~deck =
+    let open Deck in
+    let speakers = deck.speakers
+           |> List .map (fun p -> p.Atom.name)
+           |> String.concat ", "
+    in
+    let description = deck.venue in
+    let title =
+      "openmirage.org | decks | " ^ " [ " ^ deck.permalink ^ " ]" ^ deck.title
+    in
+    let base = "/" ^ deck.permalink ^ "/" in
+    <:html<
+        <head>
+          <meta charset="utf-8" />
+          <title>$str:title$</title>
+          <meta name="description" content="$str:description$" />
+          <meta name="author" content="$str:speakers$" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
+          <meta name="viewport"
+                content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+          <link rel="stylesheet" href="/reveal-2.4.0/css/reveal.min.css"> </link>
+          <link rel="stylesheet" href="/reveal-2.4.0/lib/css/zenburn.css"> </link>
+          <link rel="stylesheet" href="/reveal-2.4.0/css/print/pdf.css"
+                media="print"> </link>
+          <link rel="stylesheet" href="/reveal-2.4.0/css/theme/horizon.css" id="theme"
+                media="all"> </link>
+          <link rel="stylesheet" href="/css/site.css" media="all"> </link>
+
+          <base href=$str:base$ />
+
+          <!--[if lt IE 9]>
+              <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
+          <![endif]-->
+        </head>
+    >>
+
+end
+
+let deck readf ~deck =
+  let open Cowabloga in
+  let d = List.find (fun d -> d.Deck.permalink = deck) decks in
+  lwt preamble = readf "templates/preamble.html" in
+  let head = Cow.Html.to_string (Reveal.head d) in
+  lwt bodyh = readf "templates/reveal-2.4.0-header.html" in
+  lwt body = readf (d.Deck.permalink ^ "/index.html") in
+  lwt bodyf = readf "templates/reveal-2.4.0-footer.html" in
+  return (preamble ^ head ^ bodyh ^ body ^ bodyf)
+
+let asset readf ~deck ~asset =
+  let d = List.find (fun d -> d.Deck.permalink = deck) decks in
+  readf (d.Deck.permalink ^ "/" ^ asset)

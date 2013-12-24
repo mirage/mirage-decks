@@ -1,0 +1,17 @@
+OASISFormat: 0.3
+Name:        mirage-decks
+Version:     0.9.1
+Synopsis:    http://decks.openmirage.org website
+Authors:     Richard Mortier
+License:     ISC
+Plugins:     META (0.3), DevFiles (0.3)
+BuildTools:  ocamlbuild
+
+Executable mirage_decks
+  CompiledObject:     best
+  Path:               lib
+  MainIs:             main.ml
+  Install:            false
+  BuildDepends:
+    mirage, cmdliner, cohttp, cohttp.mirage-unix, cow, cow.syntax,
+    cowabloga, omd
