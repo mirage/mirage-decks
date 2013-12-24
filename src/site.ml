@@ -16,7 +16,7 @@
  *)
 
 open Lwt
-module S = Cohttp_mirage.Server
+module S = HTTP.Server
 module C = Console
 
 let (|>) x f = f x
