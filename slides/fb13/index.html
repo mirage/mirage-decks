@@ -1,12 +1,12 @@
 <section data-markdown class="title center">
   <script type="text/template">
     # Compiling Functional Library Operating Systems with MirageOS <br />
-	
-    Anil Madhavapeddy, University of Cambridge, [@avsm](http://twitter.com/avsm) 
+
+    Anil Madhavapeddy, University of Cambridge, [@avsm](http://twitter.com/avsm)
     <br />
     At Facebook HQ, Nov 2013
     <br />
-    
+
     <div style="font-size: 24pt">
       __Homepage__: [http://openmirage.org](http://openmirage.org)
       <br />
@@ -23,7 +23,7 @@
   <section data-markdown>
     <script type="text/template">
     ## These Slides Are...
-    
+
     - Hosted on a <b>small Xen microkernel written in statically
     type-safe OCaml</b>, including the device drivers and TCP stack.
     - The application code was just a <b>couple of source files</b>, with
@@ -45,18 +45,18 @@
       ## The Cloud Threat Model
 
       <img src="threat-model.png" />
-      
+
       <div class="fragment">
-        <img class="arrow" 
+        <img class="arrow"
              style="top: -320pt; left: 290pt; height: 6cm;"
              src="red-arrow.png" />
-        
-        <img class="arrow" 
+
+        <img class="arrow"
              style="top: -190pt; left: 180pt; height: 6cm;
-                    -webkit-transform: rotate(-90deg)" 
+                    -webkit-transform: rotate(-90deg)"
              src="red-arrow.png" />
-        
-        <img class="arrow" 
+
+        <img class="arrow"
              style="top: -190pt; left: 180pt; height: 6cm;
                     -webkit-transform: rotate(-90deg);"
              src="red-arrow.png" />
@@ -78,41 +78,41 @@
 
       <img src="threat-model.png" />
 
-       
+
       <div class="fragment">
-        <img class="arrow" 
-             style="top: -320pt; left: 290pt; height: 6cm" 
+        <img class="arrow"
+             style="top: -320pt; left: 290pt; height: 6cm"
              src="green-arrow.png" />
-         
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm; 
-                    -webkit-transform: rotate(-90deg)" 
-             src="red-arrow.png" />
-        
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm; 
+
+        <img class="arrow"
+             style="top: -190pt; left: 180pt; height: 6cm;
                     -webkit-transform: rotate(-90deg)"
              src="red-arrow.png" />
 
-        <p class="bubble  right" 
+        <img class="arrow"
+             style="top: -190pt; left: 180pt; height: 6cm;
+                    -webkit-transform: rotate(-90deg)"
+             src="red-arrow.png" />
+
+        <p class="bubble  right"
            style="top: -440pt; left: -5pt; width: 11em">
           Type-safety in the application layer defeats several external threats.
         </p>
      </div>
-        
-      <div class="fragment">        
-        <img class="arrow" 
-             style="top: -482pt; left: 307pt; height: 6cm; 
+
+      <div class="fragment">
+        <img class="arrow"
+             style="top: -482pt; left: 307pt; height: 6cm;
                     -webkit-transform: rotate(-90deg)"
              src="green-arrow.png" />
-      
+
         <p class="bubble "
            style="top: -730pt; left: 370pt; width: 12em">
           Type-safety in the kernel will make all external I/O safe, but at what
           cost?
         </p>
       </div>
-      
+
     </script>
   </section>
 
@@ -135,19 +135,19 @@
       ## Key Design Insights
 
       <img src="threat-model.png" />
-        
+
       <p class="bubble"
          style="top: -200pt; left: 120pt; width: 15em">
         The hypervisor gifts us a stable hardware interface. Cures the curse
-        of library operating systems! 
+        of library operating systems!
       </p>
-      
+
       <p class="bubble left"
          style="top: -460pt; left: 400pt; width: 12em">
         Protocol-level compatibility between special-purpose cloud
-        appliances, e.g. a webserver, a database VM. 
+        appliances, e.g. a webserver, a database VM.
       </p>
-      
+
     </script>
   </section>
 </section>
@@ -161,8 +161,8 @@
       <p class="fragment bubble "
          style="top: -270pt; left: 190pt; width: 15.5em">
         Virtual machines are UNIX processes &ldquo;done right&rdquo; on the
-        cloud. 
-      </p>   
+        cloud.
+      </p>
     </script>
   </section>
 
@@ -175,11 +175,11 @@
       Compiler has to stop at userspace.
 
       Every level has a different API, calling convention, and privilege requirements.
-      
+
     </script>
   </section>
 
-   
+
   <section data-markdown>
     <script type="text/template">
       ## Specialised Virtual Appliances
@@ -207,8 +207,8 @@
   <section data-markdown>
     <script type="text/template">
       ## Contributions
-      
-      + The unikernel approach to building single-purpose appliances        
+
+      + The unikernel approach to building single-purpose appliances
         + Library OS + high level programming interface
         + Single-address space layout
 
@@ -236,14 +236,14 @@
       ## MirageOS Workflow
 
       - Write a normal bit of OCaml source code.
- 
+
       ```
 let main () =
-	lwt zones = read key "zones" "zone.db" in
-	Net.Manager.bind (fun mgr dev ->
-		let src = `any_addr, 53 in
-		Dns.Server.listen dev src zones
-	)
+    lwt zones = read key "zones" "zone.db" in
+    Net.Manager.bind (fun mgr dev ->
+        let src = `any_addr, 53 in
+        Dns.Server.listen dev src zones
+    )
 ```
     </script>
   </section>
@@ -331,7 +331,7 @@ $ xl create -c mirage-www.conf
       ## Modularizing the OS
 
       <img src="modules2.png" />
-      
+
     </script>
   </section>
 
@@ -357,7 +357,7 @@ $ xl create -c mirage-www.conf
       - **[mirage/ocaml-xen-block-driver](https://github.com/mirage/ocaml-xen-block-driver)** - Unix/Xen Blkfront/Blkback.
       - **[mirage/ocaml-vchan](https://github.com/mirage/ocaml-vchan)** - Unix/Xen Vchan shared memory transport.
       - **[mirage/mirage-platform](https://github.com/mirage/mirage-platform)** - UNIX/Xen/NS3 versions of timer, shared memory and event channels.
-      
+
     </script>
   </section>
 
@@ -396,7 +396,7 @@ end
       ## MirageOS Screencast
 
 <iframe width="600" height="400" src="//www.youtube.com/embed/2Mx8Bd5JYyo" frameborder="0" allowfullscreen></iframe>
-      
+
     </script>
   </section>
   <section data-markdown>
@@ -470,7 +470,7 @@ end
       real-time._
     </script>
   </section>
-  
+
   <section data-markdown>
     <script type="text/template">
       ## How Large is Large?
@@ -478,7 +478,7 @@ end
       <img src="kloc.png">
       </script>
     </section>
-    
+
     <section data-markdown>
       <script type="text/template">
         ## Event Driven Co-Threads
@@ -487,7 +487,7 @@ end
 
         _Garbage collected heap management is more efficient in a single
         address-space environment. Thread latency can be reduced by eliminating
-        multiple levels of scheduling._ 
+        multiple levels of scheduling._
 
       </script>
     </section>
@@ -500,19 +500,19 @@ end
 
         _Threads are heap allocated values, so benefit from the faster garbage
         collection cycle in the Mirage Xen version, and the scheduler can be
-        overridden by application-specific needs._ 
+        overridden by application-specific needs._
 
       </script>
     </section>
-    
+
     <section data-markdown>
       <script type="text/template">
         ## Block Storage
 
         <img style="max-width: 78%;" src="block-storage.png" />
-        
+
         _Additionally, reading __from__ a Mirage NAS-like storage VM achieves
-        942MiB/s buffered, and 1.8GiB/s unbuffered._ 
+        942MiB/s buffered, and 1.8GiB/s unbuffered._
 
         </script>
       </section>
@@ -532,7 +532,7 @@ end
 
         </script>
       </section>
-      
+
       <section data-markdown>
         <script type="text/template">
           ## Memory Management <small>Specialised!</small>
@@ -545,7 +545,7 @@ end
             Compiled native source code and runtime statically linked with random
             start offset.
           </p>
-          
+
           <p class="fragment bubble  right"
              style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
             IO memory is mapped into a reserved area and can be distinguished.
@@ -575,18 +575,18 @@ end
             + Single address-space and no dynamic loading
               + `W^X` address space
               + Address offsets are randomized at compile-time
-    
+
             + Dropping page table privileges:
               + Added freeze hypercall called just before app starts
               + Subsequent page table updates are rejected by Xen
               + Exception for I/O mappings if they are non-exec and do not modify
-                any existing mappings 
-            
+                any existing mappings
+
             <br />
 
             + Very easy in unikernels due to focus on _compile-time specialisation_
             instead of _run-time complexity_
-            
+
           </script>
         </section>
       </section>
@@ -596,13 +596,13 @@ end
           <script type="text/template">
             ## Macrobenchmarks
 
-            We have implemented several larger appliances. 
+            We have implemented several larger appliances.
 
             We discuss _deens_, our DNS server in detail here.
 
             We also have:
 
-            + a simple webserver, 
+            + a simple webserver,
             + an OpenFlow Switch, and
             + an OpenFlow Controller.
 
@@ -615,17 +615,17 @@ end
 
             <pre style="box-shadow: none">
               <code style="font-size:32px; line-height:1.1">
-                
+
             let main () =
-              lwt zones = read key "zones" "zone.db" in 
+              lwt zones = read key "zones" "zone.db" in
               Net.Manager.bind (fun mgr dev ->
                 let src = `any_addr, 53 in
-                Dns.Server.listen dev src zones   
+                Dns.Server.listen dev src zones
               )
 
               </code>
             </pre>
-            
+
             <p class="fragment bubble "
                style="top: -360pt; left:70pt; width:10em">
               Cooperative threads as functions
@@ -645,7 +645,7 @@ end
                style="top:-310pt; left:0pt; width: 10em">
               Libraries directly link to network stack
             </p>
-            
+
           </script>
         </section>
 
@@ -668,7 +668,7 @@ end
             <img style="max-width: 85%" src="dns-deens.png" />
 
             _Comparing against __Mirage__ appliance, with and without simple
-            memoisation. This __algorithmic__ optimisation added just 6 lines of code._ 
+            memoisation. This __algorithmic__ optimisation added just 6 lines of code._
           </script>
         </section>
 
@@ -677,13 +677,13 @@ end
             ## DNS Server Performance <small>C/miniOS</small>
 
             <img style="max-width: 85%" src="dns-all.png" />
-            
+
             _A rudimentary C-based appliance linking NSD directly against
             MiniOS. Poor user-space library performance
             vastly outweighs language effects._
           </script>
         </section>
-        
+
         <section data-markdown>
           <script type="text/template">
             ## Scaling <small>via Parallel Instances</small>
@@ -697,7 +697,7 @@ end
 
           </script>
         </section>
-        
+
         <section data-markdown>
           <script type="text/template">
             ## Openflow Controller
@@ -706,7 +706,7 @@ end
 
               _OpenFlow controller is competitive with NOX (C++), but much higher
               level. Applications can link directly against the switch to route their
-              data._ 
+              data._
 
             </script>
           </section>
@@ -805,7 +805,7 @@ end
     <section data-markdown>
       <script type="text/template">
        ## Pure OCaml Code <small>[github.com/mirage](http://github.com/mirage)</small>
-              
+
        + **Device drivers**
           + xenstore, ring, grant tables, boot loader
           + netfront, blkfront, vchan
@@ -832,9 +832,9 @@ end
 
       <br />
 
-      - O'Reilly **Real World OCaml** released: 
+      - O'Reilly **Real World OCaml** released:
           - **<http://realworldocaml.org>**
-      - OPAM now has **over 1800 packages** (530 unique) 
+      - OPAM now has **over 1800 packages** (530 unique)
           - lots of enthusiasm from the OCaml community!
     </script>
   </section>
@@ -884,8 +884,8 @@ end
       + Website, <http://www.openmirage.org>
       + Code, <http://github.com/mirage>
       + O'Reilly OCaml book, <http://realworldocaml.org>
-     
-      <br />         
+
+      <br />
 
       + All development open and on GitHub:
          + **<https://github.com/mirage>**
@@ -895,7 +895,3 @@ end
    </section>
 
 </section>
-
-
-
-

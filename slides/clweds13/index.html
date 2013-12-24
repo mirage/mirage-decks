@@ -1,12 +1,12 @@
 <section data-markdown class="title center">
   <script type="text/template">
     # MirageOS: Modular Systems Programming<br />
-	
+
     Anil Madhavapeddy, University of Cambridge
     <br />
     Computer Laboratory Wednesday Seminar Series, Dec 2013
     <br />
-    
+
     <div style="font-size: 24pt">
       __Homepage__: [http://openmirage.org](http://openmirage.org)
       <br />
@@ -23,15 +23,15 @@
   <section data-markdown>
     <script type="text/template">
     ## Systems Programming Today
-    
+
     > It’s considered good programming practice to focus
     > on compositionality: build software out of small, well-defined
-    > modules that combine to give rise to other modules with different 
+    > modules that combine to give rise to other modules with different
     > behaviors.
     >
     > **This is simply too difficult to do in distributed systems. Why?**
 
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 *-- Marius Eriksen, Principal Engineer, Twitter* *([source](http://monkey.org/~marius/sosp13.html))*
 
     </script>
@@ -55,7 +55,7 @@
 
     <br />
     A modern programmer has to deal with incredible diversity of targets:
- 
+
     - **Cloud services** with unpredictable traffic spikes and failures.
     - **Smartphone programming** on ARM/x86 with power budgets.
     - **JavaScript** user interfaces with asynchronous web clients.
@@ -75,42 +75,42 @@
 
     This is particularly true in a modern operating system.  APIs such
     as POSIX are difficult to evolve for changing needs.
-      
+
     E.g. **Network intrusion detection** thats inspects packets bypasses kernel.
 
-	fds.fd = open("/dev/netmap", O_RDWR);
-	strcpy(nmr.nm_name, "ix0");
-	ioctl(fds.fd, NIOCREG, &nmr);
-	p = mmap(0, nmr.memsize, fds.fd);
-	nifp = NETMAP_IF(p, nmr.offset);
-	fds.events = POLLOUT;
-	for (;;) {
-		poll(fds, 1, -1);
-		for (r = 0; r < nmr.num_queues; r++) {
-		ring = NETMAP_TXRING(nifp, r);
-		while (ring->avail-- > 0) {
-			i = ring->cur;
-			buf = NETMAP_BUF(ring, ring->slot[i].buf_index);
-			... store the payload into buf ...
-			ring->slot[i].len = ... 
-			ring->cur = NETMAP_NEXT(ring, i);
-		}
-	}
+    fds.fd = open("/dev/netmap", O_RDWR);
+    strcpy(nmr.nm_name, "ix0");
+    ioctl(fds.fd, NIOCREG, &nmr);
+    p = mmap(0, nmr.memsize, fds.fd);
+    nifp = NETMAP_IF(p, nmr.offset);
+    fds.events = POLLOUT;
+    for (;;) {
+        poll(fds, 1, -1);
+        for (r = 0; r < nmr.num_queues; r++) {
+        ring = NETMAP_TXRING(nifp, r);
+        while (ring->avail-- > 0) {
+            i = ring->cur;
+            buf = NETMAP_BUF(ring, ring->slot[i].buf_index);
+            ... store the payload into buf ...
+            ring->slot[i].len = ...
+            ring->cur = NETMAP_NEXT(ring, i);
+        }
+    }
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
     ## Systems Programming Today
-    
+
     > It’s considered good programming practice to focus
     > on compositionality: build software out of small, well-defined
-    > modules that combine to give rise to other modules with different 
+    > modules that combine to give rise to other modules with different
     > behaviors.
     >
     > This is simply too difficult to do in distributed systems. Why?
 
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 *-- Marius Eriksen, Principal Engineer, Twitter* *([source](http://monkey.org/~marius/sosp13.html))*
 
     <div class="fragment">
@@ -134,7 +134,7 @@
     ## A Possible Solution!
 
     These slides are written in a new operating system called [MirageOS](http://openmirage.org):
-    
+
     - Hosted on a <b>~1MB Xen microkernel written in statically
     type-safe OCaml</b>, including the device drivers, TCP and HTTP stack.
 
@@ -205,7 +205,7 @@
 
       <img src="threat-model-dom0.png" />
       <div class="fragment">
-      <p class="bubble  right" 
+      <p class="bubble  right"
          style="top: -300pt; left: 180pt; width: 7em">
          Control stack is monolithic and has complete privileges.
         </p>
@@ -213,46 +213,46 @@
     </script>
   </section>
 
-  <section data-markdown>  
+  <section data-markdown>
     <script type="text/template">
       ## The Cloud Threat Model
 
       <img src="threat-model.png" />
 
       <div class="fragment">
-        <img class="arrow" 
-             style="top: -320pt; left: 290pt; height: 6cm" 
+        <img class="arrow"
+             style="top: -320pt; left: 290pt; height: 6cm"
              src="green-arrow.png" />
-         
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm; 
-                    -webkit-transform: rotate(-90deg)" 
-             src="red-arrow.png" />
-        
-        <img class="arrow" 
-             style="top: -190pt; left: 180pt; height: 6cm; 
+
+        <img class="arrow"
+             style="top: -190pt; left: 180pt; height: 6cm;
                     -webkit-transform: rotate(-90deg)"
              src="red-arrow.png" />
 
-        <p class="bubble  right" 
+        <img class="arrow"
+             style="top: -190pt; left: 180pt; height: 6cm;
+                    -webkit-transform: rotate(-90deg)"
+             src="red-arrow.png" />
+
+        <p class="bubble  right"
            style="top: -440pt; left: -5pt; width: 11em">
           Type-safety in the application layer defeats several external threats.
         </p>
      </div>
-        
-      <div class="fragment">        
-        <img class="arrow" 
-             style="top: -482pt; left: 307pt; height: 6cm; 
+
+      <div class="fragment">
+        <img class="arrow"
+             style="top: -482pt; left: 307pt; height: 6cm;
                     -webkit-transform: rotate(-90deg)"
              src="green-arrow.png" />
-      
+
         <p class="bubble "
            style="top: -730pt; left: 370pt; width: 12em">
           Type-safety in the kernel will make all external I/O safe, but at what
           cost?
         </p>
       </div>
-      
+
     </script>
   </section>
   <section data-markdown>
@@ -264,11 +264,11 @@
       Compiler has to stop at userspace.
 
       Every level has a different API, calling convention, and privilege requirements.
-      
+
     </script>
   </section>
 
-   
+
   <section data-markdown>
     <script type="text/template">
       ## Specialised Virtual Appliances
@@ -302,7 +302,7 @@
       <p class="fragment bubble "
          style="top: -320pt; left: 190pt; width: 14.5em">
         UNIX processes get mapped onto many small, independent, Virtual Machines forming a distributed system.
-      </p>   
+      </p>
     </script>
   </section>
 
@@ -311,18 +311,18 @@
       ## Key Design Insights
 
       <img src="key-insight.png" />
-       
-      <div class="fragment"> 
+
+      <div class="fragment">
       <p class="bubble"
          style="top: -300pt; left: 220pt; width: 15em">
         The hypervisor gifts us a stable hardware interface. Cures the curse
-        of research operating systems! 
+        of research operating systems!
       </p>
       </div>
-      <div class="fragment"> 
+      <div class="fragment">
       <p class="bubble left"
          style="top: -260pt; left: 380pt; width: 9.5em">
-        Protocol-level compatibility between special-purpose 
+        Protocol-level compatibility between special-purpose
         appliances is enough.
       </p>
       </div>
@@ -332,8 +332,8 @@
   <section data-markdown>
     <script type="text/template">
       ## Contributions
-      
-      + The **unikernel approach** to building single-purpose appliances        
+
+      + The **unikernel approach** to building single-purpose appliances
         + Library OS + high level programming interface.
         + Single-address space layout.
 
@@ -358,7 +358,7 @@
   <section data-markdown>
     <script type="text/template">
     ## What is an Operating System?
-   
+
     > "An operating system is a collection of software that manages computer
     > hardware resources and provides common services for computer programs."
 
@@ -368,7 +368,7 @@
   <section data-markdown>
     <script type="text/template">
     ## What is an Operating System?
-   
+
     > "An operating system is a collection of software that manages computer
     > hardware resources and provides common services for computer programs."
 
@@ -389,12 +389,12 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-	let rec qsort = function
-		| [] -> []
-		| pivot :: rest ->
-			let is_less x = x < pivot in
-			let left, right = List.partition is_less rest in
-			qsort left @ [pivot] @ qsort right
+    let rec qsort = function
+        | [] -> []
+        | pivot :: rest ->
+            let is_less x = x < pivot in
+            let left, right = List.partition is_less rest in
+            qsort left @ [pivot] @ qsort right
 
     **Why?**
     </script>
@@ -406,12 +406,12 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-	let rec qsort = function
-		| [] -> []
-		| pivot :: rest ->
-			let is_less x = x < pivot in
-			let left, right = List.partition is_less rest in
-			qsort left @ [pivot] @ qsort right
+    let rec qsort = function
+        | [] -> []
+        | pivot :: rest ->
+            let is_less x = x < pivot in
+            let left, right = List.partition is_less rest in
+            qsort left @ [pivot] @ qsort right
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -429,12 +429,12 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-	let rec qsort = function
-		| [] -> []
-		| pivot :: rest ->
-			let is_less x = x < pivot in
-			let left, right = List.partition is_less rest in
-			qsort left @ [pivot] @ qsort right
+    let rec qsort = function
+        | [] -> []
+        | pivot :: rest ->
+            let is_less x = x < pivot in
+            let left, right = List.partition is_less rest in
+            qsort left @ [pivot] @ qsort right
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -458,7 +458,7 @@
             Compiled native source code and runtime statically linked and boots
             directly into Xen.
           </p>
-          
+
           <p class="fragment bubble  right"
              style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
             IO memory is mapped into a reserved area and can be distinguished.
@@ -478,12 +478,12 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-	let rec qsort = function
-		| [] -> []
-		| pivot :: rest ->
-			let is_less x = x < pivot in
-			let left, right = List.partition is_less rest in
-			qsort left @ [pivot] @ qsort right
+    let rec qsort = function
+        | [] -> []
+        | pivot :: rest ->
+            let is_less x = x < pivot in
+            let left, right = List.partition is_less rest in
+            qsort left @ [pivot] @ qsort right
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -501,12 +501,12 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-	let rec qsort = function
-		| [] -> []
-		| pivot :: rest ->
-			let is_less x = x < pivot in
-			let left, right = List.partition is_less rest in
-			qsort left @ [pivot] @ qsort right
+    let rec qsort = function
+        | [] -> []
+        | pivot :: rest ->
+            let is_less x = x < pivot in
+            let left, right = List.partition is_less rest in
+            qsort left @ [pivot] @ qsort right
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -525,11 +525,11 @@
     <script type="text/template">
     ## Monads
 
-	module type MONAD = sig
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module type MONAD = sig
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
 * A monad is a box that contains an abstract value.
 * Put values in the box with `return`
@@ -544,20 +544,20 @@
 
     Let's implement a monad that expresses optional values, starting in the OCaml interactive toplevel.
 
-	# Some "apple" ;;
-	- : string option = Some "apple"
+    # Some "apple" ;;
+    - : string option = Some "apple"
 
-	# None ;;
-	- : 'a option = None 
+    # None ;;
+    - : 'a option = None
 
-	# let return x = Some x ;;
-	val return : 'a -> 'a option = <fun>
+    # let return x = Some x ;;
+    val return : 'a -> 'a option = <fun>
 
-	# let maybe u f =
-		match u with
-		| Some c -> f c
-		| None   -> None ;;
-	val maybe : 'a option -> ('a -> 'b option) -> 'b option = <fun>
+    # let maybe u f =
+        match u with
+        | Some c -> f c
+        | None   -> None ;;
+    val maybe : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
     </script>
   </section>
@@ -566,45 +566,45 @@
     <script type="text/template">
     ## Option Monad: definition
 
-	module OptionMonad =
-	  struct
-		type α t = α option
+    module OptionMonad =
+      struct
+        type α t = α option
 
-		let bind u f =
-			match f with
-			| Some x -> f x
-			| None   -> None
+        let bind u f =
+            match f with
+            | Some x -> f x
+            | None   -> None
 
-		let return u = Some u
-	  end
+        let return u = Some u
+      end
 
 The toplevel will report the following type:
 
-	module OptionMonad = sig
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module OptionMonad = sig
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
     </script>
- 
+
   </section>
 
   <section data-markdown>
     <script type="text/template">
     ## Option Monad: definition
 
-	module OptionMonad =
-	  struct
-		type α t = α option
+    module OptionMonad =
+      struct
+        type α t = α option
 
-		let bind u f =
-			match f with
-			| Some x -> f x
-			| None   -> None
+        let bind u f =
+            match f with
+            | Some x -> f x
+            | None   -> None
 
-		let return u = Some u
-	  end
+        let return u = Some u
+      end
 
     - The value in the box may or may not exist, so is `type α option`
     - `return` places a concrete value in the box.
@@ -613,7 +613,7 @@ The toplevel will report the following type:
     - Notice that the `f x` application in `bind` is *not* wrapped in a `Some`.
 
     </script>
- 
+
   </section>
 
   <section data-markdown>
@@ -622,25 +622,25 @@ The toplevel will report the following type:
 
     Some simple uses of these definitions:
 
-	open OptionMonad ;;
-	bind
-	  (return 1)
-	  (fun c -> return (c+1)) ;;
-	- : int option = Some 2
+    open OptionMonad ;;
+    bind
+      (return 1)
+      (fun c -> return (c+1)) ;;
+    - : int option = Some 2
 
-	bind
-	  None
-	  (fun c -> return (c+1)) ;;
-	- : int option = None
+    bind
+      None
+      (fun c -> return (c+1)) ;;
+    - : int option = None
 
     Binds can be chained to link the results.
 
-	bind (
-	  bind
-		(Some 1)  
-		(fun c -> return (c+1)) 
-	  ) (fun c -> return (c+1)) ;;
-	- : int option = Some 3
+    bind (
+      bind
+        (Some 1)
+        (fun c -> return (c+1))
+      ) (fun c -> return (c+1)) ;;
+    - : int option = Some 3
 
     </script>
   </section>
@@ -648,16 +648,16 @@ The toplevel will report the following type:
   <section data-markdown>
     <script type="text/template">
     ## Option Monad: infix operators
- 
+
     Infix operators make chaining `bind` more natural:
 
-	let (>>=) = bind ;;
-	val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
+    let (>>=) = bind ;;
+    val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
-	return 1 >>= fun c ->
-	return (c+1) >>= fun c ->
-	return (c+1) ;;
-	- : int option = Some 3
+    return 1 >>= fun c ->
+    return (c+1) >>= fun c ->
+    return (c+1) ;;
+    - : int option = Some 3
 
     </script>
   </section>
@@ -665,27 +665,27 @@ The toplevel will report the following type:
   <section data-markdown>
     <script type="text/template">
     ## Option Monad: infix operators
- 
+
     Infix operators make chaining `bind` more natural:
 
-	let (>>=) = bind ;;
-	val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
+    let (>>=) = bind ;;
+    val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
-	return 1 >>= fun c ->
-	return (c+1) >>= fun c ->
-	return (c+1) ;;
-	- : int option = Some 3
+    return 1 >>= fun c ->
+    return (c+1) >>= fun c ->
+    return (c+1) ;;
+    - : int option = Some 3
 
     Or define a `maybe_add` function to be even more succinct.
 
-	let maybe_add c = return c + 1 ;;
-	val maybe_add : int -> int option = <fun>
+    let maybe_add c = return c + 1 ;;
+    val maybe_add : int -> int option = <fun>
 
-	return 1
-	>>= maybe_add
-	>>= maybe_add
-	- : int option = Some 3
-	
+    return 1
+    >>= maybe_add
+    >>= maybe_add
+    - : int option = Some 3
+
     </script>
   </section>
 
@@ -694,42 +694,42 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws
 
-	module type MONAD = sig
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module type MONAD = sig
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
 * Monad implementations must satisfy some laws.
 
     </script>
- 
+
   </section>
 
   <section data-markdown>
     <script type="text/template">
     ## Monad Laws: left identity
 
-	module type MONAD = sig
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module type MONAD = sig
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
     `return` is a left identity for `bind`
 
-	return x >>= f
-	f x
+    return x >>= f
+    f x
 
     Using the OptionMonad:
 
-	# return 1 >>= maybe_add ;;
-	- : int option = Some 2
+    # return 1 >>= maybe_add ;;
+    - : int option = Some 2
 
-	# maybe_add 1;;
-	- : int option = Some 2
+    # maybe_add 1;;
+    - : int option = Some 2
 
-	# return (Some 1) >>= maybe_add
+    # return (Some 1) >>= maybe_add
 
     </script>
   </section>
@@ -738,24 +738,24 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws: right identity
 
-	module type MONAD = sig
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module type MONAD = sig
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
     `return` is a right identity for `bind`
 
-	m >>= return
-	m
+    m >>= return
+    m
 
     Using the OptionMonad:
 
-	# Some 1 >>= return
-	- : int option = Some 1
+    # Some 1 >>= return
+    - : int option = Some 1
 
-	# None >>= return
-	- : 'a option = None
+    # None >>= return
+    - : 'a option = None
 
     </script>
   </section>
@@ -764,24 +764,24 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws: associativity
 
-	module type MONAD = sig
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module type MONAD = sig
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
     `bind` is associative (in an odd way).
 
-	(u >>= f) >>= g
-	 u >>= (fun x -> f x) >>= g
+    (u >>= f) >>= g
+     u >>= (fun x -> f x) >>= g
 
     Using the OptionMonad:
 
-	# Some 3 >>= maybe_add >>= maybe_add ;;
-	- : int option = Some 5
+    # Some 3 >>= maybe_add >>= maybe_add ;;
+    - : int option = Some 5
 
-	# Some 3 >>= (fun x -> maybe_add x >>= maybe_add) ;;
-	- : int option = Some 5
+    # Some 3 >>= (fun x -> maybe_add x >>= maybe_add) ;;
+    - : int option = Some 5
 
     </script>
   </section>
@@ -795,11 +795,11 @@ The toplevel will report the following type:
 
     There are quite a few uses for monads; we'll use this to build a cooperative concurrency model for our OS.
 
-	module Lwt = struct
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
-	end
+    module Lwt = struct
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
+    end
 
     The `Lwt` (Light Weight Thread) monad signature above represents a *future computation* that is held in the box.
 
@@ -812,17 +812,17 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Constant threads
 
-	open Lwt ;;
-	let future_int = return 1 ;;
-	val future_int : int Lwt.t = <abstr>
+    open Lwt ;;
+    let future_int = return 1 ;;
+    val future_int : int Lwt.t = <abstr>
 
     Build a constant thread by using `return`.
 
-	let future_fruit = return "apple" ;;
-	val future_fruit : string Lwt.t = <abstr>
+    let future_fruit = return "apple" ;;
+    val future_fruit : string Lwt.t = <abstr>
 
-	let future_lang = return `OCaml ;;
-	val future_lang : [> `OCaml] Lwt.t = <abstr>
+    let future_lang = return `OCaml ;;
+    val future_lang : [> `OCaml] Lwt.t = <abstr>
 
     Threads are first-class OCaml values and parametric polymorphism lets you
     distinguish different types of threads.
@@ -836,11 +836,11 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-	module OS = struct
-		val sleep : float -> unit Lwt.t
-		val run : 'a Lwt.t -> 'a
-	end
- 
+    module OS = struct
+        val sleep : float -> unit Lwt.t
+        val run : 'a Lwt.t -> 'a
+    end
+
     The monad needs to be *executed* to retrieve the future contents.
 
     </script>
@@ -850,20 +850,20 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-	module OS = struct
-		val sleep : float -> unit Lwt.t
-		val run : 'a Lwt.t -> 'a
-	end
- 
+    module OS = struct
+        val sleep : float -> unit Lwt.t
+        val run : 'a Lwt.t -> 'a
+    end
+
     The monad needs to be *executed* to retrieve the future contents.
 
-	let t =
-	  OS.sleep 1.0 >>= fun () ->
-	  print_endline ">> start";
-	  OS.sleep 2.0 >>= fun () ->
-	  print_endline ">> woken up";
-	  return () ;;
-	val t : unit Lwt.t = <abstr>
+    let t =
+      OS.sleep 1.0 >>= fun () ->
+      print_endline ">> start";
+      OS.sleep 2.0 >>= fun () ->
+      print_endline ">> woken up";
+      return () ;;
+    val t : unit Lwt.t = <abstr>
 
     </script>
   </section>
@@ -873,24 +873,24 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-	module OS = struct
-		val sleep : float -> unit Lwt.t
-		val run : 'a Lwt.t -> 'a
-	end
- 
+    module OS = struct
+        val sleep : float -> unit Lwt.t
+        val run : 'a Lwt.t -> 'a
+    end
+
     The monad needs to be *executed* to retrieve the future contents.
 
-	let t =
-	  OS.sleep 1.0 >>= fun () ->
-	  print_endline ">> start";
-	  OS.sleep 2.0 >>= fun () ->
-	  print_endline ">> woken up";
-	  return () ;;
-	val t : unit Lwt.t = <abstr>
+    let t =
+      OS.sleep 1.0 >>= fun () ->
+      print_endline ">> start";
+      OS.sleep 2.0 >>= fun () ->
+      print_endline ">> woken up";
+      return () ;;
+    val t : unit Lwt.t = <abstr>
 
-	OS.run t ;;
-	>> start
-	>> woken up
+    OS.run t ;;
+    >> start
+    >> woken up
 
     The `run` function takes a future and unpacks the real value.
 
@@ -901,14 +901,14 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Joinad: not quite a monad
 
-	module Lwt = struct
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
+    module Lwt = struct
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
 
-		val join : unit t list -> unit t
-		val choose : α t list -> α t
-	end
+        val join : unit t list -> unit t
+        val choose : α t list -> α t
+    end
 
     We extend the `MONAD` signature with:
 
@@ -926,26 +926,26 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Example: flip a coin
 
-	module Lwt = struct
-		type α t
-		val bind : α t -> (α -> β t) -> β t
-		val return :  α -> α t
+    module Lwt = struct
+        type α t
+        val bind : α t -> (α -> β t) -> β t
+        val return :  α -> α t
 
-		val join : unit t list -> unit t
-		val choose : α t list -> α t
-	end
+        val join : unit t list -> unit t
+        val choose : α t list -> α t
+    end
 
     Using `choose` to pick the first thread in a coin flip:
 
-	let flip_a_coin () =
-	  let heads =
-		OS.sleep 1.0 >>= fun () ->
-		return (OS.log "Heads") in
-	  let tails =
-		OS.sleep 2.0 >>= fun () ->
-		return (OS.log "Tails") in
-	  heads <&> tails
-	
+    let flip_a_coin () =
+      let heads =
+        OS.sleep 1.0 >>= fun () ->
+        return (OS.log "Heads") in
+      let tails =
+        OS.sleep 2.0 >>= fun () ->
+        return (OS.log "Tails") in
+      heads <&> tails
+
     </script>
   </section>
 
@@ -955,15 +955,15 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Representation of a thread
 
-	type 'a t = {
-		| Return of 'a
-		| Fail of exn
-		| Sleep of 'a sleeper
-	}
-	and sleeper = {
-		waiters : 'a waiter_set;
-		<...etc>
-	}
+    type 'a t = {
+        | Return of 'a
+        | Fail of exn
+        | Sleep of 'a sleeper
+    }
+    and sleeper = {
+        waiters : 'a waiter_set;
+        <...etc>
+    }
 
     Thread has three main states:
 
@@ -981,10 +981,10 @@ The toplevel will report the following type:
     Each thread executes until it needs to wait on a resource.  It creates
     a *task* to let it be woken up in the future.
 
-	type 'a t  (* thread *)
-	type 'a u  (* wakener *)
-	val wait : unit -> 'a t * 'a u
-	val wakeup : 'a u -> 'a -> unit
+    type 'a t  (* thread *)
+    type 'a u  (* wakener *)
+    val wait : unit -> 'a t * 'a u
+    val wakeup : 'a u -> 'a -> unit
 
     </script>
   </section>
@@ -997,21 +997,21 @@ The toplevel will report the following type:
     Each thread executes until it needs to wait on a resource.  It creates
     a *task* to let it be woken up in the future.
 
-	type 'a t  (* thread *)
-	type 'a u  (* wakener *)
-	val wait : unit -> 'a t * 'a u
-	val wakeup : 'a u -> 'a -> unit
+    type 'a t  (* thread *)
+    type 'a u  (* wakener *)
+    val wait : unit -> 'a t * 'a u
+    val wakeup : 'a u -> 'a -> unit
 
     Tasks are a pair: a thread that sleeps until it is fulfilled via its wakener by calling `wakeup` on it.
 
-	let t1 =
-	  t >>= fun x ->
-	  print_endline x;
-	  return ()
-	and t2 = 
-	  OS.sleep 2.0 >>= fun () ->
-	  wakeup u "x";
-	  return ()
+    let t1 =
+      t >>= fun x ->
+      print_endline x;
+      return ()
+    and t2 =
+      OS.sleep 2.0 >>= fun () ->
+      wakeup u "x";
+      return ()
 
     </script>
   </section>
@@ -1030,12 +1030,12 @@ The toplevel will report the following type:
     <br />
     The priority queue is a standard data structure ordered by duration.
 
-	module Sleep_queue =
-		Lwt_pqueue.Make(struct
-			type t = sleeper
-			let compare { time = t1 } { time = t2 } = compare t1 t2
-		end)
-	end
+    module Sleep_queue =
+        Lwt_pqueue.Make(struct
+            type t = sleeper
+            let compare { time = t1 } { time = t2 } = compare t1 t2
+        end)
+    end
 
     </script>
   </section>
@@ -1047,16 +1047,16 @@ The toplevel will report the following type:
     The `OS.main` function runs until all threads are blocked,
     and then drops into the `select` function to wait for the next timeout.
 
-	run main thread (threads register timeouts)
-	if result is Blocked then
-		T = head of priority queue
-		select() for T seconds
-		wakeup timeouts
-	repeat until main thread result is Done or Fail
+    run main thread (threads register timeouts)
+    if result is Blocked then
+        T = head of priority queue
+        select() for T seconds
+        wakeup timeouts
+    repeat until main thread result is Done or Fail
 
      - This lets our sequential code be fully concurrent, without preemptive system threads.
      - Number of threads limited only by OCaml heap size.
-	
+
     </script>
   </section>
 
@@ -1082,11 +1082,11 @@ The toplevel will report the following type:
     > **processes in Unix** <=> **Virtual Machines in Xen**
 
     > **`select` in Unix** <=> **block entire virtual machine in Xen**
-   
-	module OS = struct
-		val sleep : float -> unit Lwt.t
-		val run : 'a Lwt.t -> 'a
-	end
+
+    module OS = struct
+        val sleep : float -> unit Lwt.t
+        val run : 'a Lwt.t -> 'a
+    end
     </script>
   </section>
 
@@ -1101,9 +1101,9 @@ The toplevel will report the following type:
     > **processes in Unix** <=> **Virtual Machines in Xen**
 
     > **`select` in Unix** <=> **block entire virtual machine in Xen**
-  
+
     Our Xen VM can use this abstraction for all its I/O and timing.
- 
+
     **Question: What is the major downside of this approach?**
     </script>
   </section>
@@ -1118,14 +1118,14 @@ The toplevel will report the following type:
       ## MirageOS Workflow
 
       - Write a normal bit of OCaml source code.
- 
+
       ```
 let main () =
-	lwt zones = read key "zones" "zone.db" in
-	Net.Manager.bind (fun mgr dev ->
-		let src = `any_addr, 53 in
-		Dns.Server.listen dev src zones
-	)
+    lwt zones = read key "zones" "zone.db" in
+    Net.Manager.bind (fun mgr dev ->
+        let src = `any_addr, 53 in
+        Dns.Server.listen dev src zones
+    )
 ```
     </script>
   </section>
@@ -1213,7 +1213,7 @@ $ xl create -c mirage-www.conf
       ## Modularizing the OS
 
       <img src="modules2.png" />
-      
+
     </script>
   </section>
 
@@ -1239,7 +1239,7 @@ $ xl create -c mirage-www.conf
       - **[mirage/ocaml-xen-block-driver](https://github.com/mirage/ocaml-xen-block-driver)** - Unix/Xen Blkfront/Blkback.
       - **[mirage/ocaml-vchan](https://github.com/mirage/ocaml-vchan)** - Unix/Xen Vchan shared memory transport.
       - **[mirage/mirage-platform](https://github.com/mirage/mirage-platform)** - UNIX/Xen/NS3 versions of timer, shared memory and event channels.
-      
+
     </script>
   </section>
 
@@ -1278,7 +1278,7 @@ end
       ## MirageOS Screencast
 
 <iframe width="600" height="400" src="//www.youtube.com/embed/2Mx8Bd5JYyo" frameborder="0" allowfullscreen></iframe>
-      
+
     </script>
   </section>
   <section data-markdown>
@@ -1352,7 +1352,7 @@ end
       real-time._
     </script>
   </section>
-  
+
   <section data-markdown>
     <script type="text/template">
       ## How Large is Large?
@@ -1360,7 +1360,7 @@ end
       <img src="kloc.png">
       </script>
     </section>
-    
+
     <section data-markdown>
       <script type="text/template">
         ## Event Driven Co-Threads
@@ -1369,7 +1369,7 @@ end
 
         _Garbage collected heap management is more efficient in a single
         address-space environment. Thread latency can be reduced by eliminating
-        multiple levels of scheduling._ 
+        multiple levels of scheduling._
 
       </script>
     </section>
@@ -1382,19 +1382,19 @@ end
 
         _Threads are heap allocated values, so benefit from the faster garbage
         collection cycle in the Mirage Xen version, and the scheduler can be
-        overridden by application-specific needs._ 
+        overridden by application-specific needs._
 
       </script>
     </section>
-    
+
     <section data-markdown>
       <script type="text/template">
         ## Block Storage
 
         <img style="max-width: 78%;" src="block-storage.png" />
-        
+
         _Additionally, reading __from__ a Mirage NAS-like storage VM achieves
-        942MiB/s buffered, and 1.8GiB/s unbuffered._ 
+        942MiB/s buffered, and 1.8GiB/s unbuffered._
 
         </script>
       </section>
@@ -1427,7 +1427,7 @@ end
             Compiled native source code and runtime statically linked and boots
             directly into Xen.
           </p>
-          
+
           <p class="fragment bubble  right"
              style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
             IO memory is mapped into a reserved area and can be distinguished.
@@ -1465,13 +1465,13 @@ end
               + Added freeze hypercall called just before app starts
               + Subsequent page table updates are rejected by Xen
               + Exception for I/O mappings if they are non-exec and do not modify
-                any existing mappings 
-            
+                any existing mappings
+
             <br />
 
             + Very easy in unikernels due to focus on __compile-time specialisation__
             instead of _run-time complexity_
-            
+
           </script>
         </section>
       </section>
@@ -1481,13 +1481,13 @@ end
           <script type="text/template">
             ## Macrobenchmarks
 
-            We have implemented several larger appliances. 
+            We have implemented several larger appliances.
 
             We discuss _deens_, our DNS server in detail here.
 
             We also have:
 
-            + a simple webserver, 
+            + a simple webserver,
             + an OpenFlow Switch, and
             + an OpenFlow Controller.
 
@@ -1500,17 +1500,17 @@ end
 
             <pre style="box-shadow: none">
               <code style="font-size:32px; line-height:1.1">
-                
+
             let main () =
-              lwt zones = read key "zones" "zone.db" in 
+              lwt zones = read key "zones" "zone.db" in
               Net.Manager.bind (fun mgr dev ->
                 let src = `any_addr, 53 in
-                Dns.Server.listen dev src zones   
+                Dns.Server.listen dev src zones
               )
 
               </code>
             </pre>
-            
+
             <p class="fragment bubble "
                style="top: -360pt; left:70pt; width:10em">
               Cooperative threads as functions
@@ -1530,7 +1530,7 @@ end
                style="top:-310pt; left:0pt; width: 10em">
               Libraries directly link to network stack
             </p>
-            
+
           </script>
         </section>
 
@@ -1553,7 +1553,7 @@ end
             <img style="max-width: 85%" src="dns-deens.png" />
 
             _Comparing against __Mirage__ appliance, with and without simple
-            memoisation. This __algorithmic__ optimisation added just 6 lines of code._ 
+            memoisation. This __algorithmic__ optimisation added just 6 lines of code._
           </script>
         </section>
 
@@ -1562,13 +1562,13 @@ end
             ## DNS Server Performance <small>C/miniOS</small>
 
             <img style="max-width: 85%" src="dns-all.png" />
-            
+
             _A rudimentary C-based appliance linking NSD directly against
             MiniOS. Poor user-space library performance
             vastly outweighs language effects._
           </script>
         </section>
-        
+
         <section data-markdown>
           <script type="text/template">
             ## Scaling <small>via Parallel Instances</small>
@@ -1582,7 +1582,7 @@ end
 
           </script>
         </section>
-        
+
         <section data-markdown>
           <script type="text/template">
             ## Openflow Controller
@@ -1591,7 +1591,7 @@ end
 
               _OpenFlow controller is competitive with NOX (C++), but much higher
               level. Applications can link directly against the switch to route their
-              data._ 
+              data._
 
             </script>
           </section>
@@ -1686,7 +1686,7 @@ end
      <section data-markdown>
       <script type="text/template">
        ## Pure OCaml Code <small>[github.com/mirage](http://github.com/mirage)</small>
-              
+
        + **Device drivers**
           + xenstore, ring, grant tables, boot loader
           + netfront, blkfront, vchan
@@ -1711,7 +1711,7 @@ end
 
       <br />
 
-      - OPAM now has **over 1800 packages** (559 unique) 
+      - OPAM now has **over 1800 packages** (559 unique)
           - lots of enthusiasm from the OCaml community!
           - growing corpus of re-usable code
           - a single place to discover functionality
@@ -1739,10 +1739,10 @@ end
       - **ARMv8/Xen** - emerging support for new ARM hypervisors
       - **VMWare/KVM/LXC** - more hypervisor boot libraries
       - **Unix/Capsicum/CHERI** - secure capability hardware
-     
+
     </script>
   </section>
- 
+
   <section data-markdown>
     <script type="text/template">
       ## Use Cases that Drive Us
@@ -1759,7 +1759,7 @@ end
         - Data centre applications customize their network needs.
         - Operations over big data can specialize to workloads.
         - Exploring the hardware/software divide.
-      
+
 
     </script>
   </section>
@@ -1791,7 +1791,7 @@ end
       + Website, <http://www.openmirage.org>
       + Code, <http://github.com/mirage>
       + O'Reilly OCaml book, <http://realworldocaml.org>
-     
+
       + All development open and on GitHub:
          + **<https://github.com/mirage>**
          + **<https://github.com/xapi-project>**
@@ -1802,7 +1802,3 @@ end
    </section>
 
 </section>
-
-
-
-
