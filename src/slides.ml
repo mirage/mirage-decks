@@ -20,6 +20,8 @@ open Cohttp
 open Cow
 open Lwt
 
+let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
+
 module Deck = struct
   module Date = struct
 
