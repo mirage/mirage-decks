@@ -205,10 +205,7 @@ let index ~req ~path =
                   </a></h1>
                 </li>
               </ul>
-              <section class="top-bar-section">
-                <ul>
-                </ul>
-              </section>
+              <section class="top-bar-section" />
             </nav>
           </div>
 
@@ -219,7 +216,7 @@ let index ~req ~path =
             $content$
           </div></div>
 
-          <script src="/js/vendor/jquery.min.js"> </script>
+          <script src="/js/vendor/jquery-2.0.3.min.js"> </script>
           <script src="/js/foundation.min.js"> </script>
           <script src="/js/foundation/foundation.topbar.js"> </script>
           <script type="text/javascript">
