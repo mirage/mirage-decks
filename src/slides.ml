@@ -163,8 +163,8 @@ module Reveal = struct
   let head ~deck =
     let open Deck in
     let speakers = deck.speakers
-           |> List .map (fun p -> p.Atom.name)
-           |> String.concat ", "
+                   |> List .map (fun p -> p.Atom.name)
+                   |> String.concat ", "
     in
     let description = deck.venue in
     let title =
@@ -201,16 +201,19 @@ module Reveal = struct
 
 end
 
+let (/) a b = a ^ "/" ^ b
+
 let deck readf ~deck =
   let open Cowabloga in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  lwt preamble = readf "templates/preamble.html" in
+  let read_tmplate t = readf ("templates" / t) in
+  lwt preamble = read_template "preamble.html" in
   let head = Cow.Html.to_string (Reveal.head d) in
-  lwt bodyh = readf "templates/reveal-2.4.0-header.html" in
-  lwt body = readf (d.Deck.permalink ^ "/index.html") in
-  lwt bodyf = readf "templates/reveal-2.4.0-footer.html" in
+  lwt bodyh = read_template "reveal-2.4.0-header.html" in
+  lwt body = readf (d.Deck.permalink / "index.html") in
+  lwt bodyf = read_template "reveal-2.4.0-footer.html" in
   return (preamble ^ head ^ bodyh ^ body ^ bodyf)
 
 let asset readf ~deck ~asset =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  readf (d.Deck.permalink ^ "/" ^ asset)
+  readf (d.Deck.permalink / asset)
