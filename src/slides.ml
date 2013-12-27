@@ -140,6 +140,7 @@ let decks =
 
 let index ~req ~path =
   let open Cowabloga in
+  let title = "openmirage.org | decks" in
   let content =
     let decks = decks
                 |> List.sort Deck.compare
@@ -155,8 +156,58 @@ let index ~req ~path =
     in
     <:html< <ul>$list:decks$</ul> >>
   in
-  let title = "openmirage.org | decks" in
-  return (Foundation.(page ~body:(body ~title ~headers:[] ~content)))
+  let body =
+    <:html<
+      <html lang="en">
+        <head>
+          <meta charset="utf-8"/>
+          <meta name="viewport" content="width=device-width"/>
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+          <title>openmirage :: $str:title$</title>
+          <meta name="description" content="OpenMirage presentations and lectures" />
+
+          <link rel="stylesheet" href="http://openmirage.org/css/foundation.min.css"> </link>
+          <link rel="stylesheet" href="http://openmirage.org/css/magula.css"> </link>
+          <link rel="stylesheet" href="http://openmirage.org/css/site.css" media="all"> </link>
+
+          <link rel="stylesheet" href="/css/site.css"> </link>
+          <script src="/js/vendor/custom.modernizr.js"> </script>
+          <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet" type="text/css"> </link>
+        </head>
+        <body>
+          <div id="wrapper">
+            <div id="header">
+              <div id="header_logo">
+                <a id="logo" href="http://openmirage.org/">
+                  <img src="http://openmirage.org/graphics/mirage-logo.png" alt="Logo" />
+                </a>
+              </div>
+            </div>
+
+            <div id="content">
+              $content$
+              <div class="clear_div"></div>
+            </div>
+          </div>
+
+          <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-19610168-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+          </script>
+        </body>
+      </html>
+    >>
+  in
+  return (Foundation.page ~body)
 
 module Reveal = struct
 
