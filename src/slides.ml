@@ -206,7 +206,8 @@ let (/) a b = a ^ "/" ^ b
 let deck readf ~deck =
   let open Cowabloga in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  let read_tmplate t = readf ("templates" / t) in
+  let read_template t = readf ("templates" / t) in
+
   lwt preamble = read_template "preamble.html" in
   let head = Cow.Html.to_string (Reveal.head d) in
   lwt bodyh = read_template "reveal-2.4.0-header.html" in
