@@ -144,13 +144,30 @@ let index ~req ~path =
     let decks = decks
                 |> List.sort Deck.compare
                 |> List.map (fun d ->
+                    let speakers =
+                      d.Deck.speakers
+                      |> List.map (fun s -> Cow.Html.to_string (
+                          match s.Atom.uri with
+                          | Some u ->
+                            <:html<
+                              <em><a href="$str:u$">$str:s.Atom.name$</a></em>
+                            >>
+                          | None ->
+                            <:html<<em>$str:s.Atom.name$</em>&>>
+                        ))
+                      |> String.concat ", "
+                      |> Cow.Html.of_string
+                    in
                     <:html<
                       <article>
                         $Deck.Date.to_html d.Deck.given$
                         <h4><a href="$str:d.Deck.permalink$">
                           $str:d.Deck.title$
                         </a></h4>
-                        <p><i>$str:d.Deck.venue$</i></p>
+                        <p>
+                          <strong>$str:d.Deck.venue$</strong>;
+                          $speakers$
+                        </p>
                         <p></p>
                       </article>
                     >>)
@@ -182,32 +199,25 @@ let index ~req ~path =
             <nav class="top-bar" data-topbar="">
               <ul class="title-area">
                 <li class="name">
-                  <h1>
-                    <a id="logo" href="http://openmirage.org/">
-                      <img src="http://openmirage.org/graphics/mirage-logo-small.png"
-                           alt="Logo" />
-                    </a>
-                  </h1>
+                  <h1><a id="logo" href="http://openmirage.org/">
+                    <img src="http://openmirage.org/graphics/mirage-logo-small.png"
+                         alt="Logo" />
+                  </a></h1>
                 </li>
-                <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
               </ul>
               <section class="top-bar-section">
                 <ul>
-                  <li><a href="#" class="current_page">Decks</a></li>
                 </ul>
               </section>
             </nav>
           </div>
 
-          <div class="row">
-            <div class="large-9 columns">
-              <h2>The Mirage Blog <small>on building functional operating systems</small></h2>
-            </div>
-          </div>
+          <!-- pad past the topbar -->
+          <div class="row small-12 columns"><h1>&nbsp;</h1></div>
 
           <div class="row"><div class="small-12 columns" role="content">
             $content$
-          </div></div><div class="clear_div"></div>
+          </div></div>
 
           <script src="/js/vendor/jquery.min.js"> </script>
           <script src="/js/foundation.min.js"> </script>
@@ -234,7 +244,7 @@ module Reveal = struct
   let head ~deck =
     let open Deck in
     let speakers = deck.speakers
-                   |> List .map (fun p -> p.Atom.name)
+                   |> List.map (fun p -> p.Atom.name)
                    |> String.concat ", "
     in
     let description = deck.venue in
