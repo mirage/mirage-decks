@@ -43,11 +43,11 @@ module Deck = struct
         <:xml<$str:str$>>
       in
       <:xml<
-        <span class="date">
-          <span class="month">$xml_of_month d.month$</span>
-          <span class="day">$int:d.day$</span>,
-          <span class="year">$int:d.year$</span>
-        </span>
+        <div class="date">
+          <div class="month">$xml_of_month d.month$</div>
+          <div class="day">$int:d.day$</div>
+          <div class="year">$int:d.year$</div>
+        </div>
       >>
 
     let compare {year=ya;month=ma;day=da} {year=yb;month=mb;day=db} =
@@ -140,18 +140,19 @@ let decks =
 
 let index ~req ~path =
   let open Cowabloga in
-  let title = "openmirage.org | decks" in
   let content =
     let decks = decks
                 |> List.sort Deck.compare
                 |> List.map (fun d ->
                     <:html<
-                      <li>
+                      <article>
                         $Deck.Date.to_html d.Deck.given$
-                        <a href="$str:d.Deck.permalink$">
-                          $str:d.Deck.title$ ($str:d.Deck.venue$)
-                        </a>
-                      </li>
+                        <h4><a href="$str:d.Deck.permalink$">
+                          $str:d.Deck.title$
+                        </a></h4>
+                        <p><i>$str:d.Deck.venue$</i></p>
+                        <p></p>
+                      </article>
                     >>)
     in
     <:html< <ul>$list:decks$</ul> >>
@@ -165,7 +166,7 @@ let index ~req ~path =
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-          <title>openmirage :: $str:title$</title>
+          <title>openmirage :: slide decks</title>
           <meta name="description" content="OpenMirage presentations and lectures" />
 
           <link rel="stylesheet" href="http://openmirage.org/css/foundation.min.css"> </link>
@@ -177,21 +178,40 @@ let index ~req ~path =
           <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet" type="text/css"> </link>
         </head>
         <body>
-          <div id="wrapper">
-            <div id="header">
-              <div id="header_logo">
-                <a id="logo" href="http://openmirage.org/">
-                  <img src="http://openmirage.org/graphics/mirage-logo.png" alt="Logo" />
-                </a>
-              </div>
-            </div>
+          <div class="contain-to-grid fixed">
+            <nav class="top-bar" data-topbar="">
+              <ul class="title-area">
+                <li class="name">
+                  <h1>
+                    <a id="logo" href="http://openmirage.org/">
+                      <img src="http://openmirage.org/graphics/mirage-logo-small.png"
+                           alt="Logo" />
+                    </a>
+                  </h1>
+                </li>
+                <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+              </ul>
+              <section class="top-bar-section">
+                <ul>
+                  <li><a href="#" class="current_page">Decks</a></li>
+                </ul>
+              </section>
+            </nav>
+          </div>
 
-            <div id="content">
-              $content$
-              <div class="clear_div"></div>
+          <div class="row">
+            <div class="large-9 columns">
+              <h2>The Mirage Blog <small>on building functional operating systems</small></h2>
             </div>
           </div>
 
+          <div class="row"><div class="small-12 columns" role="content">
+            $content$
+          </div></div><div class="clear_div"></div>
+
+          <script src="/js/vendor/jquery.min.js"> </script>
+          <script src="/js/foundation.min.js"> </script>
+          <script src="/js/foundation/foundation.topbar.js"> </script>
           <script type="text/javascript">
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-19610168-1']);
