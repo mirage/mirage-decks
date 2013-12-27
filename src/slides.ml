@@ -209,9 +209,6 @@ let index ~req ~path =
             </nav>
           </div>
 
-          <!-- pad past the topbar -->
-          <div class="row small-12 columns"><h1>&nbsp;</h1></div>
-
           <div class="row"><div class="small-12 columns" role="content">
             $content$
           </div></div>
@@ -219,6 +216,7 @@ let index ~req ~path =
           <script src="/js/vendor/jquery-2.0.3.min.js"> </script>
           <script src="/js/foundation.min.js"> </script>
           <script src="/js/foundation/foundation.topbar.js"> </script>
+          <script> <![CDATA[ $(document).foundation(); ]]> </script>
           <script type="text/javascript">
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-19610168-1']);
