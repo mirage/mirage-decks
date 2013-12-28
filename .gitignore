@@ -1,6 +1,7 @@
 .DS_Store
 
 src/main.ml
+src/Makefile
 
 src/_build/
 
