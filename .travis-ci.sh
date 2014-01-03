@@ -1,14 +1,14 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl"
+OPAM_PACKAGES="mirage cow"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
-    3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
-    3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
-    4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
-    4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
-    4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
-    4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
-    *) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
+3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
+3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
+4.00.1,1.0.0) ppa=avsm/ocaml40+opam10 ;;
+4.00.1,1.1.0) ppa=avsm/ocaml40+opam11 ;;
+4.01.0,1.0.0) ppa=avsm/ocaml41+opam10 ;;
+4.01.0,1.1.0) ppa=avsm/ocaml41+opam11 ;;
+*) echo Unknown $OCAML_VERSION,$OPAM_VERSION; exit 1 ;;
 esac
 
 echo "yes" | sudo add-apt-repository ppa:$ppa
@@ -22,7 +22,44 @@ echo OPAM versions
 opam --version
 opam --git-version
 
-opam init
+opam init git://github.com/ocaml/opam-repository >/dev/null 2>&1
+opam pin mirage git://github.com/avsm/mirage
+opam install ${OPAM_PACKAGES}
 eval `opam config env`
-opam install $OPAM_PACKAGES
+cp .travis-www.ml src/config.ml
 make MODE=$MIRAGE_BACKEND
+
+if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
+  # get the secure key out for deployment
+  opam install travis-senv
+  mkdir -p ~/.ssh
+  SSH_DEPLOY_KEY=~/.ssh/id_dsa
+  travis-senv decrypt > $SSH_DEPLOY_KEY
+  chmod 600 $SSH_DEPLOY_KEY
+  echo "Host mirdeploy github.com" >> ~/.ssh/config
+  echo "   Hostname github.com" >> ~/.ssh/config
+  echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+  echo "   CheckHostIP no" >> ~/.ssh/config
+  echo "   UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+  git config --global user.email "travis@openmirage.org"
+  git config --global user.name "Travis the Build Bot"
+  git clone git@mirdeploy:mirage/mirage-decks-deployment
+  case "$MIRAGE_BACKEND" in
+  xen)
+    cd mirage-decks-deployment
+    rm -rf xen/$TRAVIS_COMMIT
+    mkdir -p xen/$TRAVIS_COMMIT
+    cp ../src/mir-main.xen ../src/config.ml xen/$TRAVIS_COMMIT
+    bzip2 -9 xen/$TRAVIS_COMMIT/mir-main.xen
+    git pull --rebase
+    echo $TRAVIS_COMMIT > xen/latest
+    git add xen/$TRAVIS_COMMIT xen/latest
+    ;;
+  *)
+    echo unsupported deploy mode: $MIRAGE_BACKEND
+    exit 1
+    ;;
+  esac
+  git commit -m "adding $TRAVIS_COMMIT for $MIRAGE_BACKEND"
+  git push
+fi

@@ -168,7 +168,7 @@ let index ~req ~path =
                           <strong>$str:d.Deck.venue$</strong>;
                           $speakers$
                         </p>
-                        <p></p>
+                        <p><br /></p>
                       </article>
                     >>)
     in
@@ -200,8 +200,7 @@ let index ~req ~path =
               <ul class="title-area">
                 <li class="name">
                   <h1><a id="logo" href="http://openmirage.org/">
-                    <img src="http://openmirage.org/graphics/mirage-logo-small.png"
-                         alt="Logo" />
+                    <img src="/img/mirage-logo-small.png" alt="Logo" />
                   </a></h1>
                 </li>
               </ul>
@@ -210,6 +209,7 @@ let index ~req ~path =
           </div>
 
           <div class="row"><div class="small-12 columns" role="content">
+            <h2>Presentations <small>and talks using Mirage</small></h2>
             $content$
           </div></div>
 
