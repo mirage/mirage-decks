@@ -78,7 +78,7 @@ let decks =
    { permalink = "fosdem14";
      given = Date.t (2014, 02, 02);
      speakers = [People.anil; People.mort];
-     venue = "FOSDEM 2013";
+     venue = "FOSDEM 2014";
      title = "MirageOS: compiling function library operating systems";
    };
 (*
