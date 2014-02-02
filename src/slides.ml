@@ -74,7 +74,15 @@ end
 
 let decks =
   let open Deck in
-  [{ permalink = "clweds13";
+  [
+   { permalink = "fosdem14";
+     given = Date.t (2014, 02, 02);
+     speakers = [People.anil; People.mort];
+     venue = "FOSDEM 2013";
+     title = "MirageOS: compiling function library operating systems";
+   };
+
+   { permalink = "clweds13";
      given = Date.t (2013, 12, 04);
      speakers = [People.anil];
      venue = "Wednesday Seminar, Cambridge Computer Laboratory";
