@@ -4,7 +4,7 @@ let ipaddr =
    let address = Ipaddr.V4.of_string_exn "46.43.42.134" in
    let netmask = Ipaddr.V4.of_string_exn "255.255.255.128" in
    let gateways = [Ipaddr.V4.of_string_exn "46.43.42.129" ] in
-   { address; netmask, gateways }
+   { address; netmask; gateways }
 
 (* If the Unix `MODE` is set, the choice of configuration changes:
    MODE=crunch (or nothing): use static filesystem via crunch
