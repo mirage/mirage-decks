@@ -1,5 +1,5 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl ipaddr lwt cowabloga cstruct"
+OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
@@ -26,7 +26,14 @@ opam init git://github.com/mirage/opam-repository#mirage-1.1.0 >/dev/null 2>&1
 opam install ${OPAM_PACKAGES}
 eval `opam config env`
 cp .travis-www.ml src/config.ml
-make MODE=$MIRAGE_BACKEND
+cd src
+mirage --version
+mirage configure --unix
+make
+make clean
+mirage configure --xen
+make
+cd ..
 
 if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
   # get the secure key out for deployment
@@ -48,8 +55,8 @@ if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
     cd mirage-decks-deployment
     rm -rf xen/$TRAVIS_COMMIT
     mkdir -p xen/$TRAVIS_COMMIT
-    cp ../src/mir-main.xen ../src/config.ml xen/$TRAVIS_COMMIT
-    bzip2 -9 xen/$TRAVIS_COMMIT/mir-main.xen
+    cp ../src/mir-www.xen ../src/config.ml xen/$TRAVIS_COMMIT
+    bzip2 -9 xen/$TRAVIS_COMMIT/mir-www.xen
     git pull --rebase
     echo $TRAVIS_COMMIT > xen/latest
     git add xen/$TRAVIS_COMMIT xen/latest
