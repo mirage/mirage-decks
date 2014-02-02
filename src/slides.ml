@@ -15,7 +15,7 @@
  *
  *)
 
-open Mirage_types.V1
+open V1_LWT
 open Cohttp
 open Cow
 open Lwt
