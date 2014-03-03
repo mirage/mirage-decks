@@ -14,13 +14,19 @@ let mode =
 let fat_ro dir =
   kv_ro_of_fs (fat_of_files ~dir ())
 
-let fs = match mode with
-  | `Fat    -> fat_ro "files.img"
-  | `Crunch -> crunch "../assets"
+(** In Unix mode, use the passthrough filesystem for
+    files to avoid a huge crunch build time *)
+let fs =
+  match mode, get_mode () with
+  | `Fat, _    -> fat_ro "../assets"
+  | `Crunch, `Xen -> crunch "../assets"
+  | `Crunch, `Unix -> direct_kv_ro "../assets"
 
-let tmpl = match mode with
-  | `Fat    -> fat_ro "tmpl.img"
-  | `Crunch -> crunch "../slides"
+let tmpl = 
+  match mode, get_mode () with
+  | `Fat, _    -> fat_ro "../slides"
+  | `Crunch, `Xen -> crunch "../slides"
+  | `Crunch, `Unix -> direct_kv_ro "../slides"
 
 let net =
   try match Sys.getenv "NET" with

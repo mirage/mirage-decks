@@ -46,7 +46,7 @@ module Main
 
     let c_log s = C.log_s c s in
 
-    let callback conn_id ?body req =
+    let callback conn_id req body =
       let sp = Printf.sprintf in
       let dynamic read_slides req path =
         Printf.(
