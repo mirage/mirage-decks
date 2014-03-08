@@ -23,7 +23,7 @@
     - Today's software systems are highly multiplexed in software.
     - This occurs *vertically* in a single host due to abstraction layers.
 
-      <img src="horizstack.jpg" />
+      <img src="horizstack.png" />
     </script>
   </section>
 
@@ -35,7 +35,7 @@
     - Occurs **vertically** in a single host due to abstraction layers.
     - Also **horizontally** across a distributed system (inter-process, inter-VM, and inter-host).
 
-      <img src="vertstack.jpg" />
+      <img src="vertstack.png" />
     </script>
   </section>
 
@@ -48,6 +48,7 @@
     **Challenge**: Can we build software primitives that permit principled scheduling *across*
     all these vertical and horizontal layers?
 
+    **Benefits**: This forms a principled software foundation for many of the emerging technologies in T2 such as MPTCP and cloud federation of resources.
     </script>
   </section>
 
@@ -96,7 +97,7 @@
 <section>
   <section data-markdown>
     <script type="text/template">
-      ## The Cloud Threat Model
+      ## Hypervisor Architecture
 
       <img src="threat-model.png" />
 
@@ -117,10 +118,7 @@
 
         <p class="bubble left"
            style="top: -344pt; left: 600pt; width: 4em" >
-          Internet<br />
-          SAN/NAS<br />
-          Tenants<br />
-          SDN
+          External network traffic<br />
         </p>
       </div>
     </script>
@@ -128,7 +126,7 @@
 
   <section data-markdown>
     <script type="text/template">
-      ## The Cloud Threat Model
+      ## Hypervisor Architecture
 
       <img src="threat-model.png" />
 
@@ -150,7 +148,8 @@
 
         <p class="bubble  right"
            style="top: -440pt; left: -5pt; width: 11em">
-          Type-safety in the application layer defeats several external threats.
+          Application VM is not gang-scheduled with the incoming
+          traffic.
         </p>
      </div>
 
@@ -162,8 +161,8 @@
 
         <p class="bubble "
            style="top: -730pt; left: 370pt; width: 12em">
-          Type-safety in the kernel will make all external I/O safe, but at what
-          cost?
+          Buffering at the device level also contributes
+          to scheduling uncertainty.
         </p>
       </div>
 
@@ -172,14 +171,14 @@
 
   <section data-markdown>
     <script type="text/template">
-      ## The Cloud Threat Model
+      ## Hypervisor Architecture
 
       <img src="threat-model.png" />
 
       <p class="bubble left"
          style="top: -290pt; left: 380pt; width: 14.5em" >
-        Most attacks never come from <strong>within</strong> a guest, only
-        from external traffic. So why all these privilege checks?
+        Ideally, we could unify scheduling across these vertical
+        layers, including the high-level language.
       </p>
     </script>
   </section>
@@ -406,70 +405,6 @@ $ xl create -c mirage-www.conf
 
   </section>
 
-</section>
-
-<section>
-  <section data-markdown>
-    <script type="text/template">
-      ## Orchestration
-
-      Deploying unikernels on the cloud is much like starting binaries in Unix
-
-      + Contain a *precise* manifest of source code dependencies
-      + Type-checking compiler sits between the source code and the cloud
-
-    </script>
-  </section>
-
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Compiler in the Middle
-
-      <img src="uniarch1a.png" height="700" />
-    </script>
-  </section>
-  <section data-markdown>
-    <script type="text/template">
-      ## Compiler in the Middle
-
-      <img src="uniarch1b.png" height="700" />
-    </script>
-  </section>
-  <section data-markdown>
-    <script type="text/template">
-      ## Compiler in the Middle
-
-      <img src="uniarch1c.png" height="700" />
-    </script>
-  </section>
-  <section data-markdown>
-    <script type="text/template">
-      ## Compiler in the Middle
-
-      <img src="uniarch1d.png" height="710" />
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Orchestration
-
-      Deploying unikernels on the cloud is much like starting binaries in Unix
-
-      + Contain a *precise* manifest of source code dependencies
-      + Type-checking compiler sits between the source code and the cloud
-
-<br />
-
-      + Unikernels are small and can be tracked in GitHub!
-        + For Mirage website, source is committed to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**
-        + Pull requests to source are built by **[Travis-CI](https://travis-ci.org)**
-        + Resulting unikernel committed to **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
-        + Cloud toolstack spawns VMs based on pushes there
-
-    </script>
-  </section>
 </section>
 
 <section>
@@ -778,7 +713,8 @@ $ xl create -c mirage-www.conf
           - Release efforts are focussed around usability of build/deployment.
           - OPAM 1.1 package manager that works via GitHub: **<https://opam.ocaml.org>**
           - over 50 OCaml libraries released (TCP/IP, Xen drivers, protocols)
-          - Travis continuous integration testing and deployment rocks!
+          - Travis continuous integration testing and deployment.
+          - OnApp API compatibility.
 
       <br />
 
@@ -812,11 +748,18 @@ $ xl create -c mirage-www.conf
 <section>
   <section data-markdown>
     <script type="text/template">
-      ## PVTCP
+      ## Polyversal TCP
 
-      While unikernels flatten the vertical software stack, horizontal
-      scale to multiple cores turns them into multikernels (*ref SOSP 09*).
+      While unikernels flatten the vertical software stack, realistic
+      applications now require use to schedule many more VMs than usual.
 
+      - Each tenant can form their own isolation and scheduling domains
+        with many intercommunicating unikernels. *("multikernels", SOSP 2009)*
+      - Unikernels can assemble a dataflow graph to let traffic flow
+        through a series of transformations. *(ClickOS)*
+
+      <br />
+      What is the overarching abstraction for this communications?  Not TCP...
     </script>
   </section>
 
@@ -830,7 +773,7 @@ $ xl create -c mirage-www.conf
 
    <section data-markdown>
     <script type="text/template">
-      ## TCP on Xen pinned
+      ## TCP on Xen (pinned)
 
        <img src="pvtcp-tcpxenpin.png" />
     </script>
@@ -839,7 +782,7 @@ $ xl create -c mirage-www.conf
 
   <section data-markdown>
     <script type="text/template">
-      ## NUMA 
+      ## NUMA variance
 
        <img src="pvtcp-numa.png" />
     </script>
@@ -847,7 +790,7 @@ $ xl create -c mirage-www.conf
 
   <section data-markdown>
     <script type="text/template">
-      ## Xen IPI
+      ## Xen IPI across architectures
 
        <img src="pvtcp-ipi.png" />
     </script>
@@ -868,8 +811,162 @@ $ xl create -c mirage-www.conf
     </script>
   </section>
 
+  <section data-markdown>
+    <script type"text/template">
+     ## PVTCP Discussion
+
+     - Connection establishment is via **named endpoints** that can resolve
+       to non-IP addresses.
+     - Name resolvers are hierarchical (VM resolver delegates to Xen one).
+     - Security and multipath built in from ground up, and supports modern capability APIs (Capsicum, Linux containers)
+     - Separates scheduling **policy** from **mechanism**.
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type"text/template">
+     ## PVTCP Architecture
+       <img src="pvtcp-arch.png" />
+    </script>
+  </section>
+
+
+   <section data-markdown>
+    <script type"text/template">
+     ## PVTCP Status
+
+     - Building latency/throughput database from a variety of hosts, freely available at **<http://fable.io>**
+     - Low-level API for communication, and exploring POSIX compatibility (TAPS IETF BOF).
+     - Integrating MPTCP via experimental Netlink API.
+     - Cryptography via NaCL/cryptobox for low RTT connection establishment.
+    </script>
+  </section>
+</section>
+
+<section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Persistent coordination
+
+      - With unikernels and PVTCP, we can establish connections,
+        but still need to coordinate applications.
+      - Applications currently hardcode their consistency requirements
+        by choice of database (NoSQL, MySQL, RabbitMQ).
+      - **Irminsule**: expose the lowest level consistency API as
+        a library, and application can make decisions.
+    </script>
+  </section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Irminsule architecture
+
+      - All application state is stored as a Git-style DAG.
+      - Key tradeoff: space vs time by making all data immutable.
+      - All data structures are **purely functional** (without using laziness)
+
+      <br />
+
+      - **Blob store**: individual binary contents stored as immutable k/v (currently Git, in-memory, HTTP CRUD).
+      - **Trees**: a DAG of pointers to blobs that form a filesystem-like view.
+      - **Tag store**: mutable named pointers to individual trees act as named endpoints.
+    
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Example: Persistent Xenstore
+
+      - Xenstore is the coordination mechanism for Xen via in-memory transactional filesystem which exports subtrees to VMs.
+      - It is currently the bottleneck for latency of booting unikernels (both MirageOS and ClickOS).
+      - With Irminsule port, gets `git` persistence "for free", along with hooks for
+        distributed semantics.
+
+      <br />
+      **Challenge**: drop VM boot latency to sub-10ms to challenge process fork times, for highly elastic MirageOS/ClickOS scheduling.
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Scaling the block store
+
+      - Xenstore is coordination, but real applications need data also.
+      - **Trevi** replaces TCP interconnects with **fountain coding** for larger blobs.
+      - Scheduling tradeoff can be dynamically chosen (e.g. via PVTCP).
+
+      <br />
+      <img src="trevifc.png" />
+    </script>
+  </section>
+
 
 </section>
 
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Fitting it all together
+
+      Deploying unikernels on the cloud is much like starting binaries in Unix
+
+      + Contain a *precise* manifest of source code dependencies
+      + Type-checking compiler sits between the source code and the cloud
+
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Compiler in the Middle
+
+      <img src="uniarch1a.png" height="700" />
+    </script>
+  </section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Compiler in the Middle
+
+      <img src="uniarch1b.png" height="700" />
+    </script>
+  </section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Compiler in the Middle
+
+      <img src="uniarch1c.png" height="700" />
+    </script>
+  </section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Compiler in the Middle
+
+      <img src="uniarch1d.png" height="710" />
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Orchestration
+
+      Deploying unikernels on the cloud is much like starting binaries in Unix
+
+      + Contain a *precise* manifest of source code dependencies
+      + Type-checking compiler sits between the source code and the cloud
+
+<br />
+
+      + Unikernels are small and can be tracked in Git/Irminsule.
+        + For Mirage website, source is committed to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**
+        + Pull requests to source are built by **[Travis-CI](https://travis-ci.org)**
+        + Resulting unikernel committed to **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
+        + Federated OnApp cloud spawns VMs based on pushes there.
+    </script>
+  </section>
+
+</section>
 
 
