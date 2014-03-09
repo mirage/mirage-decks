@@ -75,20 +75,25 @@ end
 let decks =
   let open Deck in
   [
+   { permalink = "t2review14";
+     given = Date.t (2014, 03, 14);
+     speakers = [People.anil];
+     venue = "T2 EU Review ";
+     title = "Liquid scheduling with unikernels";
+   };
+ 
    { permalink = "fosdem14";
      given = Date.t (2014, 02, 02);
      speakers = [People.anil; People.mort];
      venue = "FOSDEM 2014";
      title = "MirageOS: compiling function library operating systems";
    };
-(*
    { permalink = "clweds13";
      given = Date.t (2013, 12, 04);
      speakers = [People.anil];
      venue = "Wednesday Seminar, Cambridge Computer Laboratory";
      title = "MirageOS: a functional library operating system";
    };
-*)
    { permalink = "cam13";
      given = Date.t (2013, 12, 03);
      speakers = [People.anil];
@@ -130,14 +135,12 @@ let decks =
      venue = "OSCON 2013";
      title = "Mirage: Extreme Specialisation of Cloud Appliances";
    };
-(*
    { permalink = "jslondon13";
      given = Date.t (2013, 08, 29);
      speakers = [People.anil];
      venue = "Jane Street London 2013";
      title = "My Other Internet is a Mirage";
    };
-*)
    { permalink = "foci13";
      given = Date.t (2013, 08, 12);
      speakers = [People.anil];
