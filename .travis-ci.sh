@@ -22,7 +22,7 @@ echo OPAM versions
 opam --version
 opam --git-version
 
-opam init git://github.com/mirage/opam-repository#mirage-1.1.0 >/dev/null 2>&1
+opam init 
 opam install ${OPAM_PACKAGES}
 eval `opam config env`
 cp .travis-www.ml src/config.ml
