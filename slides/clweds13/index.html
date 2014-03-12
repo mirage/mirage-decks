@@ -42,7 +42,7 @@
     ## From simple servers...
 
     Traditional systems programming has involved building services in
-    one environment.  E.g. Server, client, or embedded.
+    *one* environment.  E.g. Server, client, or embedded.
 
     </script>
   </section>
@@ -51,10 +51,7 @@
     ## ...To deep-sea diving
 
     Traditional systems programming has involved building services in
-    one environment.  E.g. Server, client, or embedded.
-
-    <br />
-    A modern programmer has to deal with incredible diversity of targets:
+    *one* environment.  A modern programmer deals with diverse targets:
 
     - **Cloud services** with unpredictable traffic spikes and failures.
     - **Smartphone programming** on ARM/x86 with power budgets.
@@ -76,55 +73,24 @@
     This is particularly true in a modern operating system.  APIs such
     as POSIX are difficult to evolve for changing needs.
 
-    E.g. **Network intrusion detection** thats inspects packets bypasses kernel.
-
-    fds.fd = open("/dev/netmap", O_RDWR);
-    strcpy(nmr.nm_name, "ix0");
-    ioctl(fds.fd, NIOCREG, &nmr);
-    p = mmap(0, nmr.memsize, fds.fd);
-    nifp = NETMAP_IF(p, nmr.offset);
-    fds.events = POLLOUT;
-    for (;;) {
-        poll(fds, 1, -1);
-        for (r = 0; r < nmr.num_queues; r++) {
-        ring = NETMAP_TXRING(nifp, r);
-        while (ring->avail-- > 0) {
-            i = ring->cur;
-            buf = NETMAP_BUF(ring, ring->slot[i].buf_index);
-            ... store the payload into buf ...
-            ring->slot[i].len = ...
-            ring->cur = NETMAP_NEXT(ring, i);
-        }
-    }
-    </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-    ## Systems Programming Today
-
-    > It’s considered good programming practice to focus
-    > on compositionality: build software out of small, well-defined
-    > modules that combine to give rise to other modules with different
-    > behaviors.
-    >
-    > This is simply too difficult to do in distributed systems. Why?
-
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-*-- Marius Eriksen, Principal Engineer, Twitter* *([source](http://monkey.org/~marius/sosp13.html))*
-
-    <div class="fragment">
-    <br />
-    **Isn't this just Java? Write once, run anywhere?**
-    </div>
-
-    <div class="fragment">
-    <ul>
-    <li>Java has a heavyweight runtime model and is now addicted to the JIT.
-    <li>Difficult to squeeze into embedded targets due to memory footprint.
-    <li>Heavy emphasis on inheritance and less on modular composition.
-    </ul>
-    </div>
+```
+fds.fd = open("/dev/netmap", O_RDWR);
+strcpy(nmr.nm_name, "ix0");
+ioctl(fds.fd, NIOCREG, &nmr);
+p = mmap(0, nmr.memsize, fds.fd);
+nifp = NETMAP_IF(p, nmr.offset);
+fds.events = POLLOUT;
+for (;;) {
+ poll(fds, 1, -1);
+ for (r = 0; r < nmr.num_queues; r++) {
+  ring = NETMAP_TXRING(nifp, r);
+  while (ring->avail-- > 0) {
+   i = ring->cur;
+   buf = NETMAP_BUF(ring, ring->slot[i].buf_index);
+   ... store the payload into buf ...
+   ring->slot[i].len = ...
+   ring->cur = NETMAP_NEXT(ring, i);
+```
 
     </script>
   </section>
@@ -389,13 +355,14 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-    let rec qsort = function
-        | [] -> []
-        | pivot :: rest ->
-            let is_less x = x < pivot in
-            let left, right = List.partition is_less rest in
-            qsort left @ [pivot] @ qsort right
-
+```
+let rec qsort = function
+ | [] -> []
+ | pivot :: rest ->
+  let is_less x = x < pivot in
+  let left, right = List.partition is_less rest in
+  qsort left @ [pivot] @ qsort right
+```
     **Why?**
     </script>
   </section>
@@ -406,12 +373,14 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-    let rec qsort = function
-        | [] -> []
-        | pivot :: rest ->
-            let is_less x = x < pivot in
-            let left, right = List.partition is_less rest in
-            qsort left @ [pivot] @ qsort right
+```
+let rec qsort = function
+ | [] -> []
+ | pivot :: rest ->
+  let is_less x = x < pivot in
+  let left, right = List.partition is_less rest in
+  qsort left @ [pivot] @ qsort right
+```
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -429,12 +398,14 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-    let rec qsort = function
-        | [] -> []
-        | pivot :: rest ->
-            let is_less x = x < pivot in
-            let left, right = List.partition is_less rest in
-            qsort left @ [pivot] @ qsort right
+```
+let rec qsort = function
+ | [] -> []
+ | pivot :: rest ->
+  let is_less x = x < pivot in
+  let left, right = List.partition is_less rest in
+  qsort left @ [pivot] @ qsort right
+```
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -478,12 +449,14 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-    let rec qsort = function
-        | [] -> []
-        | pivot :: rest ->
-            let is_less x = x < pivot in
-            let left, right = List.partition is_less rest in
-            qsort left @ [pivot] @ qsort right
+```
+let rec qsort = function
+ | [] -> []
+ | pivot :: rest ->
+  let is_less x = x < pivot in
+  let left, right = List.partition is_less rest in
+  qsort left @ [pivot] @ qsort right
+```
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -501,12 +474,14 @@
 
     A simple OCaml program like this is easy to run without Unix.
 
-    let rec qsort = function
-        | [] -> []
-        | pivot :: rest ->
-            let is_less x = x < pivot in
-            let left, right = List.partition is_less rest in
-            qsort left @ [pivot] @ qsort right
+```
+let rec qsort = function
+ | [] -> []
+ | pivot :: rest ->
+  let is_less x = x < pivot in
+  let left, right = List.partition is_less rest in
+  qsort left @ [pivot] @ qsort right
+```
 
     **Why?** It runs sequentially, meaning that it only needs:
 
@@ -525,11 +500,13 @@
     <script type="text/template">
     ## Monads
 
-    module type MONAD = sig
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
+```
+module type MONAD = sig
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
 
 * A monad is a box that contains an abstract value.
 * Put values in the box with `return`
@@ -544,21 +521,22 @@
 
     Let's implement a monad that expresses optional values, starting in the OCaml interactive toplevel.
 
-    # Some "apple" ;;
-    - : string option = Some "apple"
+```
+# Some "apple" ;;
+- : string option = Some "apple"
 
-    # None ;;
-    - : 'a option = None
+# None ;;
+- : 'a option = None
 
-    # let return x = Some x ;;
-    val return : 'a -> 'a option = <fun>
+# let return x = Some x ;;
+val return : 'a -> 'a option = <fun>
 
-    # let maybe u f =
-        match u with
-        | Some c -> f c
-        | None   -> None ;;
-    val maybe : 'a option -> ('a -> 'b option) -> 'b option = <fun>
-
+# let maybe u f =
+ match u with
+ | Some c -> f c
+ | None   -> None ;;
+val maybe : 'a option -> ('a -> 'b option) -> 'b option = <fun>
+```
     </script>
   </section>
 
@@ -566,26 +544,29 @@
     <script type="text/template">
     ## Option Monad: definition
 
-    module OptionMonad =
-      struct
-        type α t = α option
+```
+module OptionMonad =
+ struct
+  type α t = α option
 
-        let bind u f =
-            match f with
-            | Some x -> f x
-            | None   -> None
+  let bind u f =
+   match f with
+   | Some x -> f x
+   | None   -> None
 
-        let return u = Some u
-      end
+  let return u = Some u
+end
+```
 
 The toplevel will report the following type:
 
-    module OptionMonad = sig
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
-
+```
+module OptionMonad = sig
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
     </script>
 
   </section>
@@ -594,17 +575,19 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Option Monad: definition
 
-    module OptionMonad =
-      struct
-        type α t = α option
+```
+module OptionMonad =
+ struct
+  type α t = α option
 
-        let bind u f =
-            match f with
-            | Some x -> f x
-            | None   -> None
+  let bind u f =
+   match f with
+   | Some x -> f x
+   | None   -> None
 
-        let return u = Some u
-      end
+  let return u = Some u
+end
+```
 
     - The value in the box may or may not exist, so is `type α option`
     - `return` places a concrete value in the box.
@@ -622,25 +605,29 @@ The toplevel will report the following type:
 
     Some simple uses of these definitions:
 
-    open OptionMonad ;;
-    bind
-      (return 1)
-      (fun c -> return (c+1)) ;;
-    - : int option = Some 2
+```
+open OptionMonad ;;
+bind
+ (return 1)
+ (fun c -> return (c+1)) ;;
+- : int option = Some 2
 
-    bind
-      None
-      (fun c -> return (c+1)) ;;
-    - : int option = None
+bind
+  None
+  (fun c -> return (c+1)) ;;
+- : int option = None
+```
 
     Binds can be chained to link the results.
 
-    bind (
-      bind
-        (Some 1)
-        (fun c -> return (c+1))
-      ) (fun c -> return (c+1)) ;;
-    - : int option = Some 3
+```
+bind (
+ bind
+  (Some 1)
+  (fun c -> return (c+1))
+ ) (fun c -> return (c+1)) ;;
+- : int option = Some 3
+```
 
     </script>
   </section>
@@ -651,13 +638,15 @@ The toplevel will report the following type:
 
     Infix operators make chaining `bind` more natural:
 
-    let (>>=) = bind ;;
-    val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
+```
+let (>>=) = bind ;;
+val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
-    return 1 >>= fun c ->
-    return (c+1) >>= fun c ->
-    return (c+1) ;;
-    - : int option = Some 3
+return 1 >>= fun c ->
+return (c+1) >>= fun c ->
+return (c+1) ;;
+- : int option = Some 3
+```
 
     </script>
   </section>
@@ -668,24 +657,27 @@ The toplevel will report the following type:
 
     Infix operators make chaining `bind` more natural:
 
-    let (>>=) = bind ;;
-    val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
+```
+let (>>=) = bind ;;
+val ( >>= ) : 'a option -> ('a -> 'b option) -> 'b option = <fun>
 
-    return 1 >>= fun c ->
-    return (c+1) >>= fun c ->
-    return (c+1) ;;
-    - : int option = Some 3
+return 1 >>= fun c ->
+return (c+1) >>= fun c ->
+return (c+1) ;;
+- : int option = Some 3
+```
 
     Or define a `maybe_add` function to be even more succinct.
 
-    let maybe_add c = return c + 1 ;;
-    val maybe_add : int -> int option = <fun>
+```
+let maybe_add c = return c + 1 ;;
+val maybe_add : int -> int option = <fun>
 
-    return 1
-    >>= maybe_add
-    >>= maybe_add
-    - : int option = Some 3
-
+return 1
+>>= maybe_add
+>>= maybe_add
+- : int option = Some 3
+```
     </script>
   </section>
 
@@ -694,11 +686,13 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws
 
-    module type MONAD = sig
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
+```
+module type MONAD = sig
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
 
 * Monad implementations must satisfy some laws.
 
@@ -710,27 +704,32 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws: left identity
 
-    module type MONAD = sig
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
+```
+module type MONAD = sig
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
 
-    `return` is a left identity for `bind`
+`return` is a left identity for `bind`
 
-    return x >>= f
-    f x
+```
+return x >>= f
+f x
+```
 
-    Using the OptionMonad:
+Using the OptionMonad:
 
-    # return 1 >>= maybe_add ;;
-    - : int option = Some 2
+```
+# return 1 >>= maybe_add ;;
+- : int option = Some 2
 
-    # maybe_add 1;;
-    - : int option = Some 2
+# maybe_add 1;;
+- : int option = Some 2
 
-    # return (Some 1) >>= maybe_add
-
+# return (Some 1) >>= maybe_add
+```
     </script>
   </section>
 
@@ -738,24 +737,30 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws: right identity
 
-    module type MONAD = sig
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
+```
+module type MONAD = sig
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
 
-    `return` is a right identity for `bind`
+`return` is a right identity for `bind`
 
-    m >>= return
-    m
+```
+m >>= return
+m
+```
 
     Using the OptionMonad:
 
-    # Some 1 >>= return
-    - : int option = Some 1
+```
+# Some 1 >>= return
+- : int option = Some 1
 
-    # None >>= return
-    - : 'a option = None
+# None >>= return
+- : 'a option = None
+```
 
     </script>
   </section>
@@ -764,24 +769,31 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Monad Laws: associativity
 
-    module type MONAD = sig
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
+```
+module type MONAD = sig
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
 
-    `bind` is associative (in an odd way).
+`bind` is associative (in an odd way).
 
-    (u >>= f) >>= g
-     u >>= (fun x -> f x) >>= g
 
-    Using the OptionMonad:
+```
+(u >>= f) >>= g
+u >>= (fun x -> f x) >>= g
+```
 
-    # Some 3 >>= maybe_add >>= maybe_add ;;
-    - : int option = Some 5
+Using the OptionMonad:
 
-    # Some 3 >>= (fun x -> maybe_add x >>= maybe_add) ;;
-    - : int option = Some 5
+```
+# Some 3 >>= maybe_add >>= maybe_add ;;
+- : int option = Some 5
+
+# Some 3 >>= (fun x -> maybe_add x >>= maybe_add) ;;
+- : int option = Some 5
+```
 
     </script>
   </section>
@@ -795,11 +807,13 @@ The toplevel will report the following type:
 
     There are quite a few uses for monads; we'll use this to build a cooperative concurrency model for our OS.
 
-    module Lwt = struct
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
-    end
+```
+module Lwt = struct
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
+end
+```
 
     The `Lwt` (Light Weight Thread) monad signature above represents a *future computation* that is held in the box.
 
@@ -812,17 +826,21 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Constant threads
 
-    open Lwt ;;
-    let future_int = return 1 ;;
-    val future_int : int Lwt.t = <abstr>
+```
+open Lwt ;;
+let future_int = return 1 ;;
+val future_int : int Lwt.t = <abstr>
+```
 
     Build a constant thread by using `return`.
 
-    let future_fruit = return "apple" ;;
-    val future_fruit : string Lwt.t = <abstr>
+```
+let future_fruit = return "apple" ;;
+val future_fruit : string Lwt.t = <abstr>
 
-    let future_lang = return `OCaml ;;
-    val future_lang : [> `OCaml] Lwt.t = <abstr>
+let future_lang = return `OCaml ;;
+val future_lang : [> `OCaml] Lwt.t = <abstr>
+```
 
     Threads are first-class OCaml values and parametric polymorphism lets you
     distinguish different types of threads.
@@ -836,10 +854,12 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-    module OS = struct
-        val sleep : float -> unit Lwt.t
-        val run : 'a Lwt.t -> 'a
-    end
+```
+module OS = struct
+ val sleep : float -> unit Lwt.t
+ val run : 'a Lwt.t -> 'a
+end
+```
 
     The monad needs to be *executed* to retrieve the future contents.
 
@@ -850,20 +870,24 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-    module OS = struct
-        val sleep : float -> unit Lwt.t
-        val run : 'a Lwt.t -> 'a
-    end
+```
+module OS = struct
+ val sleep : float -> unit Lwt.t
+ val run : 'a Lwt.t -> 'a
+end
+```
 
     The monad needs to be *executed* to retrieve the future contents.
 
-    let t =
-      OS.sleep 1.0 >>= fun () ->
-      print_endline ">> start";
-      OS.sleep 2.0 >>= fun () ->
-      print_endline ">> woken up";
-      return () ;;
-    val t : unit Lwt.t = <abstr>
+```
+let t =
+ OS.sleep 1.0 >>= fun () ->
+ print_endline ">> start";
+ OS.sleep 2.0 >>= fun () ->
+ print_endline ">> woken up";
+ return () ;;
+val t : unit Lwt.t = <abstr>
+```
 
     </script>
   </section>
@@ -873,24 +897,28 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Concurrency: executing
 
-    module OS = struct
-        val sleep : float -> unit Lwt.t
-        val run : 'a Lwt.t -> 'a
-    end
+```
+module OS = struct
+ val sleep : float -> unit Lwt.t
+ val run : 'a Lwt.t -> 'a
+end
+```
 
     The monad needs to be *executed* to retrieve the future contents.
 
-    let t =
-      OS.sleep 1.0 >>= fun () ->
-      print_endline ">> start";
-      OS.sleep 2.0 >>= fun () ->
-      print_endline ">> woken up";
-      return () ;;
-    val t : unit Lwt.t = <abstr>
+```
+let t =
+ OS.sleep 1.0 >>= fun () ->
+ print_endline ">> start";
+ OS.sleep 2.0 >>= fun () ->
+ print_endline ">> woken up";
+ return () ;;
+val t : unit Lwt.t = <abstr>
 
-    OS.run t ;;
-    >> start
-    >> woken up
+OS.run t ;;
+>> start
+>> woken up
+```
 
     The `run` function takes a future and unpacks the real value.
 
@@ -901,14 +929,16 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Joinad: not quite a monad
 
-    module Lwt = struct
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
+```
+module Lwt = struct
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
 
-        val join : unit t list -> unit t
-        val choose : α t list -> α t
-    end
+ val join : unit t list -> unit t
+ val choose : α t list -> α t
+end
+```
 
     We extend the `MONAD` signature with:
 
@@ -926,25 +956,29 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Example: flip a coin
 
-    module Lwt = struct
-        type α t
-        val bind : α t -> (α -> β t) -> β t
-        val return :  α -> α t
+```
+module Lwt = struct
+ type α t
+ val bind : α t -> (α -> β t) -> β t
+ val return :  α -> α t
 
-        val join : unit t list -> unit t
-        val choose : α t list -> α t
-    end
+ val join : unit t list -> unit t
+ val choose : α t list -> α t
+end
+```
 
     Using `choose` to pick the first thread in a coin flip:
 
-    let flip_a_coin () =
-      let heads =
-        OS.sleep 1.0 >>= fun () ->
-        return (OS.log "Heads") in
-      let tails =
-        OS.sleep 2.0 >>= fun () ->
-        return (OS.log "Tails") in
-      heads <&> tails
+```
+let flip_a_coin () =
+ let heads =
+  OS.sleep 1.0 >>= fun () ->
+  return (OS.log "Heads") in
+ let tails =
+  OS.sleep 2.0 >>= fun () ->
+  return (OS.log "Tails") in
+ heads <&> tails
+```
 
     </script>
   </section>
@@ -955,15 +989,17 @@ The toplevel will report the following type:
     <script type="text/template">
     ## Representation of a thread
 
-    type 'a t = {
-        | Return of 'a
-        | Fail of exn
-        | Sleep of 'a sleeper
-    }
-    and sleeper = {
-        waiters : 'a waiter_set;
-        <...etc>
-    }
+```
+type 'a t = {
+ | Return of 'a
+ | Fail of exn
+ | Sleep of 'a sleeper
+}
+and sleeper = {
+ waiters : 'a waiter_set;
+ <...etc>
+}
+```
 
     Thread has three main states:
 
@@ -981,10 +1017,12 @@ The toplevel will report the following type:
     Each thread executes until it needs to wait on a resource.  It creates
     a *task* to let it be woken up in the future.
 
-    type 'a t  (* thread *)
-    type 'a u  (* wakener *)
-    val wait : unit -> 'a t * 'a u
-    val wakeup : 'a u -> 'a -> unit
+```
+type 'a t  (* thread *)
+type 'a u  (* wakener *)
+val wait : unit -> 'a t * 'a u
+val wakeup : 'a u -> 'a -> unit
+```
 
     </script>
   </section>
@@ -997,22 +1035,25 @@ The toplevel will report the following type:
     Each thread executes until it needs to wait on a resource.  It creates
     a *task* to let it be woken up in the future.
 
-    type 'a t  (* thread *)
-    type 'a u  (* wakener *)
-    val wait : unit -> 'a t * 'a u
-    val wakeup : 'a u -> 'a -> unit
+```
+type 'a t  (* thread *)
+type 'a u  (* wakener *)
+val wait : unit -> 'a t * 'a u
+val wakeup : 'a u -> 'a -> unit
+```
 
     Tasks are a pair: a thread that sleeps until it is fulfilled via its wakener by calling `wakeup` on it.
 
-    let t1 =
-      t >>= fun x ->
-      print_endline x;
-      return ()
-    and t2 =
-      OS.sleep 2.0 >>= fun () ->
-      wakeup u "x";
-      return ()
-
+```
+let t1 =
+ t >>= fun x ->
+ print_endline x;
+ return ()
+and t2 =
+ OS.sleep 2.0 >>= fun () ->
+ wakeup u "x";
+ return ()
+```
     </script>
   </section>
 
@@ -1030,12 +1071,14 @@ The toplevel will report the following type:
     <br />
     The priority queue is a standard data structure ordered by duration.
 
-    module Sleep_queue =
-        Lwt_pqueue.Make(struct
-            type t = sleeper
-            let compare { time = t1 } { time = t2 } = compare t1 t2
-        end)
-    end
+```
+module Sleep_queue =
+ Lwt_pqueue.Make(struct
+  type t = sleeper
+  let compare { time = t1 } { time = t2 } = compare t1 t2
+ end)
+end
+```
 
     </script>
   </section>
@@ -1047,12 +1090,14 @@ The toplevel will report the following type:
     The `OS.main` function runs until all threads are blocked,
     and then drops into the `select` function to wait for the next timeout.
 
-    run main thread (threads register timeouts)
-    if result is Blocked then
-        T = head of priority queue
-        select() for T seconds
-        wakeup timeouts
-    repeat until main thread result is Done or Fail
+```
+run main thread (threads register timeouts)
+if result is Blocked then
+ T = head of priority queue
+ select() for T seconds
+ wakeup timeouts
+repeat until main thread result is Done or Fail
+```
 
      - This lets our sequential code be fully concurrent, without preemptive system threads.
      - Number of threads limited only by OCaml heap size.
@@ -1083,10 +1128,12 @@ The toplevel will report the following type:
 
     > **`select` in Unix** <=> **block entire virtual machine in Xen**
 
-    module OS = struct
-        val sleep : float -> unit Lwt.t
-        val run : 'a Lwt.t -> 'a
-    end
+```
+module OS = struct
+ val sleep : float -> unit Lwt.t
+ val run : 'a Lwt.t -> 'a
+end
+```
     </script>
   </section>
 
