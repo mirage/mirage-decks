@@ -97,6 +97,22 @@ for (;;) {
     <script type="text/template">
     ## A Possible Solution!
 
+    Can we disentangle the application from the operating system?
+
+    - Break up **OS logic into libraries**.  We chose **OCaml** for its powerful module system and simple runtime semantics.
+
+    - Build **applications as functors** across OS functionality such as I/O.
+
+    - Develop on Unix, but compile **specialized type-safe microkernels** for production use.
+
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## A Possible Solution!
+
     These slides are written in a library operating system called [MirageOS](http://openmirage.org):
 
     - Hosted on a <b>~1MB Xen microkernel written in statically
@@ -108,9 +124,9 @@ for (;;) {
     - The kernel is <b>running on the public cloud</b> on Amazon EC2, with
     the binaries small enough to be tracked in Git.
 
-    <br />Let's focus on cloud programming, and come back to the other uses later.
     </script>
   </section>
+
 </section>
 
 <section>
@@ -245,6 +261,25 @@ for (;;) {
 module Main (C: CONSOLE) = struct
 
  let start c =
+    ...
+end
+```
+
+`C` is an abstract module that implements the `CONSOLE` signature.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code
+
+      ```
+module Main (C: CONSOLE) = struct
+
+ let start c =
   C.log_s c "Hello Mirage World"
   >>= fun () ->
   let rec aux () =
@@ -257,6 +292,25 @@ module Main (C: CONSOLE) = struct
 
 end
 ```
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+      ## MirageOS Workflow
+
+      - Write a normal bit of OCaml source code
+      - Write a configuration file for the compilation
+
+      ```
+let () =
+  let unikernel = console @-> job in
+  ...
+      ```
+
+The `@->` combinator builds up a list of device driver types.
+
     </script>
   </section>
 
@@ -274,8 +328,11 @@ let () =
   register "console" [ job1 ]
       ```
 
+`job1` is a concrete job that defines an entry point and applies the `default_console` to the Hello World program earlier.
+
     </script>
   </section>
+
 
   <section data-markdown>
     <script type="text/template">
@@ -356,6 +413,46 @@ $ xl create -c mirage-www.conf
 
   <section data-markdown>
     <script type="text/template">
+    ## Jack of all deployments
+
+       This gets very cool with more complex applications like the live website: <https://github.com/mirage/mirage-www/blob/master/src/config.ml>
+
+```
+let main =
+ let libraries = [ "cow.syntax"; "cowabloga" ] in
+ let packages = [ "cow";"cowabloga" ] in
+ foreign ~libraries ~packages "Dispatch.Main"
+  (console @-> kv_ro @-> kv_ro @-> http @-> job)
+```
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Jack of all deployments
+
+       This gets very cool with more complex applications like the live website: <https://github.com/mirage/mirage-www/blob/master/src/config.ml>
+
+```
+let main =
+ let libraries = [ "cow.syntax"; "cowabloga" ] in
+ let packages = [ "cow";"cowabloga" ] in
+ foreign ~libraries ~packages "Dispatch.Main"
+  (console @-> kv_ro @-> kv_ro @-> http @-> job)
+```
+
+   Website can be recompiled as:
+
+- Xen unikernel with all data built into image.
+- Xen unikernel with data dynamically read from disk.
+- Unix binary with data passed through to filesystem.
+- Unix binary with OCaml userlevel TCP/IP stack.
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
       ## Building these modules
 
       OPAM includes a SAT-solver to pick modules for a given hardware target *(can include Xen vs Linux dom0+Xen vs kFreeBSD)*
@@ -369,16 +466,6 @@ $ xl create -c mirage-www.conf
       - **[mirage/mirage-platform](https://github.com/mirage/mirage-platform)** - UNIX/Xen/NS3 versions of timer, shared memory and event channels.
 
     </script>
-  </section>
-
-  <section data-markdown>
-    <script type="text/template">
-      ## Progressive Specialisation
-
-      <img style="padding: 1ex 1em; max-width: 90%" src="specialisation.png" />
-
-    </script>
-
   </section>
 
 </section>
@@ -1326,81 +1413,6 @@ end
 
     </section>
 
-    <section>
-      <section data-markdown>
-        <script type="text/template">
-          ## Techniques
-
-          Several implementation techniques give rise to these benefits:
-
-          + Simplified memory management
-          + Zero-copy IO buffer management
-          + Hypervisor security extension for _VM sealing_ (`W^X`)
-
-        </script>
-      </section>
-
-      <section data-markdown>
-        <script type="text/template">
-          ## Kernel Memory Management
-
-          <img src="memory-model.png" />
-
-
-          <p class="fragment bubble"
-             style="top: -410pt; left: 195pt; width: 20em; font-size: 20pt">
-            Compiled native source code and runtime statically linked and boots
-            directly into Xen.
-          </p>
-
-          <p class="fragment bubble  right"
-             style="top: -390pt; left:-66pt; width: 12em; font-size: 20pt">
-            IO memory is mapped into a reserved area and can be distinguished.
-          </p>
-
-          <p class="fragment bubble  left"
-             style="top: -280pt; left: 320pt; width: 12em; font-size: 20pt">
-            OCaml heap is contiguous, with simpler write barriers as a result.
-          </p>
-
-        </script>
-      </section>
-
-
-      <section data-markdown>
-        <script type="text/template">
-          ## Buffer Management <small>Zero-Copy IO</small>
-
-          <img src="zero-copy-io.png">
-          </script>
-        </section>
-
-
-        <section data-markdown>
-          <script type="text/template">
-            ## Optional VM Sealing
-
-            + **Single address-space** and *no dynamic loading*
-              + `W^X` address space
-              + Address offsets are randomized at compile-time
-
-            <br />
-
-            + Dropping page table privileges:
-              + Added freeze hypercall called just before app starts
-              + Subsequent page table updates are rejected by Xen
-              + Exception for I/O mappings if they are non-exec and do not modify
-                any existing mappings
-
-            <br />
-
-            + Very easy in unikernels due to focus on __compile-time specialisation__
-            instead of _run-time complexity_
-
-          </script>
-        </section>
-      </section>
-
       <section>
         <section data-markdown>
           <script type="text/template">
@@ -1415,46 +1427,6 @@ end
             + a simple webserver,
             + an OpenFlow Switch, and
             + an OpenFlow Controller.
-
-          </script>
-        </section>
-
-        <section data-markdown>
-          <script type="text/template">
-            ## DNS Server Code
-
-            <pre style="box-shadow: none">
-              <code style="font-size:32px; line-height:1.1">
-
-            let main () =
-              lwt zones = read key "zones" "zone.db" in
-              Net.Manager.bind (fun mgr dev ->
-                let src = `any_addr, 53 in
-                Dns.Server.listen dev src zones
-              )
-
-              </code>
-            </pre>
-
-            <p class="fragment bubble "
-               style="top: -360pt; left:70pt; width:10em">
-              Cooperative threads as functions
-            </p>
-
-            <p class="fragment bubble "
-               style="top: -420pt; left:400pt; width:10em">
-              Statically evaluated configuration
-            </p>
-
-            <p class="fragment bubble  top"
-               style="top: -310pt; left:300pt; width:10em">
-              Functional callbacks
-            </p>
-
-            <p class="fragment bubble  top"
-               style="top:-310pt; left:0pt; width: 10em">
-              Libraries directly link to network stack
-            </p>
 
           </script>
         </section>
@@ -1571,6 +1543,7 @@ end
       ## Orchestration
 
       Deploying unikernels on the cloud is much like starting binaries in Unix.
+<http://amirchaudhry.com/from-jekyll-to-unikernel-in-fifty-lines/>
 
       + Contain a *precise* manifest of source code dependencies.
       + Type-checking compiler sits between the source code and the cloud.
@@ -1582,6 +1555,7 @@ end
         + Pull requests to source are built by **[Travis-CI](https://travis-ci.org)**
         + Resulting binary committed to **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
         + Cloud toolstack spawns VMs based on pushes there.
+
 
     </script>
   </section>
@@ -1606,28 +1580,9 @@ end
         + Seamless interop with legacy code through VMs.
       </script>
     </section>
-
-<!--
-     <section data-markdown>
-      <script type="text/template">
-       ## Pure OCaml Code <small>[github.com/mirage](http://github.com/mirage)</small>
-
-       + **Device drivers**
-          + xenstore, ring, grant tables, boot loader
-          + netfront, blkfront, vchan
-       + **Networking/Communication**
-          + IP/TCP/UDP/DHCP/DNS(SEC) (v4)
-          + HTTP, SSH, OpenFlow (controller/switch)
-          + VNC, TTY
-       + **Storage**
-          + NFS, FAT32, 9P, Git
-          + [arakoon.org](http://arakoon.org): multi-Paxos distributed k/v store
-      </script>
-    </section>
--->
     <section data-markdown>
     <script type="text/template">
-      ## MirageOS 1.0 - December 2013
+      ## MirageOS 1.1 - February 2014
 
       - It's not just the source code: __tools matter__ too.
           - Release efforts are focussed around usability of build/deployment.
@@ -1636,7 +1591,7 @@ end
 
       <br />
 
-      - OPAM now has **over 1800 packages** (559 unique)
+      - OPAM now has **over 2000 packages** (620+ unique)
           - lots of enthusiasm from the OCaml community!
           - growing corpus of re-usable code
           - a single place to discover functionality
@@ -1716,13 +1671,14 @@ end
       + Website, <http://www.openmirage.org>
       + Code, <http://github.com/mirage>
       + O'Reilly OCaml book, <http://realworldocaml.org>
+      + **Google Summer of Code** and <br />**Outreach Program for Women** open!
 
       + All development open and on GitHub:
          + **<https://github.com/mirage>**
          + **<https://github.com/xapi-project>**
          + **<https://github.com/xenserver>**
 
-      On behalf the core team of Thomas Gazagnaire, David Scott, Richard Mortier and Jon Ludlam, with extensive contributions from Haris Rotsos, Balraj Singh, Amir Chaudhry, Leo White, Jeremy Yallop, David Sheets and Vincent Bernardoff.  Professorial prodding from Jon Crowcroft and Steven Hand.
+      On behalf of Thomas Gazagnaire, David Scott, Richard Mortier.
       </script>
    </section>
 
