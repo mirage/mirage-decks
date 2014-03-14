@@ -1,5 +1,5 @@
 .DS_Store
-
+.*.swp
 src/main.ml
 src/Makefile
 
