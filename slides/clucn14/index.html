@@ -1,0 +1,180 @@
+<section data-markdown class="title center">
+  <script type="text/template">
+    # User Centric Networking: Nottingham/Cambridge Workplan
+
+    __Richard Mortier__
+    <small>
+      <richard.mortier@nottingham.ac.uk>, <http://keybase.io/mort>
+      </small>
+      <br />
+  </script>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Outline
+
+      + Signposts
+      + <http://keybase.io>
+      + UCN Work @ Nottingham
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Signposts
+
+      We want control of our online identities.
+
+      Use DNS to enable __personal clouds__, making it easy to deploy apps that
+      function securely and efficiently using our personal devices, connected
+      via the Internet edge.
+
+      Rely on DNS manipulation. But that's ok:
+
+      > "DNS servers can play games. As long as they appear to deliver a
+      > syntactically correct response to every query, they can fiddle the
+      > semantics."<span style="padding-left: 1em">&mdash; RFC3234</span>
+
+      + Active Edge Resolution: DNS
+      + Identity Management: DNS
+      + Programming Model
+
+      </div>
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Architecture
+
+      ![Signposts architecture](./arch.png)
+
+      At the edge, devices interconnect using tunnels created in response to
+      authenticated, confidential DNSCurve queries. Connections
+      access-controlled via authenticated query source.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Active Edge Resolution
+
+      + Incremental, parallel resolution via 0 TTL responses containing
+        multiple results
+      + Bootstrap trusted public keys between devices via resurrecting
+        duckling; no passwords during resolution
+      + Degrade gracefully from P2P to personal cloud service to shared
+        provider
+      + Resolution triggers tunnel establishment scripts; currently support
+        (__L2__) Tuntap/SSH, OpenVPN, (__L3__) IPSec, (__L4+__) Privoxy/Tor
+        via SOCKS
+      + Seamless operation with extra host support (e.g., OpenFlow)
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Identity Management
+
+      + Automatic, internal key management in a personal trust hierarchy
+        simplifies hygiene
+      + TSIG/SIG0 DNSSEC signatures used to demonstrate subnamespace authority
+      + Manage keys for SSH, PGP, *Curve in parallel
+      + Provides low-friction revocation, making roll-over usable by mortals
+        (?)
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Programming Model
+
+      Currently: Sockets API decouples <tt>getaddrinfo(3)</tt> from
+      <tt>connect(2)</tt>, so less powerful
+
+      &nbsp;
+
+      With Signposts:
+
+      + Applications bind names to flows in one call, separating connection
+        establishment from data transfer
+      + Signpost nodes select environmentally optimal routes via long-poll
+        DNSCurve updates
+      + Signpost resolver proxies DNS on <tt>localhost</tt>, late-binding
+        lookups only when traffic is sent (e.g., <tt>TCP SYN</tt>)
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## <http://keybase.io>
+
+      Public key directory.
+
+      Will store private keys if you let them.  
+      _(encrypted, possibly using in-browser crypto)_
+
+      Social network proof-of-identity (github, twitter).
+
+      API exists, under rapid development.
+
+      Invites available...
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Nottingham UCN-Related Work
+
+      + Data collection: Tom Lodge, Tosh Brown, INRIA (Renata, Anna)
+      + Identity management: Dominic Price (CREATe)
+      + Dataware: Tom Lodge
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## Discussion...
+
+      ...and then Pub!
+
+    </script>
+  </section>
+</section>
