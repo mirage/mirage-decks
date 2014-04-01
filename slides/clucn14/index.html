@@ -1,12 +1,13 @@
 <section data-markdown class="title center">
   <script type="text/template">
-    # User Centric Networking: Nottingham/Cambridge Workplan
+    # User-Centric Networking: Nottingham/Cambridge Workplan
 
     __Richard Mortier__
     <small>
       <richard.mortier@nottingham.ac.uk>, <http://keybase.io/mort>
-      </small>
-      <br />
+    </small>
+    <br />
+
   </script>
 </section>
 
@@ -15,9 +16,75 @@
     <script type="text/template">
       ## Outline
 
+      + UCN: The Project
       + Signposts
       + <http://keybase.io>
-      + UCN Work @ Nottingham
+      + Status of UCN-relevant work @ Nottingham
+    </script>
+  </section>
+</section>
+
+<section>
+  <section data-markdown>
+    <script type="text/template">
+      ## User-Centric Networking, UCN
+
+      EU FP7-ICT-2013-10-1.6 STREP.
+
+      <div class="block">
+        <h3>Fundamental research challenge:</h3>
+        <p>
+          how to re-center future connected media services on the user and
+          develop improved content recommendation and content delivery
+          frameworks by taking into account rich user context information.
+          ...
+          how to enable intuitive and frictionless interaction with networked
+          multimedia applications and services.
+        </p>
+      </div>
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## The Goal
+
+      The goal of this project is to design a __UCN system architecture for
+      user-centric connected media services__. We will build UCN upon three
+      complementary research pillars:
+
+      1. understanding user context,
+      2. profiling and predicting user interests,
+      3. and personalizing content delivery.
+
+      &nbsp;
+      The key enabling abstraction in the UCN vision is that of a "Personal
+      Information Hub" (PIH).
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Personal Information Hub
+
+      We will construct a __scalable, provenance-tracking__ Private Storage
+      Container that can hold a __lifetime's worth of personal data__, and
+      __provide fast search capabilities to other services__.
+
+      The Private Storage Container will likely __reside in a non-expert,
+      resource-constrained environment__. It needs to be __largely
+      self-configuring__ and to __integrate power-management and sleep modes__,
+      where appropriate.
+
+      <div class="block">
+        <h3>Technologies:</h3>
+        <p>
+          Mirage + Signposts + Irminsule + ...
+        </p>
+      </div>
+
+      Needs to be deployable. Needs to support recommendation systems, etc.
     </script>
   </section>
 </section>
@@ -62,7 +129,15 @@
 
   <section data-markdown>
     <script type="text/template">
-      ## Active Edge Resolution
+      ## Key Components
+
+      Active Name Resolution
+
+      Identity Management
+
+
+
+      Active Edge Resolution
 
       + Incremental, parallel resolution via 0 TTL responses containing
         multiple results
@@ -74,11 +149,8 @@
         (__L2__) Tuntap/SSH, OpenVPN, (__L3__) IPSec, (__L4+__) Privoxy/Tor
         via SOCKS
       + Seamless operation with extra host support (e.g., OpenFlow)
-    </script>
-  </section>
 
-  <section data-markdown>
-    <script type="text/template">
+
       ## Identity Management
 
       + Automatic, internal key management in a personal trust hierarchy
@@ -87,12 +159,7 @@
       + Manage keys for SSH, PGP, *Curve in parallel
       + Provides low-friction revocation, making roll-over usable by mortals
         (?)
-    </script>
-  </section>
 
-
-  <section data-markdown>
-    <script type="text/template">
       ## Programming Model
 
       Currently: Sockets API decouples <tt>getaddrinfo(3)</tt> from
@@ -108,6 +175,7 @@
         DNSCurve updates
       + Signpost resolver proxies DNS on <tt>localhost</tt>, late-binding
         lookups only when traffic is sent (e.g., <tt>TCP SYN</tt>)
+
     </script>
   </section>
 </section>
@@ -119,10 +187,10 @@
 
       Public key directory.
 
-      Will store private keys if you let them.  
-      _(encrypted, possibly using in-browser crypto)_
+      Will store private keys &mdash; (encrypted, possibly using in-browser
+      crypto) &mdash; if you let them.
 
-      Social network proof-of-identity (github, twitter).
+      Social network proof-of-identity (github, twitter) and id relationships.
 
       API exists, under rapid development.
 
@@ -145,12 +213,31 @@
 
   <section data-markdown>
     <script type="text/template">
+      ## Data Collection
+
+      Helping to build a better HostView. Want to identify __activities__ in
+      (augmented) network data.
+
+      Collation of multiple data sources, but require ground truth for
+      labelling ([W-MUST'11, Brundell et
+      al](http://www.cs.nott.ac.uk/~rmm/papers/pdf/wmust11-homework.pdf).)
+
+      Ethnographic studies, including presentation of trace data back to
+      participants for interactive labelling.
+
+      UK ethics approval in process. French process awaits.
 
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
+      ## Identity Management
+
+      Comes out of the [CREATe](http://create.ac.uk) programme (RCUK Centre for
+      Copyright and New Business Models in the Creative Economy).
+
+      
 
     </script>
   </section>
