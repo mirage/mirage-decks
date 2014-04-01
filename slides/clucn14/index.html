@@ -29,7 +29,7 @@
     <script type="text/template">
       ## User-Centric Networking, UCN
 
-      EU FP7-ICT-2013-10-1.6 STREP.
+      EU FP7-ICT-2013-10-1.6 STREP
 
       <div class="block">
         <h3>Fundamental research challenge:</h3>
@@ -37,7 +37,9 @@
           how to re-center future connected media services on the user and
           develop improved content recommendation and content delivery
           frameworks by taking into account rich user context information.
+          <br/>
           ...
+          <br/>
           how to enable intuitive and frictionless interaction with networked
           multimedia applications and services.
         </p>
@@ -57,10 +59,9 @@
       2. profiling and predicting user interests,
       3. and personalizing content delivery.
 
-      &nbsp;
-      The key enabling abstraction in the UCN vision is that of a "Personal
-      Information Hub" (PIH).
+      <div><p></p></div>
 
+      > The key enabling abstraction is that of a __Personal Information Hub__
     </script>
   </section>
 
@@ -83,8 +84,8 @@
           Mirage + Signposts + Irminsule + ...
         </p>
       </div>
+      Needs to be deployable. Needs to support apps, eg., recsys.
 
-      Needs to be deployable. Needs to support recommendation systems, etc.
     </script>
   </section>
 </section>
@@ -100,7 +101,8 @@
       function securely and efficiently using our personal devices, connected
       via the Internet edge.
 
-      Rely on DNS manipulation. But that's ok:
+      Rely on naming &ndash; specifically DNS &ndash; manipulation. But that's
+      ok:
 
       > "DNS servers can play games. As long as they appear to deliver a
       > syntactically correct response to every query, they can fiddle the
@@ -204,9 +206,14 @@
     <script type="text/template">
       ## Nottingham UCN-Related Work
 
-      + Data collection: Tom Lodge, Tosh Brown, INRIA (Renata, Anna)
-      + Identity management: Dominic Price (CREATe)
-      + Dataware: Tom Lodge
+      __Data collection__: <br/>
+      Tom Lodge, Tosh Brown, Renata Teixeira (INRIA), Anna-Kaisa (INRIA)
+
+      __Identity management__: <br/>
+      Dominic Price (CREATe)
+
+      __Dataware__: <br/>
+      Tom Lodge, Neelam Bhandari, Sultan Alanazi, James Goulding
 
     </script>
   </section>
@@ -216,14 +223,16 @@
       ## Data Collection
 
       Helping to build a better HostView. Want to identify __activities__ in
-      (augmented) network data.
+      (augmented) network data. \[[SIGCOMM W-MUST'11, Brundell et
+      al](http://www.cs.nott.ac.uk/~rmm/papers/pdf/wmust11-homework.pdf)]
 
       Collation of multiple data sources, but require ground truth for
-      labelling ([W-MUST'11, Brundell et
-      al](http://www.cs.nott.ac.uk/~rmm/papers/pdf/wmust11-homework.pdf).)
+      labelling.
 
       Ethnographic studies, including presentation of trace data back to
       participants for interactive labelling.
+
+      Data collection via VPN, with on-device process and location monitoring.
 
       UK ethics approval in process. French process awaits.
 
@@ -237,20 +246,39 @@
       Comes out of the [CREATe](http://create.ac.uk) programme (RCUK Centre for
       Copyright and New Business Models in the Creative Economy).
 
-      
+      Clearing house and social smarts for all social network interactions:
+
+      + Content is emails + MIME attachments in `maildir` format
+      + Currently rx/tx: Twitter, Facebook
+      + Mutt as UI
+      + Keybase integration in progress
+
+      <br/>Next steps:
+
+      + Contact management
+      + IMAP (+POP?) integration
 
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
+      ## Dataware
 
+      ![dataware](./dataware.jpg)
+
+      _Authorised data processing requests are executed on the hub after
+      signing by the catalog._
     </script>
   </section>
 
   <section data-markdown>
     <script type="text/template">
+      ## Dataware
 
+      <img src="./hihub.jpg" style="height:400px"/>
+
+      _Prototype is a modified home router plus some energy monitoring._
     </script>
   </section>
 </section>
@@ -260,6 +288,13 @@
     <script type="text/template">
       ## Discussion...
 
+      We need a Plan&trade;
+
+      + What are we building?
+      + What are the use cases?
+      + What is the timeline?
+
+      <br/>
       ...and then Pub!
 
     </script>
