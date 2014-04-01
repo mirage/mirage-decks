@@ -9,3 +9,7 @@ src/mir-main
 src/main.native
 
 assets/reveal-2.4.0/css/reveal.css
+/log
+/src/log
+/src/mir-www
+/src/www.xl

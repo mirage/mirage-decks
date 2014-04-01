@@ -22,7 +22,7 @@ let fs =
   | `Crunch, `Xen -> crunch "../assets"
   | `Crunch, `Unix -> direct_kv_ro "../assets"
 
-let tmpl = 
+let tmpl =
   match mode, get_mode () with
   | `Fat, _    -> fat_ro "../slides"
   | `Crunch, `Xen -> crunch "../slides"
