@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <section data-markdown class="title center">
   <script type="text/template">
     # User-Centric Networking: Nottingham/Cambridge Workplan
@@ -70,7 +71,7 @@
       ## Personal Information Hub
 
       We will construct a __scalable, provenance-tracking__ Private Storage
-      Container that can hold a __lifetime's worth of personal data__, and
+      Container that can hold a __lifetime&rsquo;s worth of personal data__, and
       __provide fast search capabilities to other services__.
 
       The Private Storage Container will likely __reside in a non-expert,
@@ -104,13 +105,13 @@
       Rely on naming &ndash; specifically DNS &ndash; manipulation. But that's
       ok:
 
-      > "DNS servers can play games. As long as they appear to deliver a
+      > &ldquo;DNS servers can play games. As long as they appear to deliver a
       > syntactically correct response to every query, they can fiddle the
-      > semantics."<span style="padding-left: 1em">&mdash; RFC3234</span>
+      > semantics.&rdquo;<span style="padding-left: 1em">&mdash; RFC3234</span>
 
-      + Active Edge Resolution: DNS
-      + Identity Management: DNS
-      + Programming Model
+      + Active Name Resolution: DNS
+      + Identity Management: DNSSEC+DNSCurve
+      + Programming Model: `libfable`
 
       </div>
     </script>
@@ -123,8 +124,8 @@
       ![Signposts architecture](./arch.png)
 
       At the edge, devices interconnect using tunnels created in response to
-      authenticated, confidential DNSCurve queries. Connections
-      access-controlled via authenticated query source.
+      authenticated (DNSSEC), confidential (DNSCurve) queries. Connections
+      access-controlled via authenticated (DNSSEC) query source.
 
     </script>
   </section>
@@ -133,50 +134,25 @@
     <script type="text/template">
       ## Key Components
 
-      Active Name Resolution
+      __Identity Management__
 
-      Identity Management
+      + _Personal Trust Hierarchy_: Automate key management for SSH, PGP, ...
+      + _Bootstrap Devices_: Establish public keys; passwordless resolution
 
+      ----
 
+      __Active Name Resolution__
 
-      Active Edge Resolution
-
-      + Incremental, parallel resolution via 0 TTL responses containing
-        multiple results
-      + Bootstrap trusted public keys between devices via resurrecting
-        duckling; no passwords during resolution
-      + Degrade gracefully from P2P to personal cloud service to shared
+      + _Efficient_: Incremental, parallel resolution (0 TTL; many answers)
+      + _Graceful Degradation_: P2P&ndash;personal public resolver&ndash;shared
         provider
-      + Resolution triggers tunnel establishment scripts; currently support
-        (__L2__) Tuntap/SSH, OpenVPN, (__L3__) IPSec, (__L4+__) Privoxy/Tor
-        via SOCKS
-      + Seamless operation with extra host support (e.g., OpenFlow)
+      + _Seamless Operation_: With extra host support (e.g., OpenFlow)
 
+      ----
 
-      ## Identity Management
-
-      + Automatic, internal key management in a personal trust hierarchy
-        simplifies hygiene
-      + TSIG/SIG0 DNSSEC signatures used to demonstrate subnamespace authority
-      + Manage keys for SSH, PGP, *Curve in parallel
-      + Provides low-friction revocation, making roll-over usable by mortals
-        (?)
-
-      ## Programming Model
-
-      Currently: Sockets API decouples <tt>getaddrinfo(3)</tt> from
-      <tt>connect(2)</tt>, so less powerful
-
-      &nbsp;
-
-      With Signposts:
-
-      + Applications bind names to flows in one call, separating connection
-        establishment from data transfer
-      + Signpost nodes select environmentally optimal routes via long-poll
-        DNSCurve updates
-      + Signpost resolver proxies DNS on <tt>localhost</tt>, late-binding
-        lookups only when traffic is sent (e.g., <tt>TCP SYN</tt>)
+      __Programming Model__: Couple name resolution (`getaddrinfo(3)`) with
+      connection (`connect(2)`) to remap connections without service
+      interruption (late binding, path optimisation).
 
     </script>
   </section>
@@ -192,7 +168,9 @@
       Will store private keys &mdash; (encrypted, possibly using in-browser
       crypto) &mdash; if you let them.
 
-      Social network proof-of-identity (github, twitter) and id relationships.
+      Social network proof-of-identity (github, twitter).
+
+      Track/tracked relationships.
 
       API exists, under rapid development.
 
@@ -209,11 +187,17 @@
       __Data collection__: <br/>
       Tom Lodge, Tosh Brown, Renata Teixeira (INRIA), Anna-Kaisa (INRIA)
 
+      ----
+
       __Identity management__: <br/>
       Dominic Price (CREATe)
 
+      ----
+
       __Dataware__: <br/>
       Tom Lodge, Neelam Bhandari, Sultan Alanazi, James Goulding
+
+      ----
 
     </script>
   </section>
@@ -225,6 +209,8 @@
       Helping to build a better HostView. Want to identify __activities__ in
       (augmented) network data. \[[SIGCOMM W-MUST'11, Brundell et
       al](http://www.cs.nott.ac.uk/~rmm/papers/pdf/wmust11-homework.pdf)]
+
+      ----
 
       Collation of multiple data sources, but require ground truth for
       labelling.
@@ -250,7 +236,7 @@
 
       + Content is emails + MIME attachments in `maildir` format
       + Currently rx/tx: Twitter, Facebook
-      + Mutt as UI
+      + Mutt as UI (currently!)
       + Keybase integration in progress
 
       <br/>Next steps:
@@ -267,8 +253,8 @@
 
       ![dataware](./dataware.jpg)
 
-      _Authorised data processing requests are executed on the hub after
-      signing by the catalog._
+      Authorised data processing requests are executed on the hub after signing
+      by the catalog.
     </script>
   </section>
 
@@ -278,7 +264,7 @@
 
       <img src="./hihub.jpg" style="height:400px"/>
 
-      _Prototype is a modified home router plus some energy monitoring._
+      Prototype is a modified home router plus some energy monitoring.
     </script>
   </section>
 </section>
@@ -288,11 +274,12 @@
     <script type="text/template">
       ## Discussion...
 
-      We need a Plan&trade;
+      We need a *__Plan&trade;__*
 
-      + What are we building?
       + What are the use cases?
-      + What is the timeline?
+      + What are we building?
+      + How are we supporting it?
+      + What are the timelines?
 
       <br/>
       ...and then Pub!
