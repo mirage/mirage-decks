@@ -213,7 +213,7 @@ let index ~req ~path =
           <link rel="stylesheet" href="/css/magula.css"> </link>
           <link rel="stylesheet" href="/css/site.css" media="all"> </link>
 
-          <link rel="stylesheet" href="/css/site.css"> </link>
+          <link rel="stylesheet" href="/css/decks.css"> </link>
           <script src="/js/vendor/custom.modernizr.js"> </script>
           <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet" type="text/css"> </link>
         </head>
