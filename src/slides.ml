@@ -209,9 +209,9 @@ let index ~req ~path =
           <title>openmirage :: slide decks</title>
           <meta name="description" content="OpenMirage presentations and lectures" />
 
-          <link rel="stylesheet" href="http://openmirage.org/css/foundation.min.css"> </link>
-          <link rel="stylesheet" href="http://openmirage.org/css/magula.css"> </link>
-          <link rel="stylesheet" href="http://openmirage.org/css/site.css" media="all"> </link>
+          <link rel="stylesheet" href="/css/foundation.min.css"> </link>
+          <link rel="stylesheet" href="/css/magula.css"> </link>
+          <link rel="stylesheet" href="/css/site.css" media="all"> </link>
 
           <link rel="stylesheet" href="/css/site.css"> </link>
           <script src="/js/vendor/custom.modernizr.js"> </script>
