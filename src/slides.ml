@@ -75,13 +75,18 @@ end
 let decks =
   let open Deck in
   [
+    { permalink = "clucn14-irminsule";
+      given = Date.t (2014, 04, 02);
+      speakers = [People.thomas];
+      venue = "Cambridge Computer Lab";
+      title = "Irminsule - Status Report";
+    };
     { permalink = "clucn14";
       given = Date.t (2014, 04, 02);
       speakers = [People.mort; People.anil];
       venue = "Cambridge Computer Lab";
       title = "Nottingham/Cambridge UCN Kickoff";
     };
-
     { permalink = "fpx14";
       given = Date.t (2014, 03, 14);
       speakers = [People.anil];
