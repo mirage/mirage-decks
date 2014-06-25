@@ -75,6 +75,12 @@ end
 let decks =
   let open Deck in
   [
+    { permalink = "cl-mirage20";
+      given = Date.t (2014, 06, 26);
+      speakers = [People.anil];
+      venue = "Cambridge Computer Lab";
+      title = "Mirage 2.0: less is more";
+    };
     { permalink = "clucn14-irminsule";
       given = Date.t (2014, 04, 02);
       speakers = [People.thomas];
