@@ -95,7 +95,7 @@ for (;;) {
     <script type="text/template">
     ## Multiscale Principles
 
-    Can we disentangle the application from the operating system?
+    Can we **disentangle the application from the operating system**?
 
 
     - Break up core OS logic into modular libraries.
@@ -596,7 +596,11 @@ let job =
   (console @-> kv_ro @-> kv_ro @-> http @-> job)
 ```
 
-The device drivers here represent a *logging console*, two *key-value stores* (templates and HTML files) and the *HTTP service*.
+The device drivers here represent:
+
+  * one *logging console*
+  * two *key-value stores* (templates and HTML files) 
+  * the *HTTP service*.
 
     </script>
   </section>
@@ -616,7 +620,7 @@ let job =
   (console @-> kv_ro @-> kv_ro @-> http @-> job)
 ```
 
-   Website can be recompiled as:
+   Website can be recompiled in many forms:
 
 - Xen unikernel with all data built into image.
 - Xen unikernel with data dynamically read from disk.
@@ -852,6 +856,25 @@ let job =
       </script>
     </section>
 
+ <section data-markdown>
+     <script type="text/template">
+      ## Lessons learnt from 1.0
+
+      + **Open source tech transfer was vital**
+        + Community (industry+academia) is driving adoption.
+        + No one group can build something of this scale.
+      + **No distributed computing model**
+        + Single vCPU unikernels are useful but limited.
+        + Next version must include a distribution model.
+        + But which one?
+      + **Too specialized to Xen**
+        + Library model requires at least one other backend.
+        + The (virtual) hardware panopticon is bewildering.
+        + Need a flexible foreign function interface to legacy code.
+      </script>
+    </section>
+
+
   <section data-markdown>
     <script type="text/template">
       ## To the Edge of the Cloud
@@ -876,11 +899,11 @@ let job =
         - Our personal data moving onto edge ARM devices.
         - Self-scaling servers that spawn VMs in response to demand.
         - ARM Raspberry Pi protocol servers.
-        - Security less of a problem due to dependency tracking.
+        - Doesn't require a dedicated central security team.
 
       <br />
 
-      - __Network as a Service__
+      - __Network as a Service__ (EPSRC, EU FP7 Trilogy 2)
         - Data centre applications customize their network needs.
         - Operations over big data can specialize to workloads.
         - Exploring the hardware/software divide.
@@ -958,10 +981,10 @@ let job =
 
       <br />
 
-      - Application stores data in an immutable DAG format (filesystem-like).
-      - Distributed VMs can fork the graph, and merge back.
-      - Datastructures are built up with precise consistency semantics.
-      - Backend support for in-memory, Git and HTTP/REST stores.
+      - Application stores data in an **immutable DAG** (filesystem-like).
+      - Distributed VMs can **fork and merge** the graph.
+      - Datastructures are built up with **precise consistency semantics**.
+      - **Backend support** for in-memory, Git and HTTP/REST stores.
 
       <br/>Mirage unikernels thus version control all their data,
       and have a **distributed provenance graph** of all activities.
@@ -971,23 +994,53 @@ let job =
 
   <section data-markdown>
     <script type="text/template">
-      ## Example: Irmin to control Xen
+      ## Usecase: Disaggregating Xen
 
-      - Coordinating Xen virtual machines is security- and latency-critical, and
-        deployed in millions of hosts worldwide.
+      <img src="architecture.png" height="700" />
 
-      - Extremely hard to debug distributed protocols, with subtle transaction semantics.
+    </script>
+  </section>
 
-      - Whole system first ported to OCaml (*ICFP 2009*), and now Irmin. 
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Usecase: Irmin to control Xen
+
+      - Coordinating Xen VMs is **security- and latency-critical**, and
+        errors affect hundreds of millions of deployments.
+
+      - Extremely **hard to debug distributed protocols**, with subtle transaction semantics.
+
+      - We ported the toolstack ported to OCaml *(ICFP 2009)*, and now Mirage/Irmin. 
       <https://www.youtube.com/watch?v=DSzvFwIVm5s>
 
       - Step on the path towards **dust clouds** of millions of unikernels running for seconds.
 
     </script>
   </section>
+
 </section>
 
 <section>
+  <section data-markdown>
+      <script type="text/template">
+     ## Everything is distributed 
+
+     The world is moving towards **multiscale distribution**:
+
+     * Multikernels (Barrelfish) demonstrated this for multicore.
+     * Web architectures are multihop client/server.
+     * Big data processing requires clusters of commodity computers.
+
+     <br />
+     But what about other areas?  MirageOS can be embedded *within*
+     a kernel, or inside a BIOS, and other exotic locations.
+
+     **A consensus on disaster waiting to happen?**
+</script>
+  </section>
+
+
   <section data-markdown>
       <script type="text/template">
      ## Interfacing with foreign code
@@ -995,6 +1048,7 @@ let job =
      Downside of library OS approach is trusting all local code.
      Foreign function interface is still possible though!
 
+     <br />
      Key insight is to **treat the C ABI just like a network protocol**.
 
        + Describe the *structure* of the foreign C functions.
@@ -1046,7 +1100,7 @@ let sigismember = foreign "sigismember" (ptr sigset_t @-> int @-> returning int)
       * NaCL, Nanomsg, FSEvents, Picosat, Linenoise, Gdal, SASL, ZeroMQ, MathSAT, nvML, OpenSSL, LibLinear, LZ4, zbar, SDL, Adafruit LCDs, OpenGL, Statvfs
  
       <br />
-      Is the recommended FFI model in Real World OCaml, so not a line of C is needed to bind to libraries now.
+      Is the recommended FFI model in Real World OCaml, so not a line of C is needed to bind to libraries now!
 
       **Online**: <https://github.com/ocamllabs/ocaml-ctypes>
       </script>
@@ -1054,6 +1108,44 @@ let sigismember = foreign "sigismember" (ptr sigset_t @-> int @-> returning int)
 </section>
 
 <section>
+
+  <section data-markdown>
+     <script type="text/template">
+       ## Summary
+ 
+       > Unikernels combine the best of virtualization, programming languages and library OS techniques to deliver a way of building systems that can withstand the evolution of hardware and software.
+
+       <br />
+
+       * Emphasis on **functional correctness** in the small via modular libraries.
+       * **Explicit modularity** assembles small components into large systems.
+       * Provides a **migration path** from the Unix world to the unikernel one.
+
+     </script>
+  </section>
+
+   <section data-markdown>
+    <script type="text/template">
+    ## Functional Systems
+
+    > It’s considered good programming practice to focus
+    > on compositionality: build software out of small, well-defined
+    > modules that combine to give rise to other modules with different
+    > behaviors.
+    >
+    > This is simply too difficult to do in distributed systems. Why?
+
+    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+-- Marius Eriksen, Principal Engineer, Twitter* *([source](http://monkey.org/~marius/sosp13.html))
+
+    > Programmers are digital choreographers, carefully 
+    > balancing correctness, modularity, concurrency, 
+    > and performance. Real World OCaml **teaches you how 
+    > to perform this balancing act in simple, elegant ways**.
+
+    </script>
+  </section>
+
 
   <section data-markdown>
       <script type="text/template">
@@ -1070,7 +1162,11 @@ let sigismember = foreign "sigismember" (ptr sigset_t @-> int @-> returning int)
          + **<https://github.com/xenserver>**
 
        <br />
-       Communications of the ACM Article in Jan 2014 issue for more background.
+       Communications of the ACM Article (Jan 2014) for background.
+<small>
+       Thanks to the
+       entire MirageOS development team, but particularly to Jeremy Yallop (Cmeleon), Thomas Gazagnaire (Irmin)
+       and Dave Scott (Xen) for their contributions to the new features. </small>
       </script>
    </section>
 
