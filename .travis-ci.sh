@@ -57,7 +57,6 @@ if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
     mkdir -p xen/$TRAVIS_COMMIT
     cp ../src/mir-www.xen ../src/config.ml xen/$TRAVIS_COMMIT
     bzip2 -9 xen/$TRAVIS_COMMIT/mir-www.xen
-    git pull --rebase
     echo $TRAVIS_COMMIT > xen/latest
     git add xen/$TRAVIS_COMMIT xen/latest
     ;;

@@ -58,7 +58,7 @@
     - **Kernel modules** to extend operating system functionality.
 
     <br />
-    Little opportunity for code re-use across these.
+    No code reuse means we repeat the mistakes of the past.
 
     </script>
   </section>
@@ -96,7 +96,6 @@ for (;;) {
     ## Multiscale Principles
 
     Can we **disentangle the application from the operating system**?
-
 
     - Break up core OS logic into modular libraries.
 
@@ -848,7 +847,7 @@ let job =
         + Safe modularity at scale is incredible.
       + __Rewriting protocols wasn&rsquo;t that hard__
         + An extremely useful learning experience.
-        + Clean slate often highlights research opportunities.
+        + Clean slate highlighted many research opportunities.
         + Pickup by industry has been vital.
       + __Unikernels fit perfectly on the cloud__
         + Internet protocol building blocks.
@@ -1014,7 +1013,7 @@ let job =
       - We ported the toolstack ported to OCaml *(ICFP 2009)*, and now Mirage/Irmin. 
       <https://www.youtube.com/watch?v=DSzvFwIVm5s>
 
-      - Step on the path towards **dust clouds** of millions of unikernels running for seconds.
+      - Provides ground-up tracing and provenance through a complex distributed environment.
 
     </script>
   </section>
@@ -1113,7 +1112,7 @@ let sigismember = foreign "sigismember" (ptr sigset_t @-> int @-> returning int)
      <script type="text/template">
        ## Summary
  
-       > Unikernels combine the best of virtualization, programming languages and library OS techniques to deliver a way of building systems that can withstand the evolution of hardware and software.
+       > Unikernels combine the best of virtualization, programming languages and library OS techniques to deliver a way of building secure, resilient systems that can withstand the evolution of hardware and software.
 
        <br />
 
