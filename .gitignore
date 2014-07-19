@@ -1,15 +1,16 @@
 .DS_Store
-.*.swp
-src/main.ml
+
+# mirage build outputs
+log
 src/Makefile
-
 src/_build/
-
-src/mir-main
+src/main.ml
 src/main.native
+src/mir-www
+src/www.xl
 
+# mirage run outputs
+src/log
+
+# un-minified reveal.css for debugging
 assets/reveal-2.4.0/css/reveal.css
-/log
-/src/log
-/src/mir-www
-/src/www.xl

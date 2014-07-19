@@ -13,5 +13,5 @@ Executable mirage_decks
   MainIs:             main.ml
   Install:            false
   BuildDepends:
-    mirage, cmdliner, cohttp, cohttp.mirage-unix, cow, cow.syntax,
+    mirage, cmdliner, cohttp, cohttp.lwt, cow, cow.syntax,
     cowabloga, omd

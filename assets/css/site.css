@@ -80,3 +80,9 @@ code {
 .date .min {
   display: none;
 }
+#footer {
+    z-index: 98;
+}
+.reveal #footer > a {
+    color: #333399;
+}

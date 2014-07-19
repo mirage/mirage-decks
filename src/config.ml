@@ -2,30 +2,28 @@ open Mirage
 
 (* If the Unix `MODE` is set, the choice of configuration changes:
    MODE=crunch (or nothing): use static filesystem via crunch
-   MODE=fat: use FAT and block device (run ./make-fat-images.sh)
- *)
+   MODE=fat: use FAT and block device (run ./make-fat-images.sh) *)
 let mode =
   try match String.lowercase (Unix.getenv "FS") with
     | "fat" -> `Fat
     | _     -> `Crunch
-  with Not_found ->
-    `Crunch
+  with Not_found -> `Crunch
 
 let fat_ro dir =
   kv_ro_of_fs (fat_of_files ~dir ())
 
-(** In Unix mode, use the passthrough filesystem for
-    files to avoid a huge crunch build time *)
+(* In Unix mode, use the passthrough filesystem for files to avoid a huge
+   crunch build time *)
 let fs =
   match mode, get_mode () with
-  | `Fat, _    -> fat_ro "../assets"
-  | `Crunch, `Xen -> crunch "../assets"
+  | `Fat,    _     -> fat_ro "../assets"
+  | `Crunch, `Xen  -> crunch "../assets"
   | `Crunch, `Unix -> direct_kv_ro "../assets"
 
 let tmpl =
   match mode, get_mode () with
-  | `Fat, _    -> fat_ro "../slides"
-  | `Crunch, `Xen -> crunch "../slides"
+  | `Fat,    _     -> fat_ro "../slides"
+  | `Crunch, `Xen  -> crunch "../slides"
   | `Crunch, `Unix -> direct_kv_ro "../slides"
 
 let net =
