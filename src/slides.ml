@@ -25,6 +25,12 @@ let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 let decks =
   let open Deck in
   [
+    { permalink = "oscon14";
+      given = Date.t (2014, 07, 24);
+      speakers = [People.mort];
+      venue = "OSCON 2014";
+      title = "Nymote: Git Your Own Cloud Here";
+    };
     { permalink = "cl-mirage20";
       given = Date.t (2014, 06, 26);
       speakers = [People.anil];
@@ -200,7 +206,8 @@ let index ~req ~path =
 
           <link rel="stylesheet" href="/css/decks.css"> </link>
           <script src="/js/vendor/custom.modernizr.js"> </script>
-          <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet" type="text/css"> </link>
+          <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700"
+                rel="stylesheet" type="text/css"> </link>
         </head>
         <body>
           <div class="contain-to-grid fixed">
