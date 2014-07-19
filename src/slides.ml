@@ -22,56 +22,6 @@ open Lwt
 
 let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 
-module Deck = struct
-  module Date = struct
-
-    type t = {
-      year: int;
-      month: int;
-      day: int;
-    } with xml
-
-    let t (year, month, day) = { year; month; day }
-
-    let to_html d =
-      let xml_of_month m =
-        let str = match m with
-          | 1  -> "Jan" | 2  -> "Feb" | 3  -> "Mar" | 4  -> "Apr"
-          | 5  -> "May" | 6  -> "Jun" | 7  -> "Jul" | 8  -> "Aug"
-          | 9  -> "Sep" | 10 -> "Oct" | 11 -> "Nov" | 12 -> "Dec"
-          | _  -> "???" in
-        <:xml<$str:str$>>
-      in
-      <:xml<
-        <div class="date">
-          <div class="month">$xml_of_month d.month$</div>
-          <div class="day">$int:d.day$</div>
-          <div class="year">$int:d.year$</div>
-        </div>
-      >>
-
-    let compare {year=ya;month=ma;day=da} {year=yb;month=mb;day=db} =
-      match ya - yb with
-      | 0 -> (match ma - mb with
-          | 0 -> da - db
-          | n -> n
-        )
-      | n -> n
-
-  end
-
-  type t = {
-    permalink: string;
-    given: Date.t;
-    speakers: Atom.author list;
-    venue: string;
-    title: string;
-  }
-
-  let compare a b = Date.compare b.given a.given
-
-end
-
 let decks =
   let open Deck in
   [
@@ -277,63 +227,12 @@ let index ~req ~path =
   in
   return (Foundation.page ~body)
 
-module Reveal = struct
-
-  let head ~deck =
-    let open Deck in
-    let speakers = deck.speakers
-                   |> List.map (fun p -> p.Atom.name)
-                   |> String.concat ", "
-    in
-    let description = deck.venue in
-    let title =
-      "openmirage.org | decks | " ^ " [ " ^ deck.permalink ^ " ]" ^ deck.title
-    in
-    let base = "/" ^ deck.permalink ^ "/" in
-    <:html<
-        <head>
-          <meta charset="utf-8" />
-          <title>$str:title$</title>
-          <meta name="description" content="$str:description$" />
-          <meta name="author" content="$str:speakers$" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-          <meta name="viewport"
-                content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-          <link rel="stylesheet" href="/reveal-2.4.0/css/reveal.min.css"> </link>
-          <link rel="stylesheet" href="/reveal-2.4.0/lib/css/zenburn.css"> </link>
-          <link rel="stylesheet" href="/reveal-2.4.0/css/print/pdf.css"
-                media="print"> </link>
-          <link rel="stylesheet" href="/reveal-2.4.0/css/theme/horizon.css" id="theme"
-                media="all"> </link>
-          <link rel="stylesheet" href="/css/site.css" media="all"> </link>
-
-          <base href=$str:base$ />
-
-          <!--[if lt IE 9]>
-              <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
-          <![endif]-->
-        </head>
-    >>
-
-end
-
-let (/) a b = a ^ "/" ^ b
-
 let deck readf ~deck =
-  let open Cowabloga in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  let read_template t = readf ("templates" / t) in
-
-  lwt preamble = read_template "preamble.html" in
-  let head = Cow.Html.to_string (Reveal.head d) in
-  lwt bodyh = read_template "reveal-2.4.0-header.html" in
-  lwt body = readf (d.Deck.permalink / "index.html") in
-  lwt bodyf = read_template "reveal-2.4.0-footer.html" in
-  return (preamble ^ head ^ bodyh ^ body ^ bodyf)
+  let title = "openmirage.org | decks | " in
+  Reveal240.page readf title d
 
 let asset readf ~deck ~asset =
+  let (/) a b = a ^ "/" ^ b in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   readf (d.Deck.permalink / asset)
