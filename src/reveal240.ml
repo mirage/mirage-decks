@@ -19,7 +19,7 @@ let page readf site d =
                    |> String.concat ", "
     in
     let description = d.venue in
-    let title = site ^ " [ " ^ d.permalink ^ " ]" ^ d.title in
+    let title = site ^ " [ " ^ d.permalink ^ " ] " ^ d.title in
     let base = "/" ^ d.permalink ^ "/" in
     <:html<
         <head>

@@ -37,12 +37,17 @@ module Date = struct
 
 end
 
+type style =
+  | Reveal240
+  | Reveal262
+
 type t = {
   permalink: string;
   given: Date.t;
   speakers: Atom.author list;
   venue: string;
   title: string;
+  style: style;
 }
 
 let compare a b = Date.compare b.given a.given

@@ -30,6 +30,7 @@ let decks =
       speakers = [People.anil];
       venue = "Cambridge Computer Lab";
       title = "Mirage 2.0: less is more";
+      style = Reveal240;
     };
 
     { permalink = "clucn14-irminsule";
@@ -37,6 +38,7 @@ let decks =
       speakers = [People.thomas];
       venue = "Cambridge Computer Lab";
       title = "Irminsule - Status Report";
+      style = Reveal240;
     };
 
     { permalink = "clucn14";
@@ -44,6 +46,7 @@ let decks =
       speakers = [People.mort; People.anil];
       venue = "Cambridge Computer Lab";
       title = "Nottingham/Cambridge UCN Kickoff";
+      style = Reveal240;
     };
 
     { permalink = "fpx14";
@@ -51,6 +54,7 @@ let decks =
       speakers = [People.anil];
       venue = "Functional Programming eXchange 2014";
       title = "My Other Internet is a Mirage";
+      style = Reveal240;
     };
 
     { permalink = "t2review14";
@@ -58,6 +62,7 @@ let decks =
       speakers = [People.anil];
       venue = "T2 EU Review ";
       title = "Liquid scheduling with unikernels";
+      style = Reveal240;
     };
 
     { permalink = "fosdem14";
@@ -65,6 +70,7 @@ let decks =
       speakers = [People.anil; People.mort];
       venue = "FOSDEM 2014";
       title = "MirageOS: compiling function library operating systems";
+      style = Reveal240;
     };
 
     { permalink = "clweds13";
@@ -72,6 +78,7 @@ let decks =
       speakers = [People.anil];
       venue = "Wednesday Seminar, Cambridge Computer Laboratory";
       title = "MirageOS: a functional library operating system";
+      style = Reveal240;
     };
 
     { permalink = "cam13";
@@ -79,6 +86,7 @@ let decks =
       speakers = [People.anil];
       venue = "ACS Lecture, Cambridge Computer Laboratory";
       title = "Modular Operating System Construction";
+      style = Reveal240;
     };
 
     { permalink = "fb13";
@@ -86,6 +94,7 @@ let decks =
       speakers = [People.anil];
       venue = "Facebook HQ";
       title = "MirageOS: compiling functional library operating systems";
+      style = Reveal240;
     };
 
     { permalink = "fop13";
@@ -93,6 +102,7 @@ let decks =
       speakers = [People.mort];
       venue = "FP Lab 2013";
       title = "MirageOS: Tomorrow's Cloud, Today";
+      style = Reveal240;
     };
 
     { permalink = "qcon13";
@@ -100,6 +110,7 @@ let decks =
       speakers = [People.anil];
       venue = "QCon 2013";
       title = "MirageOS: developer tools of tomorrow";
+      style = Reveal240;
     };
 
     { permalink = "xensummit13";
@@ -107,6 +118,7 @@ let decks =
       speakers = [People.anil; People.jon];
       venue = "XenSummit 2013";
       title = "MirageOS and XAPI 2013 Project Update";
+      style = Reveal240;
     };
 
     { permalink = "oscon13";
@@ -114,6 +126,7 @@ let decks =
       speakers = [People.mort; People.anil];
       venue = "OSCON 2013";
       title = "Mirage: Extreme Specialisation of Cloud Appliances";
+      style = Reveal240;
     };
 
     { permalink = "jslondon13";
@@ -121,6 +134,7 @@ let decks =
       speakers = [People.anil];
       venue = "Jane Street London 2013";
       title = "My Other Internet is a Mirage";
+      style = Reveal240;
     };
 
     { permalink = "foci13";
@@ -128,6 +142,7 @@ let decks =
       speakers = [People.anil];
       venue = "FOCI 2013";
       title = "Lost in the Edge: Finding Your Way with Signposts";
+      style = Reveal240;
     };
   ]
 
@@ -230,7 +245,10 @@ let index ~req ~path =
 let deck readf ~deck =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   let title = "openmirage.org | decks | " in
-  Reveal240.page readf title d
+  let open Deck in
+  match d.style with
+  | Reveal240 -> Reveal240.page readf title d
+  | Reveal262 -> Reveal262.page readf title d
 
 let asset readf ~deck ~asset =
   let (/) a b = a ^ "/" ^ b in
