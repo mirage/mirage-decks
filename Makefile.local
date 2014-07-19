@@ -38,7 +38,7 @@ run: build
 	$(MIRAGE) run src/config.ml $(RFLAGS)
 
 clean:
-	$(MIRAGE) clean src/config.ml --no-opam
+	$(MIRAGE) clean src/config.ml
 
 setup-clean: distclean
 	$(RM) Makefile.bak
