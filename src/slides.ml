@@ -30,6 +30,7 @@ let decks =
       speakers = [People.mort];
       venue = "OSCON 2014";
       title = "Nymote: Git Your Own Cloud Here";
+      style = Reveal262;
     };
     { permalink = "cl-mirage20";
       given = Date.t (2014, 06, 26);
