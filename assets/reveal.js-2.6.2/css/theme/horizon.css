@@ -225,3 +225,16 @@
     font-size: large;
     color: #777;
 }
+
+/** printing tweaks */
+
+@media print {
+    .reveal #footer {
+        display: none
+    }
+
+    .reveal .slide-number {
+        font-size: large;
+        color: #777;
+    }
+}

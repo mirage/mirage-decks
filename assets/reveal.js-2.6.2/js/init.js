@@ -34,5 +34,19 @@ Reveal.initialize({
         { src: "/reveal.js-2.6.2/plugin/highlight/highlight.js", async: true,
           callback: function() { hljs.initHighlightingOnLoad(); } },
     ]
+});
 
+Reveal.addEventListener("ready", function () {
+    if(window.location.search.match(/print-pdf/gi)) {
+        $('#theme').before(
+            '<link rel="stylesheet"'
+                + 'href="/reveal.js-2.6.2/css/print/pdf.css"> </link>'
+        );
+    }
+});
+
+$(window).on('hashchange', function() {
+    $('.slide-number').each(function (i, e) {
+        $(this).html($(this).html().replace(/-/g, '&mdash;'));
+    });
 });
