@@ -43,10 +43,17 @@ Reveal.addEventListener("ready", function () {
                 + 'href="/reveal.js-2.6.2/css/print/pdf.css"> </link>'
         );
     }
+    $('.slide-number').each(function (i, e) {
+        // no need to number title slide
+        $(this).html($(this).html().replace(/^0$/g, ''));
+    });
 });
 
 $(window).on('hashchange', function() {
     $('.slide-number').each(function (i, e) {
-        $(this).html($(this).html().replace(/-/g, '&mdash;'));
+        $(this).html($(this).html()
+                     .replace(/-/g, '&mdash;') // better separator
+                     .replace(/0/g, '') // no need to number title slide
+                    );
     });
 });
