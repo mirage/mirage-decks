@@ -47,7 +47,7 @@
     text-align: center;
 }
 
-#footer {
+.reveal #footer {
     background-size: auto 50px;
 
     width: 100%;
@@ -56,6 +56,12 @@
     position: fixed;
     bottom: 50%;
     left: -50%;
+
+    text-align: center;
+}
+
+.reveal #footer > a {
+    color: #333399;
 }
 
 /** headers */
@@ -128,7 +134,8 @@
             transform: translate3d( 0px, 60%, 0px ) rotateX( -90deg );
 }
 
-.reveal p a.roll span:after {
+.reveal p a.roll span:after,
+.reveal ul a.roll span:after {
     background: #264c66;
     color: #ffff65;
     padding-right: 2px;
@@ -138,6 +145,7 @@
         -ms-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg ) scale( 100% );
             transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg ) scale( 100% );
 }
+
 /** images */
 
 .reveal section img {
