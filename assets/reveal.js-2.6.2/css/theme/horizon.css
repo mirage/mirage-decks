@@ -1,12 +1,23 @@
-@import url(https://fonts.googleapis.com/css?family=Quicksand:400,700,400italic,700italic);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
 /**
- * Sky theme for reveal.js.
+ * Horizon DER theme for reveal.js.
  *
- * Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ * Based off Sky theme, Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
  */
+
+@import url(horizon-fonts.css);
+
+/** debug */
+/*
+.reveal .slides { border: 3px solid green; }
+.reveal .slides section { border: 3px solid red; }
+.reveal .slides section>section { border: 3px solid blue; }
+*/
+
+
+/*
 .reveal a:not(.image) {
   line-height: 1.3em; }
+*/
 
 /*********************************************
  * GLOBAL STYLES
@@ -22,7 +33,7 @@ body {
   background-color: #f7fbfc; }
 
 .reveal {
-  font-family: "Open Sans", sans-serif;
+  font-family: "PT Sans", sans-serif;
   font-size: 36px;
   font-weight: normal;
   letter-spacing: -0.02em;
@@ -32,6 +43,18 @@ body {
   color: white;
   background: #134674;
   text-shadow: none; }
+
+.reveal .slides {
+    text-align: left;
+}
+
+.reveal .slides > section.first {
+    text-align: center;
+}
+
+.reveal .slides > section p.stretch { 
+    text-align: center;
+}
 
 /*********************************************
  * HEADERS
@@ -44,14 +67,39 @@ body {
 .reveal h6 {
   margin: 0 0 20px 0;
   color: #333333;
-  font-family: "Quicksand", sans-serif;
+  font-family: "PT Sans Narrow", sans-serif;
   line-height: 0.9em;
   letter-spacing: -0.08em;
   text-transform: uppercase;
   text-shadow: none; }
 
 .reveal h1 {
-  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2); }
+    letter-spacing: 1;
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+}
+
+.reveal h2 {
+    padding: 1ex 0.2em 1ex 2.1em;
+    letter-spacing: -0.03em;
+    text-align: left;
+    margin-bottom: 1ex;
+    background-color: #2462aa;
+    background-image: url('horizon-starburst.png');
+    background-repeat: no-repeat;
+    background-size: 2.5em;
+    color: white;
+}
+
+#footer {
+    background-size: auto 50px;
+
+    width: 100%;
+    height: 50px;
+
+    position: fixed;
+    bottom: 50%;
+    left: -50%;
+}
 
 /*********************************************
  * LINKS
@@ -142,4 +190,6 @@ body {
  * SLIDE NUMBER
  *********************************************/
 .reveal .slide-number {
-  color: #3b759e; }
+    font-size: large;
+    color: #777;
+}

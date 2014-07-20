@@ -46,7 +46,7 @@ let page readf site d =
         </head>
 
         <section data-markdown="content.md"
-                 data-separator="^\n\n\n"
+                 data-separator="^\n\n----\n"
                  data-vertical="^\n\n"
                  data-notes="^Note:"
                  data-charset="iso-8859-15">
