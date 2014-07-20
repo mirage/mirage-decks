@@ -31,11 +31,14 @@ all: build
 configure:
 	$(MIRAGE) configure src/config.ml $(CFLAGS) --$(MODE)
 
-build: configure
+build:
 	$(MIRAGE) build src/config.ml $(BFLAGS)
 
 run: build
 	$(MIRAGE) run src/config.ml $(RFLAGS)
+
+depend:
+	cd src && make depend
 
 clean:
 	$(MIRAGE) clean src/config.ml
