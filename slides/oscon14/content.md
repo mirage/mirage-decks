@@ -1,4 +1,4 @@
-<!-- .slide: class="first" -->
+<!-- .slide: class="title" -->
 
 # __Nymote__: Git Your <br/>**Own** Cloud Here
 
@@ -8,8 +8,8 @@ Anil Madhavapeddy <small>University of Cambridge</small>
 Richard Mortier <small>University of Nottingham</small>
 [@mort\_\_\_](http://twitter.com/mort___)
 
-[http://openmirage.org](http://openmirage.org/)
-[http://nymote.org](http://nymote.org/)
+[http://openmirage.org/](http://openmirage.org/)<br/>
+[http://nymote.org/](http://nymote.org/)<br/>
 [http://decks.openmirage.org/oscon14/](http://decks.openmirage.org/oscon14/#/)
 
 <small>
@@ -28,7 +28,7 @@ We told you about [Mirage OS Unikernels](http://openmirage.org/):
 
 + high-performance __and__ type-safe,
 
-+ developed on Unix, deployed on Xen in the cloud
++ developed on Unix, deployed on Xen to the cloud.
 
 
 ## This year...
@@ -36,11 +36,13 @@ We told you about [Mirage OS Unikernels](http://openmirage.org/):
 Things have moved on apace!
 
 Thanks to an army of contributors, we'll show you how **we've improved Mirage's
-multiscale programming support**, so we can target:
+multiscale programming support**.
 
-  + Small ARM-based systems (smartphones, Internet-of-Things)
-  + Browsers
-  + The Cloud
+As well as Unix and Xen, we can now target:
+
+  + Small ARM-based systems (smartphones, Internet-of-Things),
+  + Browsers,
+  + FreeBSD via a kernel module backend.
 
 
 
@@ -55,10 +57,8 @@ These slides were written using Mirage on OSX:
   portable functor independent of OS dependencies.
 
 - You are seeing them as a unikernel **running here on a CubieBoard2**, and they
-  are also hosted **on Amazon's EC2 public cloud**, with the binaries small
+  are also hosted **[on Amazon's EC2 public cloud](http://decks.openmirage.org/oscon14)**, with the binaries small
   enough to be tracked in Git.
-
-[Mirage OS]: http://openmirage.org/
 
 
 ----
@@ -82,14 +82,18 @@ The enemy is **complexity**:
 + Applications are **deeply intertwined with system APIs**, and so lack
   portability.
 
-+ Modern operating systems offer **dynamic support** for **multiple running
-  applications**.
++ Modern operating systems offer **dynamic support** for **many users** to run
+  **multiple applications** simultaneously.
 
-It all offers **too much scope for uncontrolled interaction**!
+The result is **unbounded scope for uncontrolled interaction**! E.g.,
 
-+ Ad hoc application configuration under `/etc/`
-+ Choices of distribution and version
-+ System configuration details, e.g., firewalls
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
++ Choices of distribution and version.
++ Ad hoc application configuration under `/etc/`.
++ Platform configuration details, e.g., firewalls.
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
 
 
 ## Multiscale Principles
@@ -148,32 +152,49 @@ Can we disentangle applications from the operating system?
 </p>
 
 
+----
+
 ## Orchestration
 
-Unikernels are small and can be tracked in GitHub!
+**Unikernels are small and can be tracked in GitHub**. For example, for the
+  [Mirage website](http://openmirage.org/):
 
-+ Mirage website changes are committed to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**
++ Updates are merged to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**;
 
-+ Repository is built by **[Travis-CI](https://travis-ci.org)**
++ Repository is built by **[Travis-CI](https://travis-ci.org)**; if successful:
 
-+ Output pushed to **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
++ Output pushed to
+  **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**;
+  and our
 
 + Cloud toolstack spawns VMs based on pushes there.
 
-Our *entire* cloud-facing deployment is version-controlled from the source code
-up!
+**Our *entire* cloud-facing deployment is version-controlled from the source code
+up**!
 
 
 ----
 
 ## Wrapping Up
 
+Mirage OS 2.0 is an important step forward for multiscale programming,
+supporting **more**, and **more diverse**, **backends** with much **greater modularity**.
 
+We could not cover all of these components here -- for information about the
+others, see [the Mirage blog](http://openmirage.org/blog/):
+
++ __[Irmin](http://openmirage.org/blog/introducing-irmin)__, Git-like
+  distributed branchable storage.
++ __[OCaml-TLS](http://openmirage.org/blog/introducing-ocaml-tls)__, a from-scratch native OCaml TLS stack.
++ __[Vchan](http://openmirage.org/blog/update-on-vchan)__, for low-latency
+  inter-VM communication.
++ __[Ctypes](http://openmirage.org/blog/modular-foreign-function-bindings)__,
+  modular foreign function bindings for linking _C_ libraries.
 
 
 ----
 
-## <http://twitter.com/mort___>
+## <http://openmirage.org/>
 
 <p style="font-size: 48px; font-weight: bold;
           display: float; margin-top: 3em; padding: 2ex 2em;
@@ -182,5 +203,5 @@ up!
 </p>
 
 <p style="font-size: 40px; display: float; padding: 2ex 2em; text-align: center">
-  (...and please rate the talk!)
+  (_and please rate the talk_!)
 </p>
