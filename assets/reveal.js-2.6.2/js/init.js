@@ -2,6 +2,8 @@ Reveal.initialize({
     center: false,
     history: true,
     slideNumber: true,
+    rollingLinks: true,
+
     theme: Reveal.getQueryHash().theme,
     transition: Reveal.getQueryHash().transition || "fade",
 
