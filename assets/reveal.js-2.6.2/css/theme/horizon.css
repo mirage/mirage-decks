@@ -69,7 +69,6 @@
     margin: 0 0 20px 0;
     color: #333333;
     font-family: "PT Sans Narrow", sans-serif;
-    line-height: 0.9em;
     letter-spacing: -0.08em;
     text-transform: uppercase;
     text-shadow: none;
@@ -111,7 +110,7 @@
 }
 
 .reveal a.roll {
-    line-height: 1.1;
+    line-height: 1;
     overflow: visible;
 }
 
@@ -119,7 +118,7 @@
     color: #ffff65;
 }
 
-.reveal .roll span:after {
+.reveal h2 a.roll span:after {
     background: #264c66;
     color: #ffff65;
 
@@ -129,6 +128,16 @@
             transform: translate3d( 0px, 60%, 0px ) rotateX( -90deg );
 }
 
+.reveal p a.roll span:after {
+    background: #264c66;
+    color: #ffff65;
+    padding-right: 2px;
+
+    -webkit-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg ) scale( 100% );
+       -moz-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg ) scale( 100% );
+        -ms-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg ) scale( 100% );
+            transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg ) scale( 100% );
+}
 /** images */
 
 .reveal section img {
