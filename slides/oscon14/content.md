@@ -101,7 +101,7 @@ Almost **unbounded scope** for **uncontrolled interaction**! E.g.,
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 + Choices of distribution and version.
-+ Ad hoc application configuration under `/etc/`.
++ Ad hoc application configuration under `/etc/`
 + Platform configuration details, e.g., firewalls.
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
@@ -123,7 +123,8 @@ Can we **disentangle applications from the operating system**?
 
 Can we disentangle applications from the operating system? **Yes**!
 
-- **OCaml** gives us a **powerful module system** but simple runtime semantics.
+- **OCaml** gives us a **powerful module system** with **simple runtime
+  semantics**.
 
 - OS dependencies are broken down into modules, and reassembled by **functors**
   (functions from modules to modules).
