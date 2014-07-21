@@ -47,6 +47,13 @@
     text-align: center;
 }
 
+.reveal .slides p,
+.reveal .slides ul,
+.reveal .slides ol,
+.reveal .slides li {
+    padding: 0.1ex 0;
+}
+
 .reveal #footer {
     background-size: auto 50px;
 
@@ -72,7 +79,6 @@
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-    margin: 0 0 20px 0;
     color: #333333;
     font-family: "PT Sans Narrow", sans-serif;
     letter-spacing: -0.08em;
@@ -86,10 +92,10 @@
 }
 
 .reveal h2 {
-    padding: 1ex 0.2em 1ex 2.1em;
+    padding: 0.75ex 0.2em 0.75ex 2.1em;
     letter-spacing: -0.03em;
     text-align: left;
-    margin-bottom: 1ex;
+    margin-bottom: 0.5ex;
     background-color: #2462aa;
     background-image: url('horizon-starburst.png');
     background-repeat: no-repeat;
@@ -120,18 +126,23 @@
     overflow: visible;
 }
 
+.reveal h1 a.roll {
+    color: #264c66;
+}
+
 .reveal h2 a.roll {
     color: #ffff65;
 }
 
+.reveal h1 a.roll span:after,
 .reveal h2 a.roll span:after {
     background: #264c66;
     color: #ffff65;
 
-    -webkit-transform: translate3d( 0px, 60%, 0px ) rotateX( -90deg );
-       -moz-transform: translate3d( 0px, 60%, 0px ) rotateX( -90deg );
-        -ms-transform: translate3d( 0px, 60%, 0px ) rotateX( -90deg );
-            transform: translate3d( 0px, 60%, 0px ) rotateX( -90deg );
+    -webkit-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg );
+       -moz-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg );
+        -ms-transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg );
+            transform: translate3d( 0px, 50%, 0px ) rotateX( -90deg );
 }
 
 .reveal p a.roll span:after,
@@ -224,6 +235,15 @@
 .reveal .slide-number {
     font-size: large;
     color: #777;
+}
+
+/** code */
+
+.reveal code {
+    font-size: 90%;
+    background: #ddd;
+    padding: 0 1ex;
+    margin: 0 1ex;
 }
 
 /** printing tweaks */
