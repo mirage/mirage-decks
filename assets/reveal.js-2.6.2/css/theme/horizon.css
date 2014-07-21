@@ -11,6 +11,12 @@
   .reveal .slides section>section { border: 3px solid blue; }
   */
 
+/** lose transparent padding from cloud background image */
+
+body {
+  background: url(/graphics/cloud-bg.png) 0 -50px repeat-x;
+}
+
 /** fonts */
 
 @import url(horizon-fonts.css);
