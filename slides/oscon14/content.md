@@ -245,9 +245,18 @@ For information about the many components we could not cover here, see
 
 ## <http://openmirage.org/>
 
+Particular thanks to:
+[Thomas Gazagnaire](http://gazagnaire.org/),
+[David Kaloper](https://github.com/pqwy),
+[Thomas Leonard](http://roscidus.com/blog/),
+[Jon Ludlam](http://twitter.com/jonludlam),
+[Hannes Mehnert](https://github.com/hannesm),
+[Mindy Preston](https://github.com/yomimono),
+[Dave Scott](http://dave.recoil.org/),
+and [Jeremy Yallop](https://github.com/yallop).
+
 <p style="font-size: 48px; font-weight: bold;
-          display: float; margin-top: 3em; padding: 2ex 2em;
-          text-align: center">
+          display: float; padding: 2ex 0; text-align: center">
   Thanks! Questions?
 </p>
 
