@@ -42,6 +42,7 @@ Reveal.addEventListener("ready", function () {
             '<link rel="stylesheet"'
                 + 'href="/reveal.js-2.6.2/css/print/pdf.css"> </link>'
         );
+        $('#footer').remove();
     }
     $('.slide-number').each(function (i, e) {
         // no need to number title slide

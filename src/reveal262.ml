@@ -51,6 +51,9 @@ let page readf site d =
 
           <div id="footer">
             <a id="index" href="/"> <img src="/img/home.png" /> </a>
+            <a id="print-pdf" href="?print-pdf">
+              <img src="/img/print.png" />
+            </a>
           </div>
 
         </div>
