@@ -54,6 +54,10 @@
     padding: 0.1ex 0;
 }
 
+.reveal .slides ol {
+    margin-left: 1.1em;
+}
+
 .reveal #footer {
     background-size: auto 50px;
 
