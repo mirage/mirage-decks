@@ -112,7 +112,9 @@ As well as Unix and Xen, we can now target:
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
-+ Small ARM-based systems, e.g., smartphones, Internet-of-Things;
++ Small
+  [ARM-based systems](http://openmirage.org/blog/introducing-xen-minios-arm),
+  e.g., smartphones, Internet-of-Things;
 + Browsers, via compilation to JavaScript;
 + FreeBSD, via a kernel module backend.
 
@@ -285,7 +287,8 @@ Unikernels are **small enough to be tracked in GitHub**. For example, for the
 
 + Updates are merged to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**;
 
-+ Repository is built by **[Travis-CI](https://travis-ci.org)**; if successful:
++ Repository is built by
+  **[Travis-CI](https://travis-ci.org/mirage/mirage-www)**; if successful: 
 
 + Output pushed to
   **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**;
