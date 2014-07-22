@@ -30,7 +30,73 @@ We introduced you to [Mirage OS Unikernels](http://openmirage.org/):
 
 + developed on Unix, deployed on Xen to the cloud.
 
-> <center>Things have moved on apace!</center>
+In case you couldn't make that talk, a quick recap ...
+
+
+## Cloud Stacks Suck!
+
+Too many layers, too much duplication of functionality, e.g.,
+
++ Abstraction/Isolation
++ Scheduling
++ Memory management
+
+Many people have now observed this, and are trying to fix it, e.g.,
+
++ Cloudius Systems' OSv (Java)
++ Galois' HalVM (Haskell)
++ Erlang-on-Xen (Erlang)
+
+
+## It's All Just Code
+
+Capture all system dependencies in code and compile them away.
+
+<p class="stretch center">
+  <img src="stack-abstract.png" />
+</p>
+
+
+## Retarget By Recompiling
+
+Swap system libraries to target different platforms:<br/>
+<span class="right">**develop using native Unix**.</span>
+
+<p class="stretch center">
+  <img src="stack-unix.png" />
+</p>
+
+
+## Retarget By Recompiling
+
+Swap system libraries to target different platforms:<br/>
+<span class="right">**test using Mirage system libraries**.</span>
+
+<p class="stretch center">
+  <img src="stack-unix-direct.png" />
+</p>
+
+
+## Retarget By Recompiling
+
+Swap system libraries to target different platforms:<br/>
+<span class="right">**deploy by building virtual machine image**.</span>
+
+<p class="stretch center">
+  <img src="stack-x86.png" />
+</p>
+
+
+## Mirage Unikernels
+
+Mirage unikernels realise several benefits:
+
++ __Contained__, simplifying deployment and management.
++ __Compact__, reducing attack surface and boot times.
++ __Efficient__, able to fit 10,000s onto a single host.
+
+<br/>
+That was last year...
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -46,9 +112,33 @@ As well as Unix and Xen, we can now target:
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
-+ Small ARM-based systems (smartphones, Internet-of-Things),
-+ Browsers,
++ Small ARM-based systems, e.g., smartphones, Internet-of-Things;
++ Browsers, via compilation to JavaScript;
 + FreeBSD, via a kernel module backend.
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+We've also **added many new libraries**, including a Git-like distributed data
+store, C foreign function interface, and a from-scratch OCaml TLS stack.
+
+<!-- .element: class="fragment" data-fragment-index="2" -->
+
+
+----
+
+## Why? [nymote.org](http://nymote.org/)
+
+We need to claim control over our online lives rather than abrogate it to
+_The Cloud_:
+
++ Doing so means we **all** need to be able to run **our own infrastructure**.
+
++ **Without** having to become (Linux) **sysadmins**!
+
+> <center>How can we achieve this?</center>
+
+Mirage is the foundation for building **personal clouds**, securely
+interconnecting and synchronising data between our devices.
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -70,23 +160,37 @@ These slides were written using Mirage on OSX:
   enough to be tracked in Git.
 
 
+## Even More Targets
+
+<p class="stretch center">
+  <img src="stack.png" />
+</p>
+
+
+## Even More Targets: ARM
+
+<p class="stretch center">
+  <img src="stack-arm.png" />
+</p>
+
+
+## Even More Targets: JS
+
+<p class="stretch center">
+  <img src="stack-browser.png" />
+</p>
+
+
+## Even More Targets: BSD
+
+<p class="stretch center">
+  <img src="stack-bsd.png" />
+</p>
+
+
 ----
 
-## [nymote.org](http://nymote.org/)
-
-Why? Mirage is the foundation for the **personal cloud**:
-
-+ We need to claim control over our online lives rather than abrogate it to The
-  Cloud.
-
-+ Doing so means we **all** need to be able to run **our own infrastructure**.
-
-+ **Without having to become (Linux) sysadmins!**
-
-> <center>How can we achieve this?</center>
-
-
-## Stepping Back...
+## Complexity Kills You
 
 The enemy is **complexity**:
 
@@ -140,7 +244,7 @@ Can we disentangle applications from the operating system? **Yes**!
 
 ## Mirage OS 2.0 Workflow
 
-As easy as 1&mdash;2&mdash;3:
+As easy as 1&mdash;2&mdash;3!
 
 1. Write your OCaml application using the Mirage module types
    + Express its configuration as OCaml code too!
@@ -153,21 +257,21 @@ As easy as 1&mdash;2&mdash;3:
 
 ## Modularizing the OS
 
-<p class="stretch">
+<p class="stretch center">
   <img src="modules1.png" />
 </p>
 
 
 ## Modularizing the OS
 
-<p class="stretch">
+<p class="stretch center">
   <img src="modules2.png" />
 </p>
 
 
 ## Modularizing the OS
 
-<p class="stretch">
+<p class="stretch center">
   <img src="modules3.png" />
 </p>
 
@@ -195,28 +299,28 @@ up**!
 
 ## Compiler in the Middle
 
-<p class="stretch">
+<p class="stretch center">
   <img src="uniarch1a.png" />
 </p>
 
 
 ## Compiler in the Middle
 
-<p class="stretch">
+<p class="stretch center">
   <img src="uniarch1b.png" />
 </p>
 
 
 ## Compiler in the Middle
 
-<p class="stretch">
+<p class="stretch center">
   <img src="uniarch1c.png" />
 </p>
 
 
 ## Compiler in the Middle
 
-<p class="stretch">
+<p class="stretch center">
   <img src="uniarch1d.png" />
 </p>
 
@@ -257,7 +361,7 @@ and [Jeremy Yallop](https://github.com/yallop).
 
 <p style="font-size: 48px; font-weight: bold;
           display: float; padding: 2ex 0; text-align: center">
-  Thanks! Questions?
+  Thanks for listening! Questions?
 </p>
 
 <p style="font-size: 40px; display: float; padding: 2ex 2em; text-align: center">
