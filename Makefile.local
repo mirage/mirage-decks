@@ -34,7 +34,7 @@ configure:
 build:
 	$(MIRAGE) build src/config.ml $(BFLAGS)
 
-run: build
+run:
 	$(MIRAGE) run src/config.ml $(RFLAGS)
 
 depend:
