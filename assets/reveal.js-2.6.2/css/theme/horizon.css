@@ -254,6 +254,7 @@ body {
 .reveal code {
     font-size: 90%;
     background: #ddd;
+    color: #333;
     padding: 0 1ex;
     margin: 0 1ex;
 }
