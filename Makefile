@@ -15,40 +15,26 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-MODE ?= unix
-
-CFLAGS ?=
-BFLAGS ?=
-RFLAGS ?=
-
+MODE  ?= unix
+FLAGS ?=
 MIRAGE = mirage
 
-.PHONY: all configure build run clean setup-clean setup
+.PHONY: all configure build run depend clean 
 
 all: build
 	@ :
 
 configure:
-	$(MIRAGE) configure src/config.ml $(CFLAGS) --$(MODE)
+	$(MIRAGE) configure src/config.ml $(FLAGS) --$(MODE)
 
 build:
-	$(MIRAGE) build src/config.ml $(BFLAGS)
+	cd src && make build
 
 run:
-	$(MIRAGE) run src/config.ml $(RFLAGS)
+	cd src && sudo make run
 
 depend:
 	cd src && make depend
 
 clean:
-	$(MIRAGE) clean src/config.ml
-
-setup-clean: distclean
-	$(RM) Makefile.bak
-	oasis setup-clean
-	$(RM) setup.ml myocamlbuild.ml
-
-setup.ml: _oasis
-	oasis setup
-
-setup: setup.ml setup.data
+	cd src && make clean
