@@ -1,5 +1,5 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct ocaml-crunch"
+OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct crunch"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
