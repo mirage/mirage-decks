@@ -1,5 +1,5 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct crunch"
+OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
@@ -25,14 +25,13 @@ opam --git-version
 opam init
 opam install ${OPAM_PACKAGES}
 eval `opam config env`
+mirage --version
+
 cp .travis-www.ml src/config.ml
 cd src
-mirage --version
-mirage configure --unix
-make
-make clean
-mirage configure --xen
-make
+mirage configure --$MIRAGE_BACKEND
+make depend
+make build
 cd ..
 
 if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
