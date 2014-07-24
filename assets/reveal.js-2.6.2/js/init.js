@@ -58,7 +58,7 @@ $(window).on('hashchange', function() {
     $('.slide-number').each(function (i, e) {
         $(this).html($(this).html()
                      .replace(/-/g, '&mdash;') // better separator
-                     .replace(/0/g, '') // no need to number title slide
+                     .replace(/^0$/g, '') // no need to number title slide
                     );
     });
 });
