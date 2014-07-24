@@ -20,45 +20,52 @@ Richard Mortier <small>University of Nottingham</small>
 
 ----
 
-## Last year...
+## Introducing [Mirage OS 2.0](http://openmirage.org/)
 
-We introduced you to [Mirage OS Unikernels](http://openmirage.org/):
+These slides were written using Mirage on OSX:
 
-+ small, single-purpose networked appliances,
+- They are hosted in a **938kB Xen unikernel** written in statically type-safe
+  OCaml, including device drivers and network stack.
 
-+ high-performance __and__ type-safe,
+- Their application logic is just a **couple of source files**, written
+  independently of any OS dependencies.
 
-+ developed on Unix, deployed on Xen to the cloud.
+- Running on an **ARM** CubieBoard2, and hosted on the cloud.
 
-In case you couldn't make that talk, a quick recap ...
+- Binaries small enough to track the **entire deployment** in Git!
 
 
-## Cloud Stacks Suck!
+## Leaning Tower of Cloud
 
-Too many layers, too much duplication of functionality, e.g.,
+<div class="left" style="width: 65%">
+  <p>Numerous pain points:</p>
+  <ul>
+    <li>**Complex** configuration management.</li>
+    <li>Duplicated functionality leads to **inefficiency**.</li>
+    <li>VM image size leads to **long boot times**.</li>
+    <li>Lots of code means a **large attack surface**.</li>
+  </ul>
+</div>
 
-+ Abstraction/Isolation
-+ Scheduling
-+ Memory management
-
-Many people have now observed this, and are trying to fix it, e.g.,
-
-+ Cloudius Systems' OSv (Java)
-+ Galois' HalVM (Haskell)
-+ Erlang-on-Xen (Erlang)
+<p class="right">
+  <img src="pisa.jpg" />
+  <br /><small>
+    https://flic.kr/p/8N1hWh
+  </small>
+</p>
 
 
 ## Complexity Kills You
 
 The enemy is **complexity**:
 
-+ Applications are **deeply intertwined with system APIs**, and so lack
++ Applications are **deeply intertwined** with system APIs, and so lack
   portability.
 
 + Modern operating systems offer **dynamic support** for **many users** to run
   **multiple applications** simultaneously.
 
-Almost **unbounded scope** for **uncontrolled interaction**! E.g.,
+Almost unbounded scope for uncontrolled interaction!
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -69,21 +76,61 @@ Almost **unbounded scope** for **uncontrolled interaction**! E.g.,
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 
-## Multiscale Principles
+## Docker: Containerisation
+
+<p class="stretch center">
+  <img src="container.jpg" />
+</p>
+
+<p class="right">
+  <small>
+    https://flic.kr/p/qSbck
+  </small>
+</p>
+
+
+## Docker: Containerisation
+
+Docker bundles up all this state making it easy to transport, install and manage.
+
+<p class="stretch center">
+  <img src="stack-docker.png" />
+</p>
+
+
+## Can We Do Better?
 
 **Disentangle applications from the operating system**.
 
-- Break up core OS logic into modular libraries.
+- Break up operating system functionality into modular libraries.
 
-- Do not assume the presence of an ambient operating system kernel in
-  application code.
+- Link only the system functionality your app needs.
 
-- Target multiple platforms from a single development environment.
+- Target alternative platforms from a single codebase.
 
 
-## It's All Just Code
+## The Unikernel Approach
 
-Capture all system dependencies in code and compile them away.
+> Unikernels are specialised virtual machine images compiled from the full stack
+> of application code, system libraries and config
+
+<br/>
+This means they realise several benefits:
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
++ __Contained__, simplifying deployment and management.
++ __Compact__, reducing attack surface and boot times.
++ __Efficient__, able to fit 10,000s onto a single host.
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+
+## It's All Just Source Code
+
+Capture system dependencies in code and compile them away.<br/>
+<span class="right" style="width: 15em">
+  &nbsp;
+</span>
 
 <p class="stretch center">
   <img src="stack-abstract.png" />
@@ -93,7 +140,7 @@ Capture all system dependencies in code and compile them away.
 ## Retarget By Recompiling
 
 Swap system libraries to target different platforms:<br/>
-<span class="right">**develop using native Unix**.</span>
+<span class="right">**develop application logic using native Unix**.</span>
 
 <p class="stretch center">
   <img src="stack-unix.png" />
@@ -103,7 +150,7 @@ Swap system libraries to target different platforms:<br/>
 ## Retarget By Recompiling
 
 Swap system libraries to target different platforms:<br/>
-<span class="right">**test using Mirage system libraries**.</span>
+<span class="right">**test unikernel using Mirage system libraries**.</span>
 
 <p class="stretch center">
   <img src="stack-unix-direct.png" />
@@ -113,59 +160,69 @@ Swap system libraries to target different platforms:<br/>
 ## Retarget By Recompiling
 
 Swap system libraries to target different platforms:<br/>
-<span class="right">**deploy by building virtual machine image**.</span>
+<span class="right">**deploy by specialising unikernel to Xen**.</span>
 
 <p class="stretch center">
   <img src="stack-x86.png" />
 </p>
 
 
-## Mirage Unikernels
+## End Result?
 
-Mirage unikernels realise several benefits:
+Unikernels are compact enough to boot and respond to network traffic in
+real-time.
 
-+ __Contained__, simplifying deployment and management.
-+ __Compact__, reducing attack surface and boot times.
-+ __Efficient__, able to fit 10,000s onto a single host.
-
-<br/>
-That was last year...
-
-<!-- .element: class="fragment" data-fragment-index="1" -->
-
-
-----
-
-## Introducing [Mirage OS 2.0](http://openmirage.org/)
-
-These slides were written using Mirage on OSX:
-
-- They are hosted in a **~6.5MB Xen unikernel written in statically type-safe
-  OCaml**, including device drivers and network stack.
-
-- Their application logic is just a **couple of source files**, written as a
-  portable functor independent of OS dependencies.
-
-- You are seeing them as a unikernel **running here on a CubieBoard2**, and they
-  are also hosted **[on Amazon's EC2 public cloud](http://decks.openmirage.org/oscon14)**, with the binaries small
-  enough to be tracked in Git.
+<table style="border-bottom: 1px black solid">
+  <thead style="font-weight: bold">
+    <td style="border-bottom: 1px black solid; width: 15em">Appliance</td>
+    <td style="border-bottom: 1px black solid">Standard Build</td>
+    <td style="border-bottom: 1px black solid">Dead Code Elimination</td>
+  </thead>
+  <tbody>
+    <tr style="background-color: rgba(0, 0, 1, 0.2)">
+      <td>DNS</td><td>0.449 MB</td><td>0.184 MB</td>
+    </tr>
+    <tr>
+      <td>Web Server</td><td>0.674 MB</td><td>0.172 MB</td>
+    </tr>
+    <tr style="background-color: rgba(0, 0, 1, 0.2)">
+      <td>Openflow learning switch</td><td>0.393 MB</td><td>0.164 MB</td>
+    </tr>
+    <tr>
+      <td>Openflow controller</td><td>0.392 MB</td><td>0.168 MB</td>
+    </tr>
+  </tbody>
+</table>
 
 
-## More Targets
+## End Result?
 
-<p class="stretch center">
-  <img src="stack.png" />
-</p>
+Unikernels are compact enough to boot and respond to network traffic in
+real-time.
 
-
-## More Targets: ARM
-
-<p class="stretch center">
-  <img src="stack-arm.png" />
-</p>
+<img src="boot-time.png" />
 
 
 ----
+
+## Git Your Own Cloud
+
+Unikernels are **small enough to be tracked in GitHub**. For example, for the
+[Mirage website](http://openmirage.org/):
+
+1. Source code updates are merged to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**;
+
+2. Repository is continuously rebuilt by
+  **[Travis CI](https://travis-ci.org/mirage/mirage-www)**; if successful:
+
+3. Unikernel pushed to  **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**;
+  and
+
+4. Our cloud toolstack spawns VMs based on pushes there.
+
+**Our *entire* cloud-facing deployment is version-controlled from the source code
+up**!
+
 
 ## Mirage OS 2.0 Workflow
 
@@ -174,8 +231,8 @@ As easy as 1&mdash;2&mdash;3!
 1. Write your OCaml application using the Mirage module types.
    + Express its configuration as OCaml code too!
 
-         $ mirage configure app/config.ml --unix
-<!-- .element: class="bash" -->
+           $ mirage configure app/config.ml --unix
+<!-- .element: class="no-highlight" -->
 
 
 ## Mirage OS 2.0 Workflow
@@ -187,9 +244,10 @@ As easy as 1&mdash;2&mdash;3!
 
 2. Compile it and debug under Unix using the `mirage` tool.
 
-         $ ( cd app && make depend ) # install dependencies via opam
-         $ mirage build app/config.ml
-<!-- .element: class="bash" -->
+         $ cd app
+         $ make depend # install library dependencies
+         $ make build  # build the unikernel
+<!-- .element: class="no-highlight" -->
 
 
 ## Mirage OS 2.0 Workflow
@@ -204,9 +262,8 @@ As easy as 1&mdash;2&mdash;3!
 3. Once debugged, simply retarget it to Xen, and rebuild!
 
           $ mirage configure app/config.ml --xen
-          $ ( cd app && make depend )
-          $ mirage build app/config.ml
-<!-- .element: class="bash" -->
+          $ cd app && make depend && make build
+<!-- .element: class="no-highlight" -->
 
    + All the magic happens via the OCaml module system.
 
@@ -234,27 +291,78 @@ As easy as 1&mdash;2&mdash;3!
 
 ----
 
-## Orchestration
+## Git Your Own Cloud
 
 Unikernels are **small enough to be tracked in GitHub**. For example, for the
 [Mirage website](http://openmirage.org/):
 
-+ Updates are merged to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**;
+1. Source code updates are merged to **[mirage/mirage-www](https://github.com/mirage/mirage-www)**;
 
-+ Repository is built by
+2. Repository is continuously rebuilt by
   **[Travis CI](https://travis-ci.org/mirage/mirage-www)**; if successful:
 
-+ Output pushed to
-  **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**;
+3. Unikernel pushed to  **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**;
   and our
 
-+ Cloud toolstack spawns VMs based on pushes there.
+4. Cloud toolstack spawns VMs based on pushes there.
 
 **Our *entire* cloud-facing deployment is version-controlled from the source code
 up**!
 
 
-----
+## Implications
+
+**Historical tracking of source code and built binaries in Git(hub)**.
+
++ `git tag` to link code and binary across repositories.
++ `git log` to view deployment changelog.
++ `git pull` to deploy new version.
++ `git checkout` to go back in time to any point.
++ `git bisect` to pin down deployment failures.
+
+
+## Implications
+
+Historical tracking of source code and built binaries in Git(hub).
+
+**Low latency deployment of security updates**.
+
++ No need for Linux distro to pick up and build the new version.
++ Updated binary automatically built and pushed.
++ Pick up latest binary directly from repository.
++ Statically type-checked language prevents classes of attack.
+
+
+## Implications
+
+Historical tracking of source code and built binaries in Git(hub).
+
+Low latency deployment of security updates.
+
+**Unified development for cloud and embedded environments**.
+
++ Write application code once.
++ Recompile to swap in different versions of system libraries.
++ Use compiler optimisations for exotic environments.
+
+
+## Wrapping Up
+
+Mirage OS 2.0 is an important step forward, supporting **more**, and **more
+diverse**, **backends** with much **greater modularity**.
+
+For information about the many components we could not cover here, see
+[openmirage.org](http://openmirage.org/blog/):
+
++ __[Irmin](http://openmirage.org/blog/introducing-irmin)__, Git-like
+  distributed branchable storage.
++ __[OCaml-TLS](http://openmirage.org/blog/introducing-ocaml-tls)__, a
+  from-scratch native OCaml TLS stack.
++ __[Vchan](http://openmirage.org/blog/update-on-vchan)__, for low-latency
+  inter-VM communication.
++ __[Ctypes](http://openmirage.org/blog/modular-foreign-function-bindings)__,
+  modular C foreign function bindings.
+
 
 ## Why? [nymote.org](http://nymote.org/)
 
@@ -267,6 +375,7 @@ _The Cloud_:
 
 > <center>How can we achieve this?</center>
 
+<br/>
 Mirage is the foundation for building **personal clouds**, securely
 interconnecting and synchronising data between our devices.
 
@@ -275,29 +384,9 @@ interconnecting and synchronising data between our devices.
 
 ----
 
-## Wrapping Up
-
-Mirage OS 2.0 is an important step forward, supporting **more**, and **more
-diverse**, **backends** with much **greater modularity**.
-
-For information about the many components we could not cover here, see
-[the Mirage blog](http://openmirage.org/blog/):
-
-+ __[Irmin](http://openmirage.org/blog/introducing-irmin)__, Git-like
-  distributed branchable storage.
-+ __[OCaml-TLS](http://openmirage.org/blog/introducing-ocaml-tls)__, a
-  from-scratch native OCaml TLS stack.
-+ __[Vchan](http://openmirage.org/blog/update-on-vchan)__, for low-latency
-  inter-VM communication.
-+ __[Ctypes](http://openmirage.org/blog/modular-foreign-function-bindings)__,
-  modular foreign function bindings for linking _C_ libraries.
-
-
-----
-
 ## <http://openmirage.org/>
 
-Particular thanks to:
+Featuring blog posts by:
 [Amir Chaudhry](http://amirchaudhry.com/),
 [Thomas Gazagnaire](http://gazagnaire.org/),
 [David Kaloper](https://github.com/pqwy),
