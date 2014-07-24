@@ -1,5 +1,5 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct"
+OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct ocaml-crunch"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.0.0) ppa=avsm/ocaml312+opam10 ;;
@@ -23,9 +23,6 @@ opam --version
 opam --git-version
 
 opam init
-
-opam pin mirage git://github.com/mirage/mirage
-
 opam install ${OPAM_PACKAGES}
 eval `opam config env`
 cp .travis-www.ml src/config.ml
