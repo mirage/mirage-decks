@@ -44,7 +44,7 @@ let decks =
       given = Date.t (2014, 04, 02);
       speakers = [People.thomas];
       venue = "Cambridge Computer Lab";
-      title = "Irminsule - Status Report";
+      title = "Irminsule — Status Report";
       style = Reveal240;
     };
 
