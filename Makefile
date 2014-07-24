@@ -16,25 +16,26 @@
 #
 
 MODE  ?= unix
-FLAGS ?=
+NET   ?= direct
 MIRAGE = mirage
 
-.PHONY: all configure build run depend clean 
+.PHONY: all configure build run depend clean
 
 all: build
 	@ :
 
 configure:
-	$(MIRAGE) configure src/config.ml $(FLAGS) --$(MODE)
+	$(MIRAGE) configure src/config.ml --$(MODE)
 
 build:
 	cd src && make build
 
 run:
-	cd src && sudo make run
+	cd src && sudo NET=$(NET) make run
 
 depend:
 	cd src && make depend
 
 clean:
 	cd src && make clean
+	$(RM) src/mir-decks
