@@ -34,7 +34,7 @@ Reveal.initialize({
         { src: "/reveal.js-2.6.2/plugin/highlight/highlight.js", async: true,
           callback: function() {
               hljs.initHighlightingOnLoad();
-              $('pre.bash>code').removeClass().addClass("bash");
+              $('pre.no-highlight>code').removeClass().addClass("no-highlight");
           }
         },
     ]
