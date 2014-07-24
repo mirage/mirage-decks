@@ -38,4 +38,4 @@ depend:
 
 clean:
 	cd src && make clean
-	$(RM) src/mir-decks
+	$(RM) src/mir-decks log
