@@ -412,3 +412,14 @@ and [Jeremy Yallop](https://github.com/yallop).
 <p style="font-size: 40px; display: float; padding: 2ex 2em; text-align: center">
   (_and please rate the talk_!)
 </p>
+
+
+## <http://openmirage.org/>
+
+And thank you for attending!
+
+<p class="stretch center">
+  <img src="audience.jpg" />
+</p>
+
+
