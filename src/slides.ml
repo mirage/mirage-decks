@@ -27,11 +27,12 @@ let decks =
   [
     { permalink = "oscon14";
       given = Date.t (2014, 07, 24);
-      speakers = [People.mort];
+      speakers = [People.mort; People.anil];
       venue = "OSCON 2014";
       title = "Nymote: Git Your Own Cloud Here";
       style = Reveal262;
     };
+
     { permalink = "cl-mirage20";
       given = Date.t (2014, 06, 26);
       speakers = [People.anil];
