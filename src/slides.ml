@@ -22,106 +22,79 @@ open Lwt
 
 let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 
-module Deck = struct
-  module Date = struct
-
-    type t = {
-      year: int;
-      month: int;
-      day: int;
-    } with xml
-
-    let t (year, month, day) = { year; month; day }
-
-    let to_html d =
-      let xml_of_month m =
-        let str = match m with
-          | 1  -> "Jan" | 2  -> "Feb" | 3  -> "Mar" | 4  -> "Apr"
-          | 5  -> "May" | 6  -> "Jun" | 7  -> "Jul" | 8  -> "Aug"
-          | 9  -> "Sep" | 10 -> "Oct" | 11 -> "Nov" | 12 -> "Dec"
-          | _  -> "???" in
-        <:xml<$str:str$>>
-      in
-      <:xml<
-        <div class="date">
-          <div class="month">$xml_of_month d.month$</div>
-          <div class="day">$int:d.day$</div>
-          <div class="year">$int:d.year$</div>
-        </div>
-      >>
-
-    let compare {year=ya;month=ma;day=da} {year=yb;month=mb;day=db} =
-      match ya - yb with
-      | 0 -> (match ma - mb with
-          | 0 -> da - db
-          | n -> n
-        )
-      | n -> n
-
-  end
-
-  type t = {
-    permalink: string;
-    given: Date.t;
-    speakers: Atom.author list;
-    venue: string;
-    title: string;
-  }
-
-  let compare a b = Date.compare b.given a.given
-
-end
-
 let decks =
   let open Deck in
   [
+    { permalink = "oscon14";
+      given = Date.t (2014, 07, 24);
+      speakers = [People.mort; People.anil];
+      venue = "OSCON 2014";
+      title = "Nymote: Git Your Own Cloud Here";
+      style = Reveal262;
+    };
+
     { permalink = "cl-mirage20";
       given = Date.t (2014, 06, 26);
       speakers = [People.anil];
       venue = "Cambridge Computer Lab";
       title = "Mirage 2.0: less is more";
+      style = Reveal240;
     };
+
     { permalink = "clucn14-irminsule";
       given = Date.t (2014, 04, 02);
       speakers = [People.thomas];
       venue = "Cambridge Computer Lab";
-      title = "Irminsule - Status Report";
+      title = "Irminsule — Status Report";
+      style = Reveal240;
     };
+
     { permalink = "clucn14";
       given = Date.t (2014, 04, 02);
       speakers = [People.mort; People.anil];
       venue = "Cambridge Computer Lab";
       title = "Nottingham/Cambridge UCN Kickoff";
+      style = Reveal240;
     };
+
     { permalink = "fpx14";
       given = Date.t (2014, 03, 14);
       speakers = [People.anil];
       venue = "Functional Programming eXchange 2014";
       title = "My Other Internet is a Mirage";
+      style = Reveal240;
     };
+
     { permalink = "t2review14";
       given = Date.t (2014, 03, 13);
       speakers = [People.anil];
       venue = "T2 EU Review ";
       title = "Liquid scheduling with unikernels";
+      style = Reveal240;
     };
+
     { permalink = "fosdem14";
       given = Date.t (2014, 02, 02);
       speakers = [People.anil; People.mort];
       venue = "FOSDEM 2014";
       title = "MirageOS: compiling function library operating systems";
+      style = Reveal240;
     };
+
     { permalink = "clweds13";
       given = Date.t (2013, 12, 04);
       speakers = [People.anil];
       venue = "Wednesday Seminar, Cambridge Computer Laboratory";
       title = "MirageOS: a functional library operating system";
+      style = Reveal240;
     };
+
     { permalink = "cam13";
       given = Date.t (2013, 12, 03);
       speakers = [People.anil];
       venue = "ACS Lecture, Cambridge Computer Laboratory";
       title = "Modular Operating System Construction";
+      style = Reveal240;
     };
 
     { permalink = "fb13";
@@ -129,6 +102,7 @@ let decks =
       speakers = [People.anil];
       venue = "Facebook HQ";
       title = "MirageOS: compiling functional library operating systems";
+      style = Reveal240;
     };
 
     { permalink = "fop13";
@@ -136,6 +110,7 @@ let decks =
       speakers = [People.mort];
       venue = "FP Lab 2013";
       title = "MirageOS: Tomorrow's Cloud, Today";
+      style = Reveal240;
     };
 
     { permalink = "qcon13";
@@ -143,6 +118,7 @@ let decks =
       speakers = [People.anil];
       venue = "QCon 2013";
       title = "MirageOS: developer tools of tomorrow";
+      style = Reveal240;
     };
 
     { permalink = "xensummit13";
@@ -150,6 +126,7 @@ let decks =
       speakers = [People.anil; People.jon];
       venue = "XenSummit 2013";
       title = "MirageOS and XAPI 2013 Project Update";
+      style = Reveal240;
     };
 
     { permalink = "oscon13";
@@ -157,18 +134,23 @@ let decks =
       speakers = [People.mort; People.anil];
       venue = "OSCON 2013";
       title = "Mirage: Extreme Specialisation of Cloud Appliances";
+      style = Reveal240;
     };
+
     { permalink = "jslondon13";
       given = Date.t (2013, 08, 29);
       speakers = [People.anil];
       venue = "Jane Street London 2013";
       title = "My Other Internet is a Mirage";
+      style = Reveal240;
     };
+
     { permalink = "foci13";
       given = Date.t (2013, 08, 12);
       speakers = [People.anil];
       venue = "FOCI 2013";
       title = "Lost in the Edge: Finding Your Way with Signposts";
+      style = Reveal240;
     };
   ]
 
@@ -226,7 +208,8 @@ let index ~req ~path =
 
           <link rel="stylesheet" href="/css/decks.css"> </link>
           <script src="/js/vendor/custom.modernizr.js"> </script>
-          <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet" type="text/css"> </link>
+          <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700"
+                rel="stylesheet" type="text/css"> </link>
         </head>
         <body>
           <div class="contain-to-grid fixed">
@@ -268,63 +251,15 @@ let index ~req ~path =
   in
   return (Foundation.page ~body)
 
-module Reveal = struct
-
-  let head ~deck =
-    let open Deck in
-    let speakers = deck.speakers
-                   |> List.map (fun p -> p.Atom.name)
-                   |> String.concat ", "
-    in
-    let description = deck.venue in
-    let title =
-      "openmirage.org | decks | " ^ " [ " ^ deck.permalink ^ " ]" ^ deck.title
-    in
-    let base = "/" ^ deck.permalink ^ "/" in
-    <:html<
-        <head>
-          <meta charset="utf-8" />
-          <title>$str:title$</title>
-          <meta name="description" content="$str:description$" />
-          <meta name="author" content="$str:speakers$" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-          <meta name="viewport"
-                content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-          <link rel="stylesheet" href="/reveal-2.4.0/css/reveal.min.css"> </link>
-          <link rel="stylesheet" href="/reveal-2.4.0/lib/css/zenburn.css"> </link>
-          <link rel="stylesheet" href="/reveal-2.4.0/css/print/pdf.css"
-                media="print"> </link>
-          <link rel="stylesheet" href="/reveal-2.4.0/css/theme/horizon.css" id="theme"
-                media="all"> </link>
-          <link rel="stylesheet" href="/css/site.css" media="all"> </link>
-
-          <base href=$str:base$ />
-
-          <!--[if lt IE 9]>
-              <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
-          <![endif]-->
-        </head>
-    >>
-
-end
-
-let (/) a b = a ^ "/" ^ b
-
 let deck readf ~deck =
-  let open Cowabloga in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  let read_template t = readf ("templates" / t) in
-
-  lwt preamble = read_template "preamble.html" in
-  let head = Cow.Html.to_string (Reveal.head d) in
-  lwt bodyh = read_template "reveal-2.4.0-header.html" in
-  lwt body = readf (d.Deck.permalink / "index.html") in
-  lwt bodyf = read_template "reveal-2.4.0-footer.html" in
-  return (preamble ^ head ^ bodyh ^ body ^ bodyf)
+  let title = "openmirage.org | decks | " in
+  let open Deck in
+  match d.style with
+  | Reveal240 -> Reveal240.page readf title d
+  | Reveal262 -> Reveal262.page readf title d
 
 let asset readf ~deck ~asset =
+  let (/) a b = a ^ "/" ^ b in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   readf (d.Deck.permalink / asset)

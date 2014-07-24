@@ -26,8 +26,7 @@ article a:hover {
 }
 
 body {
-  background-image: url(/graphics/cloud-bg.png);
-  background-repeat: repeat-x;
+  background: url(/graphics/cloud-bg.png) repeat-x;
 }
 
 code {
@@ -82,7 +81,4 @@ code {
 }
 #footer {
     z-index: 98;
-}
-.reveal #footer > a {
-    color: #333399;
 }
