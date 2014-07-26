@@ -16,7 +16,7 @@
 #
 
 MODE  ?= unix
-NET   ?= direct
+NET   ?=
 MIRAGE = mirage
 
 .PHONY: all configure build run depend clean
@@ -31,7 +31,7 @@ build:
 	cd src && make build
 
 run:
-	cd src && sudo NET=$(NET) make run
+	cd src && sudo make run
 
 depend:
 	cd src && make depend
