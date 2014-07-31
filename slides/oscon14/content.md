@@ -35,6 +35,13 @@ These slides were written using Mirage on OSX:
 - Binaries small enough to track the **entire deployment** in Git!
 
 
+## Introducing [Mirage OS 2.0](http://openmirage.org/)
+
+<p class="stretch center">
+  <img src="decks-on-arm.png" />
+</p>
+
+
 ## Leaning Tower of Cloud
 
 <div class="left" style="width: 65%">

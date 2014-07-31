@@ -1,43 +1,41 @@
--include Makefile.config
-# OASIS_START
-# DO NOT EDIT (digest: a3c674b4239234cbbe53afe090018954)
+# -*- mode: Makefile -*-
+#
+# Copyright (c) 2013 Richard Mortier <mort@cantab.net>
+#
+# Permission to use, copy, modify, and distribute this software for any purpose
+# with or without fee is hereby granted, provided that the above copyright
+# notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+#
 
-SETUP = ocaml setup.ml
+MODE  ?= unix
+NET   ?=
+MIRAGE = mirage
 
-build: setup.data
-	$(SETUP) -build $(BUILDFLAGS)
+.PHONY: all configure build run depend clean
 
-doc: setup.data build
-	$(SETUP) -doc $(DOCFLAGS)
-
-test: setup.data build
-	$(SETUP) -test $(TESTFLAGS)
-
-all:
-	$(SETUP) -all $(ALLFLAGS)
-
-install: setup.data
-	$(SETUP) -install $(INSTALLFLAGS)
-
-uninstall: setup.data
-	$(SETUP) -uninstall $(UNINSTALLFLAGS)
-
-reinstall: setup.data
-	$(SETUP) -reinstall $(REINSTALLFLAGS)
-
-clean:
-	$(SETUP) -clean $(CLEANFLAGS)
-
-distclean:
-	$(SETUP) -distclean $(DISTCLEANFLAGS)
-
-setup.data:
-	$(SETUP) -configure $(CONFIGUREFLAGS)
+all: build
+	@ :
 
 configure:
-	$(SETUP) -configure $(CONFIGUREFLAGS)
+	$(MIRAGE) configure src/config.ml --$(MODE)
 
-.PHONY: build doc test all install uninstall reinstall clean distclean configure
+build:
+	cd src && make build
 
-# OASIS_STOP
--include Makefile.local
+run:
+	cd src && sudo make run
+
+depend:
+	cd src && make depend
+
+clean:
+	cd src && make clean
+	$(RM) src/mir-decks log

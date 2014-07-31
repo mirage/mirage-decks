@@ -6,11 +6,8 @@ src/Makefile
 src/_build/
 src/main.ml
 src/main.native
-src/mir-www
-src/www.xl
-
-# mirage run outputs
-src/log
+src/mir-decks
+src/decks.xl
 
 # un-minified reveal.css for debugging
 assets/reveal-2.4.0/css/reveal.css
