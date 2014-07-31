@@ -38,7 +38,7 @@ These slides were written using Mirage on OSX:
 ## Introducing [Mirage OS 2.0](http://openmirage.org/)
 
 <p class="stretch center">
-  <img src="decks-on-arm.jpg" />
+  <img src="decks-on-arm.png" />
 </p>
 
 
