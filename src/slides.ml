@@ -25,6 +25,14 @@ let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 let decks =
   let open Deck in
   [
+    { permalink = "xendevsummit14";
+      given = Date.t (2014, 08, 18);
+      speakers = [People.anil];
+      venue = "Xen dev summit";
+      title = "MirageOS 2.0: branch consistency for Xen Stub Domains";
+      style = Reveal240;
+    };
+
     { permalink = "oscon14";
       given = Date.t (2014, 07, 24);
       speakers = [People.mort; People.anil];
