@@ -30,9 +30,131 @@
 </section>
 
 <section>
+
   <section data-markdown>
     <script type="text/template">
-      ## Irmin Xenstore
+      ## Irmin: storage for Mirage 2.0
+
+      **Irmin** is our *library database* that follows the modular
+      design principles of MirageOS: <https://github.com/mirage/irmin>
+
+      <br />
+
+      - Runs in both **userspace** and **kernelspace**
+      - A **key = value** store (sound familiar?)
+      - **Git-style**: commit, branch, merge
+      - **Preserves history** by default
+      - **Backend support** for in-memory, Git and HTTP/REST stores.
+
+      <br/>Mirage unikernels thus version control all their data,
+      and have a **distributed provenance graph** of all activities.
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Base Concepts
+
+      ![store](./store.png)
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Base Concepts
+
+      ### Object DAG
+
+      - Append-only & Distributed
+      - Stable serialisation of structured values
+      - similar to heap representation
+        - with position/architecture independent pointers (such as SHA1 of blocks)
+        - backend independence (memory, on-disk, encryption, etc...)
+
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Base Concepts
+
+      ### History DAG
+
+      - Append-only & Distributed
+      - Keep track of history
+      - Can be stored in the Object DAG store
+      - Useful for audit
+      - Useful for merge (3-way merge is easier than 2-way)
+      - Snapshot / Revert for free
+
+    </script>
+  </section>
+
+
+</section>
+<section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore: VM metadata on Xen
+
+    **Xenstore** is our *configuration database* that stores VM metadata
+    in directories (à la Plan 9) with a transactional update mechanism.
+
+    <br />
+
+    - Runs in either **userspace** or **kernelspace** (just like Mirage)
+    - **A key = value** store (just like Irmin)
+    - XS_TRANSACTION_START (**branch**); XS_TRANSACTION_END (**merge**)
+    - **Logs history** by default (just like Irmin... hmm, where's he going with this?)
+
+    <br /> Unfortunately the transaction implementations all suck.
+    As for distribution across hosts/clusters/clouds: don't even think about
+    it.
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore transactions: conflicts
+
+      - Terrible performance impact because a transaction may involve
+        100 RPCs to set it up (one per read/write op), only to be
+        aborted and retried...
+      - ... plus the longer a transaction is open, the greater the
+        chance of a conflict with a shorter transaction
+      - Concurrent transactions can lead to live-lock
+      - So lots of past focus on removing transactions (eg from xend)
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore transactions: irmin to the rescue
+
+    - Observe: concurrent (eg) transactions starting separate VMs
+      **shouldn't** conflict.
+    - If the transactions were adding files in git, we would simply
+      **git merge** or **git rebase**
+    - So in Irmin we:
+```
+DB.View.merge_path ~origin db [] transaction >>= function
+| `Ok () -> return true
+| `Conflict msg ->
+  (* if merge doesn't work, try rebase *)
+  DB.View.rebase_path ~origin db [] transaction >>= function
+  | `Ok () -> return true
+  | `Conflict msg ->
+    (* A true conflict: tell the client *)
+```
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+      ## Xenstore transactions: performance
 
       <img src="results.png" />
       <p class="fragment bubble "
@@ -41,4 +163,65 @@
       </p>
     </script>
   </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore reliability: what happens if it crashes?
+
+     - Rings full of partially read/written packets. No reconnection protocol
+       in common use (proposal on xen-devel but it will take years before we
+       can rely on it)
+     - Per-connection state in xenstore: watch registrations, pending watch
+       events
+     - If xenstore is restarted, many of the rings will be broken (probably
+       including dom0)
+     - ... you'll probably have to reboot the host
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore reliability: irmin to the rescue
+
+     - We have data structure libraries built on top of Irmin, for example
+       mergeable queues. Use these for (eg) pending watch events.
+     - We can persist partially read/written packets so fragments can be
+       recovered over restart
+     - We can persist connection information (i.e. ring information from an
+       **Introduce**) and auto-reconnect on start
+     - Added bonus: easy to introspect state via **xenstore-ls**, can see each
+       registered watch, queue etc
+    </script>
+  </section>
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore distribution: a forgotten dream
+
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore distribution: irmin to the rescue
+
+    </script>
+  </section>
+
+
+  <section data-markdown>
+    <script type="text/template">
+    ## Xenstore: plans
+
+    - upstream
+    - in xapi toolstack, use xenstore for all metadata
+    </script>
+  </script>
+
+
+
+
 </section>
