@@ -294,7 +294,7 @@ $ git log --oneline --graph --decorate --all
     - Prototype, unit tests currently at: https://github.com/mirage/ocaml-xenstore-server
     - To build:
 ```
-opam init --comp=4.01
+opam init --comp=4.01.0
 eval `opam config env`
 opam pin irmin git://github.com/mirage/irmin
 opam install xenstore irmin shared-memory-ring xen-evtchn io-page
@@ -304,11 +304,13 @@ make
 ```
     - To run:
 ```
-./main.native --enable-unix --path /tmp/test-socket&
+./main.native --enable-unix --path /tmp/test-socket --database /tmp/db&
 ```
     - To test:
 ```
-XENSTORED_PATH=/tmp/xenstored ./xs.native read foo
+./cli.native -path /tmp/test-socket write foo=bar
+./cli.native -path /tmp/test-socket write read foo
+cd /tmp/db; git log
 ```
     </script>
   </section>
