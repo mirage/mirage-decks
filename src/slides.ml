@@ -27,10 +27,10 @@ let decks =
   [
     { permalink = "xendevsummit14";
       given = Date.t (2014, 08, 18);
-      speakers = [People.anil];
+      speakers = [People.anil; People.dave; People.thomas];
       venue = "Xen dev summit";
       title = "MirageOS 2.0: branch consistency for Xen Stub Domains";
-      style = Reveal240;
+      style = Reveal262;
     };
 
     { permalink = "oscon14";
