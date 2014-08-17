@@ -342,7 +342,7 @@ cd /tmp/db; git log
 ## <http://openmirage.org/>
 
 Featuring blog posts about Mirage OS 2.0 by:<br />
-[Amir Chaudhry](http://amirchaudhry.com/),
+_[Amir Chaudhry](http://amirchaudhry.com/),
 [Thomas Gazagnaire](http://gazagnaire.org/),
 [David Kaloper](https://github.com/pqwy),
 [Thomas Leonard](http://roscidus.com/blog/),
@@ -350,14 +350,13 @@ Featuring blog posts about Mirage OS 2.0 by:<br />
 [Hannes Mehnert](https://github.com/hannesm),
 [Mindy Preston](https://github.com/yomimono),
 [Dave Scott](http://dave.recoil.org/),
-and [Jeremy Yallop](https://github.com/yallop).
+and [Jeremy Yallop](https://github.com/yallop)_.
 
 **Mindy Preston** and **Jyotsna Prakash** from OPW/GSoC will
-also be talking about their projects and experiences in the community panel
-later in the Xen Dev Summit!
+also be talking about their projects  in the community panel!
 
-<p style="font-size: 48px; font-weight: bold;
-          display: float; padding: 2ex 0; text-align: center">
-  Thanks for listening! Questions?
-</p>
+More Irmin+Xenstore posts with details:
+
+* [Introduction to Irmin](http://openmirage.org/blog/introducing-irmin)
+* [Using Irmin to add fault-tolerance to Xenstore](http://openmirage.org/blog/introducing-irmin-in-xenstore)
 
