@@ -100,6 +100,7 @@ body {
     padding-top: 1ex;
     letter-spacing: 1;
     text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+    font-size: 86px;
 }
 
 .reveal h2 {
