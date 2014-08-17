@@ -118,6 +118,19 @@ and have a **distributed provenance graph** of all activities.
 <img src="store.png" height="450px"/>
 
 
+## Irmin Tooling
+
+> `opam update && opam install irmin`
+
+- Command-line frontend that uses:
+  - **storage**: in-memory format or Git
+  - **network**: custom format, Git or HTTP/REST
+  - **interface**: JSON interface for storing content easily
+- OCaml library that supplies:
+  - merge-friendly data structures
+  - backend implementations (Git, HTTP/REST)
+
+
 ----
 
 ## Xenstore: VM metadata
@@ -328,7 +341,7 @@ cd /tmp/db; git log
 
 ## <http://openmirage.org/>
 
-Featuring blog posts by:
+Featuring blog posts about Mirage OS 2.0 by:<br />
 [Amir Chaudhry](http://amirchaudhry.com/),
 [Thomas Gazagnaire](http://gazagnaire.org/),
 [David Kaloper](https://github.com/pqwy),
@@ -338,6 +351,10 @@ Featuring blog posts by:
 [Mindy Preston](https://github.com/yomimono),
 [Dave Scott](http://dave.recoil.org/),
 and [Jeremy Yallop](https://github.com/yallop).
+
+**Mindy Preston** and **Jyotsna Prakash** from OPW/GSoC will
+also be talking about their projects and experiences in the community panel
+later in the Xen Dev Summit!
 
 <p style="font-size: 48px; font-weight: bold;
           display: float; padding: 2ex 0; text-align: center">
