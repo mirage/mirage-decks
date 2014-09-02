@@ -25,6 +25,14 @@ let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 let decks =
   let open Deck in
   [
+    { permalink = "haskell2014";
+      given = Date.t (2014, 09, 02);
+      speakers = [People.anil];
+      venue = "Haskell Symposium 2014 Keynote";
+      title = "Unikernels: Functional Operating System Design";
+      style = Reveal262;
+    };
+
     { permalink = "xendevsummit14";
       given = Date.t (2014, 08, 18);
       speakers = [People.anil; People.dave; People.thomas];
