@@ -33,6 +33,14 @@ let decks =
       style = Reveal262;
     };
 
+    { permalink = "ml14";
+      given = Date.t (2014, 09, 05);
+      speakers = [People.anil; People.thomas; People.dave; People.mort; ];
+      venue = "ML Workshop";
+      title = "Metaprogramming with ML modules in the MirageOS";
+      style = Reveal262;
+    };
+
     { permalink = "xendevsummit14";
       given = Date.t (2014, 08, 18);
       speakers = [People.anil; People.dave; People.thomas];

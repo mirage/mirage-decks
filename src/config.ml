@@ -46,7 +46,11 @@ let stack console =
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 
 let server =
-  http_server 80 (stack default_console)
+  conduit_direct (stack default_console)
+
+let http_srv =
+  let mode = `TCP (`Port 80) in
+  http_server mode server
 
 let main =
   let libraries = [ "cow.syntax"; "cowabloga" ] in
@@ -56,5 +60,5 @@ let main =
 
 let () =
   register "decks" [
-    main $ default_console $ fs $ tmpl $ server
+    main $ default_console $ fs $ tmpl $ http_srv
   ]
