@@ -15,7 +15,7 @@ Richard Mortier <small>University of Nottingham</small>
 [@mort\_\_\_](http://twitter.com/mort___)
 
 [http://openmirage.org/](http://openmirage.org/)<br/>
-[http://decks.openmirage.org/oscon14/](http://decks.openmirage.org/ml14/#/)
+[http://decks.openmirage.org/ml14/](http://decks.openmirage.org/ml14/#/)
 
 <small>
   Press &lt;esc&gt; to view the slide index, and the &lt;arrow&gt; keys to
@@ -480,9 +480,10 @@ Can select default module implementations for CLOCK, RANDOM and TIME to save man
 
 ## Extensibility
 
-Anyone can extend the eDSL, just need to (1) defined a abstract type
-corresponding to the module type and (2) define a CONFIGURABLE
-implementation and pack-it using first class modules:
+Anyone can extend the eDSL with new devices:
+
+- define an abstract type corresponding to the module type signature (e.g. NETWORK or TCPV4 or KV_RO). 
+- define a CONFIGURABLE implementation and pack it using first class modules to generate a new impl type.
 
 ```
 val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a impl
@@ -498,7 +499,6 @@ val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a imp
   - Mirage eDSL manipulates module types and implementations in OCaml.
   - Config file is interpreted to generate executable kernel.
   - Flexible way to specify precise device driver policy.
-
 
 
 ----
