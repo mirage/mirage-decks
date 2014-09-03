@@ -65,6 +65,6 @@ let main =
     (console @-> kv_ro @-> kv_ro @-> http @-> job)
 
 let () =
-  register "decks" [
+  register "www" [
     main $ default_console $ fs $ tmpl $ http_srv
   ]
