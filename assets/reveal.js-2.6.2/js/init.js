@@ -31,12 +31,13 @@ Reveal.initialize({
         },
 
         // syntax highlight <code> elements
-        { src: "/reveal.js-2.6.2/plugin/highlight/highlight.js", async: true,
+        { src: "/highlight.js-8.2/highlight.pack.js", async: true,
           callback: function() {
+              hljs.configure({ LANGUAGES: "ocaml bash make" });
               hljs.initHighlightingOnLoad();
               $('pre.no-highlight>code').removeClass().addClass("no-highlight");
           }
-        },
+        }
     ]
 });
 
