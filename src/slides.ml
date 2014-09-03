@@ -26,7 +26,7 @@ let decks =
   let open Deck in
   [
     { permalink = "haskell2014";
-      given = Date.t (2014, 09, 02);
+      given = Date.t (2014, 09, 05);
       speakers = [People.anil];
       venue = "Haskell Symposium 2014 Keynote";
       title = "Unikernels: Functional Operating System Design";
@@ -34,7 +34,7 @@ let decks =
     };
 
     { permalink = "ml14";
-      given = Date.t (2014, 09, 05);
+      given = Date.t (2014, 09, 04);
       speakers = [People.anil; People.thomas; People.dave; People.mort; ];
       venue = "ML Workshop";
       title = "Metaprogramming with ML modules in the MirageOS";
