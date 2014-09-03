@@ -53,7 +53,7 @@ Functors are used everywhere in Mirage to describe the OS layers:
 - Lots of different backends (ie. implementation for the core OS signatures):
   Unix, Xen, Javascript, kernel module, ...
 
-- Very flexible approach. Example of HTTP over UPnP over UDP
+- Very flexible approach. Example of HTTP over UPnP over UDP.
 
 
 ## Writing a component
@@ -143,7 +143,6 @@ Module types | `'a typ`
 `NETWORK`    | `network typ`
 `ETHERNET`   | `ethernet typ`
 
-Directo correspondances between *the pair* (module implementations
 $\times$ module value) *and a state* and values of type `a impl`
 (similar to dynamics but for modules):
 
