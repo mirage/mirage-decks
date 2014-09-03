@@ -30,7 +30,7 @@ let page readf site d =
       <link rel="stylesheet" href="/css/site.css" media="all"> </link>
 
       <link rel="stylesheet" href="/reveal.js-2.6.2/css/reveal.min.css"> </link>
-      <link rel="stylesheet" href="/reveal.js-2.6.2/lib/css/zenburn.css"> </link>
+      <link rel="stylesheet" href="/highlight.js-8.2/styles/solarized_dark.css"> </link>
       <link rel="stylesheet" href="/reveal.js-2.6.2/css/theme/horizon.css" id="theme"
             media="all"> </link>
 
