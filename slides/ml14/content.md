@@ -44,7 +44,7 @@ These slides were written using Mirage on Mac OSX:
 
 ## Modular Architecture
  
-From an ML point-of-view, MirageOS is: 
+From an ML perspective, MirageOS is: 
  
 1. A collection of __module types__, describing structural parts of an 
    operating system (including device drivers).
