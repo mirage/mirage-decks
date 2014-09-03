@@ -260,9 +260,7 @@ body {
 
 .reveal section code {
     font-size: 90%;
-    background: #ddd;
-    color: #333;
-    padding: 0 1ex;
+    padding: 1ex;
     margin: 0 0.5ex;
 }
 
