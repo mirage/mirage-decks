@@ -22,7 +22,7 @@ echo OPAM versions
 opam --version
 opam --git-version
 
-opam init
+opam init git://github.com/ocaml/opam-repository >/dev/null 2>&1
 opam remote add mirage-dev git://github.com/mirage/mirage-dev
 opam update
 opam install ${OPAM_PACKAGES}
