@@ -249,8 +249,7 @@ over the parameterised type using fmap.
   * OCaml functor is a module that is parameterised across other
     modules (see [Real World OCaml Chap 9](https://realworldocaml.org/v1/en/html/functors.html)).
 
-  * Functors and modules are a separate language from the core OCaml language.<br />
-*([A Modular Module System](http://caml.inria.fr/pub/papers/xleroy-modular_modules-jfp.pdf), in JFP 10(3):269-303, 2000)*.
+  * Functors and modules are a separate language from the core OCaml language. *([A Modular Module System](http://caml.inria.fr/pub/papers/xleroy-modular_modules-jfp.pdf), Xavier Leroy in JFP 10(3):269-303, 2000)*.
 
 
 ## Mirage OS 2.0 Workflow
@@ -293,26 +292,6 @@ As easy as 1&mdash;2&mdash;3!
 
    + All the magic happens via the OCaml module system.
 
-
-## Modularizing the OS
-
-<p class="stretch center">
-  <img src="modules1.png" />
-</p>
-
-
-## Modularizing the OS
-
-<p class="stretch center">
-  <img src="modules2.png" />
-</p>
-
-
-## Modularizing the OS
-
-<p class="stretch center">
-  <img src="modules3.png" />
-</p>
 
 
 ## Modular Architecture
@@ -447,6 +426,8 @@ library types for common uses
 (see [V1_LWT.ml](https://github.com/mirage/mirage/tree/master/types/)).
 
 
+----
+
 ## From Modules to Functors
  
 Functors are used everywhere in Mirage to describe OS layers: 
@@ -490,6 +471,28 @@ end
 ```
 
 
+## Modularizing the OS
+
+<p class="stretch center">
+  <img src="modules1.png" />
+</p>
+
+
+## Modularizing the OS
+
+<p class="stretch center">
+  <img src="modules2.png" />
+</p>
+
+
+## Modularizing the OS
+
+<p class="stretch center">
+  <img src="modules3.png" />
+</p>
+
+
+
 ## Writing a component
 
 A Mirage component usually contains:
@@ -509,12 +512,11 @@ A Mirage component usually contains:
 Functors are rather heavyweight constructs, and need to be applied in some concrete
 combination to make an executable.
 
-The module language is much more limited than the core host language, so less usable.
+The module language is much more limited than the core host language, so we embed
+it inside the host language as an eDSL!
 
-<br />
-
-> Enter __metaprogramming__: lets manipulate the functors as values in the
-  host language, and emit module application as a staged program.
+> __Metaprogramming__:  manipulate functors as values in the
+  host language, and emit resulting module applications as a program stage.
 
 
 ----
@@ -682,17 +684,31 @@ Low latency deployment of security updates.
 + Use compiler optimisations for exotic environments.
 
 
-## OPAM
+## OPAM: Source Management
 
 A library OS needs good package management.  Learn from Cabal.
 
 * __No upper bounds__ on packages, and continuous integration to pick 
   up violations.
-* __Distributed git workflow__ for feature branches via `opam remote`
-  (a collection of packages).
-* External constraint solver support via CUDF (can use Debian tools
-  such as `aspcud`).
+* __Distributed git workflow__ for feature branches (package collections can be composed).
+* __External constraint solver__ support via CUDF (can use Debian tools
+  such as aspcud).
 
+> Every single Mirage library is distributed via OPAM, and many are
+> usable in normal Unix (via Lwt/Async) due to functors.
+
+
+## OPAM: Contributors
+
+<img src="contributors.png" style="align:centre" />
+
+
+## OPAM: Package Growth
+
+<img src="packages.png" />
+
+
+----
 
 ## Wrapping Up
 
@@ -712,6 +728,18 @@ For information about the many components we could not cover here, see
   modular C foreign function bindings.
 
 
+## Get Involved!
+
+Unikernels are an incredibly interesting way to code functionally at scale.
+Nothing stresses a toolchain like building a whole OS.
+
+- **Choices**: [Mirage OS](http://openmirage.org) in OCaml, [HaLVM](http://halvm.org) in Haskell.
+- **Scenarios**: Static websites, dynamic content, custom routers.
+- **Performance**: There's no hiding behind abstractions.  HalVM *vs* Mirage is a fun contest in evaluating abstraction cost.
+
+> Most important: need contributors to build the library base of safe protocol implementations (TLS has been done!)
+
+
 ## Why? [nymote.org](http://nymote.org/)
 
 We need to claim control over our online lives rather than abrogate it to
@@ -724,8 +752,8 @@ _The Cloud_:
 > <center>How can we achieve this?</center>
 
 <br/>
-Mirage is the foundation for building **personal clouds**, securely
-interconnecting and synchronising data between our devices.
+Mirage/ARM is the foundation for building **personal clouds**, securely
+interconnecting and synchronising our devices.
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -750,6 +778,4 @@ and [Jeremy Yallop](https://github.com/yallop).
   Thanks for listening! Questions?
 </p>
 
-<p style="font-size: 40px; display: float; padding: 2ex 2em; text-align: center">
-  (_and please rate the talk_!)
 </p>
