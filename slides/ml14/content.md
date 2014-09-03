@@ -116,7 +116,7 @@ As easy as 1&mdash;2&mdash;3!
 
 ## Modular Architecture
  
-From an ML point-of-view, MirageOS is: 
+From an ML perspective, MirageOS is: 
  
 1. A collection of __module types__, describing structural parts of an 
    operating system (including device drivers).
@@ -159,11 +159,11 @@ module type FLOW = sig
   type buffer
   type flow
 
-  val read : flow -> [`Ok of buffer | `Eof | `Error of exn ] io
+  val read : flow -> [`Ok of buffer | `Eof ] io
 
-  val write : flow -> buffer -> [`Ok of unit | `Eof | `Error of exn ] io
+  val write : flow -> buffer -> [`Ok of unit | `Eof ] io
 
-  val writev : flow -> buffer list -> [`Ok of unit | `Eof | `Error of exn ] io
+  val writev : flow -> buffer list -> [`Ok of unit | `Eof ] io 
 
 end
 
