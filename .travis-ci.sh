@@ -23,6 +23,7 @@ opam --version
 opam --git-version
 
 opam init
+opam remote add mirage-dev git://github.com/mirage/mirage-dev
 opam install ${OPAM_PACKAGES}
 eval `opam config env`
 mirage --version
