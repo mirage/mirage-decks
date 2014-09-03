@@ -40,39 +40,36 @@ These slides were written using Mirage on Mac OSX:
 - Binaries small enough to track the **entire deployment** in Git!
 
 
-## Introducing [Mirage OS 2.0](http://openmirage.org/)
-
-<p class="stretch center">
-  <img src="decks-on-arm.png" />
-</p>
-
-
 ----
 
-## What is Mirage OS?
-
-From a Functional Programing point of view, MirageOS is:
-
-1. A collection of module types, describing different parts of an
-   operating system (including network and storage drivers)
-
-2. A collection of independant libraries, implementating the
-   signatures. Depending on your application, you select the part of
-   the OS you want to link with.
-
-3. Use functors to model dependencies between libraries/components.
-   The functor arguments are the module types defined in 1.
+## Modular Architecture
+ 
+From an ML point-of-view, MirageOS is: 
+ 
+1. A collection of __module types__, describing structural parts of an 
+   operating system (including device drivers).
+ 
+2. A collection of independent __libraries that implement the 
+   module types.__  Only libraries that application needs
+   are linked.
+ 
+3. Use __functors to model dependencies__ between libraries/components. 
+   The functor arguments are the module types defined in 1. 
 
 
 ## Key Insight
 
-> Mirage provides an EDSL that embeds the module and functor
-> language into the host OCaml language, where they can be
-> manipulated and applied more easily.  Metaprogramming is
-> used to evaluate the result into a set of concrete module
-> application.
+> Mirage provides an EDSL that __embeds the module and functor
+> language into the host OCaml language__, where they can be
+> manipulated and applied more easily.
 
-# Mirage OS 2.0 Workflow
+<br />
+
+> Metaprogramming is used to evaluate the result into a set
+> of fully applied modules that are executable under Unix or Xen.
+
+
+## Mirage OS 2.0 Workflow
 
 As easy as 1&mdash;2&mdash;3!
 
@@ -80,6 +77,7 @@ As easy as 1&mdash;2&mdash;3!
    + Express its configuration as OCaml code too!
 
            $ mirage configure app/config.ml --unix
+<!-- .element: class="no-highlight" -->
 
 
 ## Mirage OS 2.0 Workflow
@@ -94,6 +92,7 @@ As easy as 1&mdash;2&mdash;3!
          $ cd app
          $ make depend # install library dependencies
          $ make build  # build the unikernel
+<!-- .element: class="no-highlight" -->
 
 
 ## Mirage OS 2.0 Workflow
@@ -109,6 +108,7 @@ As easy as 1&mdash;2&mdash;3!
 
           $ mirage configure app/config.ml --xen
           $ cd app && make depend && make build
+<!-- .element: class="no-highlight" -->
 
    + All the magic happens via the OCaml module system.
 
@@ -428,7 +428,32 @@ let () =
 ```
 <!-- .element: class="no-highlight" -->
 
-Website can be recompiled as:
+
+## Correspondence
+
+Configuration Code:
+
+```
+let server =
+  let conduit = conduit_direct (stack default_console) in
+  http_server (`TCP (`Port 80)) conduit
+
+let main = foreign "Dispatch.Main"
+  (console @-> kv_ro @-> http @-> job)
+```
+
+Application Code:
+
+```
+module Main (C:CONSOLE) (FS:KV_RO) (S:Cohttp_lwt.Server) = struct
+
+  let start c fs http = ...
+```
+
+
+## Flexibility
+
+Website can now be assembled via host code:
 
 * Xen unikernel with all data built into image.
 * Xen unikernel with data dynamically read from disk.
@@ -436,7 +461,9 @@ Website can be recompiled as:
 * Unix binary with OCaml userlevel TCP/IP stack
 
 
-## Some difference between the module and the value language
+## Module vs value language
+
+- Error messages are significantly simpler in the host language (small type mismatches *vs* dumps of entire module signatures!)
 
 - Optional arguments:
 
@@ -448,11 +475,18 @@ val direct_tcpv4:
   ipv4 impl -> tcpv4 impl
 ```
 
-Select default module implementation for `CLOCK, `RANDOM` and `TIME`.
+Can select default module implementations for CLOCK, RANDOM and TIME to save manual work.
 
-- Error messages
 
-TODO: show difference betweem type errors and 70k error message in Irmin
+## Extensibility
+
+Anyone can extend the eDSL, just need to (1) defined a abstract type
+corresponding to the module type and (2) define a CONFIGURABLE
+implementation and pack-it using first class modules:
+
+```
+val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a impl
+```
 
 
 ## eDSL: Summary
@@ -465,16 +499,6 @@ TODO: show difference betweem type errors and 70k error message in Irmin
   - Config file is interpreted to generate executable kernel.
   - Flexible way to specify precise device driver policy.
 
-
-## The Mirage eDSL: extensibility
-
-Anyone can extend the eDSL, just need to (1) defined a abstract type
-corresponding to the module type and (2) define a CONFIGURABLE
-implementation and pack-it using first class modules:
-
-```
-val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a impl
-```
 
 
 ----
