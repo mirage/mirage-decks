@@ -554,10 +554,15 @@ val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a imp
 
 ## Just like Dynamics
 
-Dynamics is a pair between a **value** and a value that represents it **type**.
+Dynamics is a pair between:
 
-Similar in Mirage modules, where an
-*impl* represents a triple of *typ*, a CONFIGURABLE, and the constructor function.
+* a *value*
+* a value that represents its *type*.
+
+In the Mirage EDSL, an *impl* represents a triple of:
+
+* a *typ*
+* a CONFIGURABLE and the constructor function for the module.
 
 GADTs ensure that an *impl* cannot be applied to a *typ* that does not admit it, so the resulting functor applications are sound.
 
@@ -577,7 +582,10 @@ GADTs ensure that an *impl* cannot be applied to a *typ* that does not admit it,
 
 ## <http://openmirage.org/>
 
-Featuring blog posts by:
+A Linux Foundation Incubator Project lead from the University of Cambridge and Citrix Systems.
+
+Featuring blog posts on new features by:
+
 [Amir Chaudhry](http://amirchaudhry.com/),
 [Thomas Gazagnaire](http://gazagnaire.org/),
 [David Kaloper](https://github.com/pqwy),
@@ -592,5 +600,5 @@ and [Jeremy Yallop](https://github.com/yallop).
           display: float; padding: 2ex 0; text-align: center">
   Thanks for listening! Questions?
   <br />
-  Contributions are very welcome at [openmirage.org](http://openmirage.org)
+  Contributions very welcome at [openmirage.org](http://openmirage.org)
 </p>
