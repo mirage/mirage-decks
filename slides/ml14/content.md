@@ -1,11 +1,11 @@
 <!-- .slide: class="title" -->
 
-# Metaprogramming with ML modules in the MirageOS
+# **Metaprogramming with ML modules** in the MirageOS
 
 Anil Madhavapeddy <small>University of Cambridge</small>
 [@avsm](http://twitter.com/avsm)
 
-Thomas Gazagnaire <smalll>University of Cambridge</small>
+Thomas Gazagnaire <small>University of Cambridge</small>
 [@eriangazag](http://twitter.com/eriangazag)
 
 David Scott <small>Citrix</small>
@@ -25,9 +25,39 @@ Richard Mortier <small>University of Nottingham</small>
 
 ----
 
+## Four Years Ago...
+
+Thomas Gazagnaire and I [talked](http://www.slideshare.net/xen_com_mgr/mirage-extreme-specialization-of-cloud-appliances) at the ML Workshop 2010 about our new OCaml Operating
+System.
+
+Since then we have:
+
+- rebuilt the core 3 times
+- not given up
+- written a [package manager](https://opam.ocaml.org)
+- attracted real users
+- **functorized the entire stack**
+
+
+## Project Goal
+
+**Portable code that can be deployed into exotic environments
+ranging from standalone Xen unikernels to JavaScript blobs.**
+
+This presentation can be compiled as a:
+
+* Xen unikernel with all data built into image.
+* Xen unikernel with data dynamically read from disk.
+* Unix binary with data passed through to filesystem.
+* Unix binary with OCaml userlevel TCP/IP stack.
+
+> How do we express all these combinations succinctly without creeping
+> throughout our codebase?
+
+
 ## Introducing [Mirage OS 2.0](http://openmirage.org/)
 
-These slides were written using Mirage on Mac OSX:
+These slides were written using Mirage 2.0 (released July 2014) on Mac OSX:
 
 - They are hosted in a **938kB Xen unikernel** written in statically type-safe
   OCaml, including device drivers and network stack.
@@ -77,7 +107,6 @@ As easy as 1&mdash;2&mdash;3!
    + Express its configuration as OCaml code too!
 
            $ mirage configure app/config.ml --unix
-<!-- .element: class="no-highlight" -->
 
 
 ## Mirage OS 2.0 Workflow
@@ -92,7 +121,6 @@ As easy as 1&mdash;2&mdash;3!
          $ cd app
          $ make depend # install library dependencies
          $ make build  # build the unikernel
-<!-- .element: class="no-highlight" -->
 
 
 ## Mirage OS 2.0 Workflow
@@ -108,10 +136,8 @@ As easy as 1&mdash;2&mdash;3!
 
           $ mirage configure app/config.ml --xen
           $ cd app && make depend && make build
-<!-- .element: class="no-highlight" -->
 
    + All the magic happens via the OCaml module system.
-
 
 
 ## Modular Architecture
@@ -403,14 +429,12 @@ let stack console =
   | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 ```
-<!-- .element: class="no-highlight" -->
 
 When given a console, this builds a network stack:
 
 ```
-# val stack : console impl -> stackv4 impl
+val stack : console impl -> stackv4 impl
 ```
-<!-- .element: class="no-highlight" -->
 
 
 ## Example: Website
@@ -426,7 +450,6 @@ let main = foreign "Dispatch.Main"
 let () =
   register "www" [ main $ default_console $ fs $ server ]
 ```
-<!-- .element: class="no-highlight" -->
 
 
 ## Correspondence
@@ -451,6 +474,42 @@ module Main (C:CONSOLE) (FS:KV_RO) (S:Cohttp_lwt.Server) = struct
 ```
 
 
+## Correspondence: Unix
+
+```
+module Stackv41 = Tcpip_stack_socket.Make(Console)
+module Conduit1 = Conduit_mirage.Make(Stackv41)
+module Http1 = HTTP.Make(Conduit1)
+module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
+```
+
+Fairly simple application of a kernel socket C binding to a network stack, which is passed to the application.
+
+
+## Correspondence: Xen
+
+A more complex module assembly for Xen...
+
+```
+module Stackv41 = struct
+  module E = Ethif.Make(Netif)
+  module I = Ipv4.Make(E)
+  module U = Udpv4.Make(I)
+  module T = Tcpv4.Flow.Make(I)(OS.Time)(Clock)(Random)
+  module S = Tcpip_stack_direct.Make(Console)(OS.Time)(Random)(Netif)(E)(I)(U)(T)
+  include S
+end
+module Conduit1 = Conduit_mirage.Make(Stackv41)
+module Http1 = HTTP.Make(Conduit1)
+module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
+
+...
+
+let () =
+  OS.Main.run (join [t1 ()])
+```
+
+
 ## Flexibility
 
 Website can now be assembled via host code:
@@ -459,6 +518,9 @@ Website can now be assembled via host code:
 * Xen unikernel with data dynamically read from disk.
 * Unix binary with data passed through to filesystem.
 * Unix binary with OCaml userlevel TCP/IP stack
+
+<br />
+> Well-typed rope to hang yourself with, in the grand Unix tradition!
 
 
 ## Module vs value language
@@ -519,4 +581,6 @@ and [Jeremy Yallop](https://github.com/yallop).
 <p style="font-size: 48px; font-weight: bold;
           display: float; padding: 2ex 0; text-align: center">
   Thanks for listening! Questions?
+  <br />
+  Contributions are very welcome at [openmirage.org](http://openmirage.org)
 </p>
