@@ -183,6 +183,11 @@ Swap system libraries to target different platforms:<br/>
 </p>
 
 
+## Memory Management
+
+<img height="500" src="memory-model.png" />
+
+
 ## End Result?
 
 Unikernels are compact enough to boot and respond to network traffic in
@@ -583,14 +588,12 @@ let stack console =
   | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 ```
-<!-- .element: class="no-highlight" -->
 
 When given a console, this builds a network stack:
 
 ```
-# val stack : console impl -> stackv4 impl
+val stack : console impl -> stackv4 impl
 ```
-<!-- .element: class="no-highlight" -->
 
 
 ## Example: Website
@@ -606,14 +609,121 @@ let main = foreign "Dispatch.Main"
 let () =
   register "www" [ main $ default_console $ fs $ server ]
 ```
-<!-- .element: class="no-highlight" -->
 
-Website can be recompiled as:
+
+## Correspondence
+
+Configuration Code:
+
+```
+let server =
+  let conduit = conduit_direct (stack default_console) in
+  http_server (`TCP (`Port 80)) conduit
+
+let main = foreign "Dispatch.Main"
+  (console @-> kv_ro @-> http @-> job)
+```
+
+Application Code:
+
+```
+module Main (C:CONSOLE) (FS:KV_RO) (S:Cohttp_lwt.Server) = struct
+
+  let start c fs http = ...
+```
+
+
+## Correspondence: Unix
+
+```
+module Stackv41 = Tcpip_stack_socket.Make(Console)
+module Conduit1 = Conduit_mirage.Make(Stackv41)
+module Http1 = HTTP.Make(Conduit1)
+module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
+```
+
+Fairly simple application of a kernel socket C binding to a network stack, which is passed to the application.
+
+
+## Correspondence: Xen
+
+A more complex module assembly for Xen...
+
+```
+module Stackv41 = struct
+  module E = Ethif.Make(Netif)
+  module I = Ipv4.Make(E)
+  module U = Udpv4.Make(I)
+  module T = Tcpv4.Flow.Make(I)(OS.Time)(Clock)(Random)
+  module S = Tcpip_stack_direct.Make(Console)(OS.Time)(Random)(Netif)(E)(I)(U)(T)
+  include S
+end
+module Conduit1 = Conduit_mirage.Make(Stackv41)
+module Http1 = HTTP.Make(Conduit1)
+module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
+
+...
+
+let () =
+  OS.Main.run (join [t1 ()])
+```
+
+
+## Flexibility
+
+Website can now be assembled via host code:
 
 * Xen unikernel with all data built into image.
 * Xen unikernel with data dynamically read from disk.
 * Unix binary with data passed through to filesystem.
 * Unix binary with OCaml userlevel TCP/IP stack
+
+<br />
+> Well-typed rope to hang yourself with, in the grand Unix tradition!
+
+
+## Module vs value language
+
+- Error messages are significantly simpler in the host language (small type mismatches *vs* dumps of entire module signatures!)
+
+- Optional arguments:
+
+```
+val direct_tcpv4:
+  ?clock:clock impl ->
+  ?random:random impl ->
+  ?time:time impl ->
+  ipv4 impl -> tcpv4 impl
+```
+
+Can select default module implementations for CLOCK, RANDOM and TIME to save manual work.
+
+
+## Extensibility
+
+Anyone can extend the eDSL with new devices:
+
+- define an abstract type corresponding to the module type signature (e.g. NETWORK or TCPV4 or KV_RO). 
+- define a CONFIGURABLE implementation and pack it using first class modules to generate a new impl type.
+
+```
+val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a impl
+```
+
+
+## Just like Dynamics
+
+Dynamics is a pair between:
+
+* a *value*
+* a value that represents its *type*.
+
+In the Mirage EDSL, an *impl* represents a triple of:
+
+* a *typ*
+* a CONFIGURABLE and the constructor function for the module.
+
+GADTs ensure that an *impl* cannot be applied to a *typ* that does not admit it, so the resulting functor applications are sound.
 
 
 ## eDSL: Summary
