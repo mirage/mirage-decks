@@ -338,7 +338,6 @@ end
 </p>
 
 
-
 ## Writing a component
 
 A Mirage component usually contains:

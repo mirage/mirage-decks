@@ -16,6 +16,53 @@ Anil Madhavapeddy <small>University of Cambridge</small>
 
 ----
 
+## Systems Programming 
+
+> It's considered good programming practice to focus
+> on compositionality: build software out of small, well-defined
+> modules that combine to give rise to other modules with different
+> behaviors.
+>
+> **This is simply too difficult to do in distributed systems. Why?**
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+*-- Marius Eriksen, Principal Engineer, Twitter* *([source](http://monkey.org/~marius/sosp13.html))*
+
+
+## Complexity Kills You
+
+The enemy is **complexity**:
+
++ Applications are **deeply intertwined** with system APIs, and so lack
+  portability.
+
++ Modern operating systems offer **dynamic support** for **many users** to run
+  **multiple applications** simultaneously.
+
+Almost unbounded scope for uncontrolled interaction!
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
++ Choices of distribution and version.
++ Ad hoc application configuration under `/etc/`
++ Platform configuration details, e.g., firewalls.
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+
+## The Odd Inversion
+
+We build applications in a **safe, compositional style** using
+functional programming.
+
+...and then surround it in **15 million lines of unsafe code** to
+interact with the outside world.
+
+> With such powerful programming language abstractions,
+> why hasn't the operating system disappeared from our
+> stack?
+
+
 ## Introducing [Mirage OS 2.0](http://openmirage.org/)
 
 These slides were written using Mirage on Mac OSX:
@@ -56,40 +103,6 @@ These slides were written using Mirage on Mac OSX:
     https://flic.kr/p/8N1hWh
   </small>
 </p>
-
-
-## The Odd Inversion
-
-We build applications in a **safe, compositional style** using
-functional programming.
-
-...and then surround it in **15 million lines of unsafe code** to
-interact with the outside world.
-
-> With such powerful programming language abstractions,
-> why hasn't the operating system disappeared from our
-> stack?
-
-
-## Complexity Kills You
-
-The enemy is **complexity**:
-
-+ Applications are **deeply intertwined** with system APIs, and so lack
-  portability.
-
-+ Modern operating systems offer **dynamic support** for **many users** to run
-  **multiple applications** simultaneously.
-
-Almost unbounded scope for uncontrolled interaction!
-
-<!-- .element: class="fragment" data-fragment-index="1" -->
-
-+ Choices of distribution and version.
-+ Ad hoc application configuration under `/etc/`
-+ Platform configuration details, e.g., firewalls.
-
-<!-- .element: class="fragment" data-fragment-index="1" -->
 
 
 ## Docker: Containerisation
@@ -224,6 +237,37 @@ real-time.
 <img src="boot-time.png" />
 
 
+## Xen: the Challenge
+
+- **XenServer** is a complete distribution of the Xen hypervisor.
+
+> Xen is used to manage millions of our customer's virtual machines,
+> how we do we manage and secure Xen itself?
+>
+> We need to build a "**distributed system in a box**" that breaks up the
+> monolithic systems software into components that run
+> with minimal privilege, yet are still easy to deploy and debug.
+
+<p align="right">- David J. Scott, Principal Architect, XenServer</p>
+
+
+## Xen: the Challenge
+
+- **XenServer** is a complete distribution of the Xen hypervisor.
+- Open-source and deployed on millions of hosts.
+- Huge cloud providers such as [Rackspace](http://rackspace.com) use it.
+
+<br />
+XenServer software stack is around ~250k lines of OCaml code.
+
+- a distributed database
+- APIs for XML-RPC
+- fault tolerance algorithms
+- datacentre management UI
+
+*(source: [ICFP 2010](http://anil.recoil.org/papers/2010-icfp-xen.pdf))*
+
+
 ----
 
 ## Not the ML Workshop
@@ -255,6 +299,21 @@ over the parameterised type using fmap.
     modules (see [Real World OCaml Chap 9](https://realworldocaml.org/v1/en/html/functors.html)).
 
   * Functors and modules are a separate language from the core OCaml language. *([A Modular Module System](http://caml.inria.fr/pub/papers/xleroy-modular_modules-jfp.pdf), Xavier Leroy in JFP 10(3):269-303, 2000)*.
+
+
+## Modular Architecture
+ 
+From an ML point-of-view, MirageOS is: 
+ 
+1. A collection of __module types__, describing structural parts of an 
+   operating system (including device drivers).
+ 
+2. A collection of independent __libraries that implement the 
+   module types.__  Only libraries that application needs
+   are linked.
+ 
+3. Use __functors to model dependencies__ between libraries/components. 
+   The functor arguments are the module types defined in 1. 
 
 
 ## Mirage OS 2.0 Workflow
@@ -868,11 +927,12 @@ interconnecting and synchronising our devices.
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 
-----
-
 ## <http://openmirage.org/>
 
-Featuring blog posts by:
+A Linux Foundation Incubator Project lead from the University of Cambridge and Citrix Systems.
+
+Featuring blog posts on new features by:
+
 [Amir Chaudhry](http://amirchaudhry.com/),
 [Thomas Gazagnaire](http://gazagnaire.org/),
 [David Kaloper](https://github.com/pqwy),
@@ -886,6 +946,6 @@ and [Jeremy Yallop](https://github.com/yallop).
 <p style="font-size: 48px; font-weight: bold;
           display: float; padding: 2ex 0; text-align: center">
   Thanks for listening! Questions?
-</p>
-
+  <br />
+  Contributions very welcome at [openmirage.org](http://openmirage.org)
 </p>
