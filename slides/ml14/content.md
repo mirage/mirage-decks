@@ -51,7 +51,7 @@ This presentation can be compiled as a:
 * Unix binary with data passed through to filesystem.
 * Unix binary with OCaml userlevel TCP/IP stack.
 
-> How do we express all these combinations succinctly without creeping
+> How do we express all these combinations succinctly without OS dependencies creeping
 > throughout our codebase?
 
 
@@ -550,6 +550,16 @@ Anyone can extend the eDSL with new devices:
 ```
 val implementation: 'a -> 'b -> (module CONFIGURABLE with type t = 'b) -> 'a impl
 ```
+
+
+## Just like Dynamics
+
+Dynamics is a pair between a **value** and a value that represents it **type**.
+
+Similar in Mirage modules, where an
+*impl* represents a triple of *typ*, a CONFIGURABLE, and the constructor function.
+
+GADTs ensure that an *impl* cannot be applied to a *typ* that does not admit it, so the resulting functor applications are sound.
 
 
 ## eDSL: Summary
