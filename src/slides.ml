@@ -25,6 +25,14 @@ let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 let decks =
   let open Deck in
   [
+    { permalink = "itu-copenhagen14";
+      given = Date.t (2014, 09, 09);
+      speakers = [People.hannes];
+      venue = "OCaml 2014";
+      title = "Mirage OS and OCaml-TLS -- Fun operating system engineering";
+      style = Reveal262;
+    };
+
     { permalink = "ocaml14-tls";
       given = Date.t (2014, 09, 05);
       speakers = [People.hannes];
