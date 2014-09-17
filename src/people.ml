@@ -66,5 +66,11 @@ let jon = {
   email     = Some "jon@recoil.org"
 }
 
+let hannes = {
+  Atom.name = "Hannes Mehnert";
+  uri       = Some "https://github.com/hannesm";
+  email     = Some "hannes@mehnert.org"
+}
+
 
 let rights = Some "All rights reserved by the author"
