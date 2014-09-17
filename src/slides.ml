@@ -28,7 +28,7 @@ let decks =
     { permalink = "itu-copenhagen14";
       given = Date.t (2014, 09, 09);
       speakers = [People.hannes];
-      venue = "OCaml 2014";
+      venue = "IT University of Copenhagen";
       title = "Mirage OS and OCaml-TLS -- Fun operating system engineering";
       style = Reveal262;
     };
