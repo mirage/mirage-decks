@@ -877,6 +877,19 @@ A library OS needs good package management.  Learn from Cabal.
 <img src="packages.png" />
 
 
+## Integrating with Mirage
+
+OPAM includes a SAT-solver to pick modules for a given hardware target *(can include Xen vs Linux dom0+Xen vs kFreeBSD)*
+
+Libraries are lightweight and independent (on GitHub):
+
+- **[mirage/ocaml-xenstore](https://github.com/mirage/ocaml-xenstore)** - abstract, Unix/Xen interface.
+- **[mirage/shared-memory-ring](https://github.com/mirage/shared-memory-ring)** - shared memory protocol for Xen drivers.
+- **[mirage/ocaml-xen-block-driver](https://github.com/mirage/ocaml-xen-block-driver)** - Unix/Xen Blkfront/Blkback.
+- **[mirage/ocaml-vchan](https://github.com/mirage/ocaml-vchan)** - Unix/Xen Vchan shared memory transport.
+- **[mirage/mirage-platform](https://github.com/mirage/mirage-platform)** - UNIX/Xen/NS3 versions of timer, shared memory and event channels.
+
+
 ----
 
 ## Wrapping Up
