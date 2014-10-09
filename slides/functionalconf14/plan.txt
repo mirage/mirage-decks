@@ -1,0 +1,25 @@
+0. intro (20)
+
+0. OCaml (5)
+
+1. portability (5)
+   - workflow
+   - portabiity:
+     * supported: linux (socket, direct), xen on x86, xen on arm (new on mirage 2.0)
+     * experimental: FreeBSD kernel module, javascript
+
+2. irmin (10)
+  - model
+  - irminstore
+
+3. tls (10)
+
+10
+
+4. nymote (5)
+
+TODO:
+- project of Linux foundation
+- REPL
+- type inference, simple type language, module language, polymorphic types
+- workflow: remove tls-server notes
