@@ -539,11 +539,10 @@ There are definitions available for all the __module types__ present in Mirage (
 ```
 
 
-
 ## Mirage eDSL
 
 The eDSL also describes concrete module implementations for a given
-signature (e.g. a socket TCPv4 stack vs direct OCaml one).
+signature
 
 ```
 type 'a impl
@@ -551,14 +550,13 @@ type 'a impl
 
 val ($): ('a -> 'b) impl -> 'a impl -> 'b impl
 (** [m $ a] applies the functor [a] to the functor [m]. *)
-
-val foreign: string -> 'a typ -> 'a impl
-(** [foreign name constr typ] states that the module named
-    by [name] has the module type [typ]. *)
-
-val typ: 'a impl -> 'a typ
-(** Return the module signature of a given implementation. *)
 ```
+
+Example of implementations are:
+
+* a conventional Unix socket TCPv4 stack
+* a pure OCaml TCPv4 stack
+* a JavaScript Websockets binding
 
 
 ## Example: Network Stack
@@ -668,37 +666,10 @@ Website can now be assembled via host code:
 * Xen unikernel with data dynamically read from disk.
 * Unix binary with data passed through to filesystem.
 * Unix binary with OCaml userlevel TCP/IP stack
+* and an emerging JavaScript model: [H261 Decoding](http://andrewray.github.io/iocamljs/oh261.html).
 
 <br />
 > Well-typed rope to hang yourself with, in the grand Unix tradition!
-
-
-## Module vs value language
-
-- Error messages are significantly simpler in the host language (small type mismatches *vs* dumps of entire module signatures!)
-
-- Optional arguments:
-
-```
-val direct_tcpv4:
-  ?clock:clock impl ->
-  ?random:random impl ->
-  ?time:time impl ->
-  ipv4 impl -> tcpv4 impl
-```
-
-Can select default module implementations for CLOCK, RANDOM and TIME to save manual work.
-
-
-## eDSL: Summary
-
-* Application is a **parameterised module** over dependencies.
-  - ML functors separate OS functionality into modular chunks.
-  - Mirage provides a library of module types.
-* **Metaprogramming** is used to manipulate these modules.
-  - Mirage eDSL manipulates module types and implementations in OCaml.
-  - Config file is interpreted to generate executable kernel.
-  - Flexible way to specify precise device driver policy.
 
 
 ----
@@ -713,8 +684,7 @@ Unikernels are **small enough to be tracked in GitHub**. For example, for the
 2. Repository is continuously rebuilt by
   **[Travis CI](https://travis-ci.org/mirage/mirage-www)**; if successful:
 
-3. Unikernel pushed to  **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**;
-  and our
+3. Unikernel pushed to  **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
 
 4. Cloud toolstack spawns VMs based on pushes there.
 
