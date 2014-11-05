@@ -428,7 +428,7 @@ library types for common uses
  
 Functors are used everywhere in Mirage to describe OS layers: 
  
-- Similar to FoxNet, but for the __whole OS__. We have a full 
+- Modules for the __whole OS__. We have a full 
   implementation of the network stack (including TLS) in OCaml.
  
 - Very __flexible approach__ for customising OS stacks for weird applications
@@ -503,6 +503,42 @@ A Mirage component usually contains:
 > and break down the monolithic into components.
 
 
+## Example: Unix Sockets
+
+```
+module Stackv41 = Tcpip_stack_socket.Make(Console)
+module Conduit1 = Conduit_mirage.Make(Stackv41)
+module Http1 = HTTP.Make(Conduit1)
+module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
+```
+
+Fairly simple application of a kernel socket C binding to a network stack, which is passed to the application.
+
+
+## Example: Xen Kernel
+
+A more complex module assembly for Xen...
+
+```
+module Stackv41 = struct
+  module E = Ethif.Make(Netif)
+  module I = Ipv4.Make(E)
+  module U = Udpv4.Make(I)
+  module T = Tcpv4.Flow.Make(I)(OS.Time)(Clock)(Random)
+  module S = Tcpip_stack_direct.Make(Console)(OS.Time)(Random)(Netif)(E)(I)(U)(T)
+  include S
+end
+module Conduit1 = Conduit_mirage.Make(Stackv41)
+module Http1 = HTTP.Make(Conduit1)
+module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
+
+...
+
+let () =
+  OS.Main.run (join [t1 ()])
+```
+
+
 ## The Bad News
 
 Functors are rather heavyweight constructs, and need to be applied in some concrete
@@ -517,46 +553,20 @@ it inside the host language as an eDSL!
 
 ----
 
-## Mirage eDSL
+## Configuration eDSL
 
-```
-module Main (C:CONSOLE) (FS:KV_RO) (H:HTTP.Server) = struct
-```
+1) Write an OCaml configuration file that describes the shape of the application.
 
-To simplify configuring applications, we manipulate these dependencies in OCaml. Configuration as code!
-
-```
-type 'a typ
-(** The type of values representing module types. *)
-
-val (@->): 'a typ -> 'b typ -> ('a -> 'b) typ
-```
-
-There are definitions available for all the __module types__ present in Mirage (NETWORK, TCPV4, etc...)
 ```
 # console @-> kv_ro @-> http_server @-> job
 (console -> kv_ro -> http_server -> job) typ
 ```
 
+2) Combines these shapes with concrete implementations of those interfaces.
 
-## Mirage eDSL
+3) Run a code generator that outputs a `main.ml` that builds the desired configuration.
 
-The eDSL also describes concrete module implementations for a given
-signature
-
-```
-type 'a impl
-(** The type of values representing module implementations. *)
-
-val ($): ('a -> 'b) impl -> 'a impl -> 'b impl
-(** [m $ a] applies the functor [a] to the functor [m]. *)
-```
-
-Example of implementations are:
-
-* a conventional Unix socket TCPv4 stack
-* a pure OCaml TCPv4 stack
-* a JavaScript Websockets binding
+4) Build your specialised unikernel from the selected libraries.
 
 
 ## Example: Network Stack
@@ -783,6 +793,8 @@ For information about the many components we could not cover here, see
   inter-VM communication.
 + __[Ctypes](http://openmirage.org/blog/modular-foreign-function-bindings)__,
   modular C foreign function bindings.
++ __[Profiling](http://roscidus.com/blog/blog/2014/10/27/visualising-an-asynchronous-monad/)__
+  via a visualisation tool.
 
 
 ## Get Involved!
