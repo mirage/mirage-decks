@@ -59,6 +59,23 @@ interact with the outside world.
 > stack?
 
 
+## The IoT Spring
+
+<p class="center stretch">
+<img src="iot-stuff.png" />
+</p>
+
+
+## The Past Few Months
+
+* **Heartbleed**: 17% of *all* Internet secure web servers vulnerable to a single bug. Described as "catastrophic" by Bruce Schneier.
+* **ShellShock**: CGI, Web, DHCP all vulnerable to code execution. Millions of sites potentially vulnerable.
+* **JP Morgan**: 76 million homes and 8 million small businesses exposed in a single data breach.
+* **Target**: 40 million credit cards stolen electronically.
+
+> System security is in a disastrous state, and seemingly getting worse.
+
+
 ## Introducing [Mirage OS 2.0](http://openmirage.org/)
 
 These slides were written using Mirage on Mac OSX:
@@ -276,20 +293,6 @@ As easy as 1&mdash;2&mdash;3!
    + All the magic happens via the OCaml module system.
 
 
-## Functor Terminology!
-
-* **Haskell**: Functor is a type class that lets you map functions
-over the parameterised type using fmap.
-
-* **OCaml**: Similar concept, except that it operates over *modules*
-(a collection of functions and types) instead of a single type.
-
-  * OCaml functor is a module that is parameterised across other
-    modules (see [Real World OCaml Chap 9](https://realworldocaml.org/v1/en/html/functors.html)).
-
-  * Functors and modules are a separate language from the core OCaml language. *([A Modular Module System](http://caml.inria.fr/pub/papers/xleroy-modular_modules-jfp.pdf), Xavier Leroy in JFP 10(3):269-303, 2000)*.
-
-
 ## Modular Architecture
  
 From an ML point-of-view, MirageOS is: 
@@ -303,6 +306,20 @@ From an ML point-of-view, MirageOS is:
  
 3. Use __functors to model dependencies__ between libraries/components. 
    The functor arguments are the module types defined in 1. 
+
+
+## Functor Terminology!
+
+* **Haskell**: Functor is a type class that lets you map functions
+over the parameterised type using fmap.
+
+* **OCaml**: Similar concept, except that it operates over *modules*
+(a collection of functions and types) instead of a single type.
+
+  * OCaml functor is a module that is parameterised across other
+    modules (see [Real World OCaml Chap 9](https://realworldocaml.org/v1/en/html/functors.html)).
+
+  * Functors and modules are a separate language from the core OCaml language. *([A Modular Module System](http://caml.inria.fr/pub/papers/xleroy-modular_modules-jfp.pdf), Xavier Leroy in JFP 10(3):269-303, 2000)*.
 
 
 ## Module Types: Devices
