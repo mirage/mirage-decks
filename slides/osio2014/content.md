@@ -48,19 +48,6 @@ Almost unbounded scope for uncontrolled interaction!
 + Platform configuration details, e.g., firewalls.
 
 
-## The Odd Inversion
-
-We build applications in a **safe, compositional style** using
-functional programming.
-
-...and then surround it in **15 million lines of unsafe code** to
-interact with the outside world.
-
-> With such powerful programming language abstractions,
-> why hasn't the operating system disappeared from our
-> stack?
-
-
 ## The IoT Spring
 
 <p class="center stretch">
