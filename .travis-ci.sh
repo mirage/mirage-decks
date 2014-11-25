@@ -1,5 +1,5 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct crunch"
+OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct crunch travis-senv"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
@@ -39,7 +39,6 @@ cd ..
 
 if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
   # get the secure key out for deployment
-  opam install travis-senv
   mkdir -p ~/.ssh
   SSH_DEPLOY_KEY=~/.ssh/id_dsa
   travis-senv decrypt > $SSH_DEPLOY_KEY
