@@ -277,17 +277,15 @@ As easy as 1&mdash;2&mdash;3!
 
 ## Modular Architecture
  
-From an ML point-of-view, MirageOS is: 
+MirageOS restructures all system components as modules:
  
-1. A collection of __module types__, describing structural parts of an 
+1. A collection of __module types__, describing the structural "shapes" of an 
    operating system (including device drivers).
  
 2. A collection of independent __libraries that implement the 
    module types.__  Only libraries that application needs
    are linked.
  
-3. Use __functors to model dependencies__ between libraries/components. 
-   The functor arguments are the module types defined in 1. 
 
 
 ## Module Types: Devices
@@ -409,11 +407,11 @@ library types for common uses
 
 ----
 
-## From Modules to Functors
+## Modules Everywhere
  
-Functors are used everywhere in Mirage to describe OS layers: 
+Modules are used everywhere in Mirage to describe OS layers: 
  
-- Modules for the __whole OS__. We have a full 
+- For the __whole application/OS__. We have a full 
   implementation of the network stack (including TLS) in OCaml.
  
 - Very __flexible approach__ for customising OS stacks for weird applications
@@ -427,8 +425,12 @@ Functors are used everywhere in Mirage to describe OS layers:
 
 A Mirage component usually contains:
 
-- __code parameterised by functors__: very limited dependencies, usually only on
+- a module that __implements a specific module type__: very limited dependencies, usually only on
   the Mirage module types.
+
+- in OCaml, modules can be abstracted over other modules.
+  - Such a module is called a __functor__ in ML
+  - Functors are a type-safe version of C++ templates.
 
 
 ## Example: Website
@@ -487,23 +489,9 @@ A Mirage component usually contains:
 > and break down the monolithic into components.
 
 
-## Configuration eDSL
+## Configuration: Website
 
-1) Write an OCaml configuration file that describes the shape of the application.
-
-```
-# console @-> kv_ro @-> http_server @-> job
-(console -> kv_ro -> http_server -> job) typ
-```
-
-2) Combines these shapes with concrete implementations of those interfaces.
-
-3) Run a code generator that outputs a `main.ml` that builds the desired configuration.
-
-4) Build your specialised unikernel from the selected libraries.
-
-
-## Example: Website
+Your server is just an OCaml function.
 
 ```
 let server =
@@ -516,6 +504,9 @@ let main = foreign "Dispatch.Main"
 let () =
   register "www" [ main $ default_console $ fs $ server ]
 ```
+
+This configuration is evaluated at compilation time to generate a main entry point
+for that _particular_ setup.
 
 
 ## Correspondence
@@ -646,13 +637,28 @@ Low latency deployment of security updates.
 + Use compiler optimisations for exotic environments.
 
 
+## Jitsu?
+
+What should a unikernel hosting service look like?<br />We're finding out! <https://github.com/MagnusS/jitsu>
+
+- __Fast boot__ + __Git Workflow__ == unikernel CDN!
+
+  - DNS unikernel responds to request
+  - HTTPS unikernel spins up in 20ms (x86) or 150ms (ARM)
+  - Unikernels spins down upon DNS TTL
+
+- __Challenges__:
+  - Balancing the per-VM isolation resource requirements _vs_ session scalability for many connections. 
+  - DNS can route between Xen unikernels or Unix services.
+
+
 ## OPAM: Source Management
 
-A library OS needs good package management.  Learn from Cabal.
+A library OS needs good package management: <https://opam.ocaml.org>
 
-* __No upper bounds__ on packages, and continuous integration to pick 
+* __No upper bounds__ packages, and continuous integration to pick 
   up violations.
-* __Distributed git workflow__ for feature branches (package collections can be composed).
+* __Distributed git workflow__ for feature branches.
 * __External constraint solver__ support via CUDF (can use Debian tools
   such as aspcud).
 
@@ -660,32 +666,19 @@ A library OS needs good package management.  Learn from Cabal.
 > usable in normal Unix (via Lwt/Async) due to functors.
 
 
-## OPAM: Contributors
-
-<img src="contributors.png" style="align:centre" />
-
-
 ## OPAM: Package Growth
 
 <img src="packages.png" />
 
 
-## Integrating with Mirage
+## OPAM: Contributors
 
-OPAM includes a SAT-solver to pick modules for a given hardware target *(can include Xen vs Linux dom0+Xen vs kFreeBSD)*
-
-Libraries are lightweight and independent (on GitHub):
-
-- **[mirage/ocaml-xenstore](https://github.com/mirage/ocaml-xenstore)** - abstract, Unix/Xen interface.
-- **[mirage/shared-memory-ring](https://github.com/mirage/shared-memory-ring)** - shared memory protocol for Xen drivers.
-- **[mirage/ocaml-xen-block-driver](https://github.com/mirage/ocaml-xen-block-driver)** - Unix/Xen Blkfront/Blkback.
-- **[mirage/ocaml-vchan](https://github.com/mirage/ocaml-vchan)** - Unix/Xen Vchan shared memory transport.
-- **[mirage/mirage-platform](https://github.com/mirage/mirage-platform)** - UNIX/Xen/NS3 versions of timer, shared memory and event channels.
+<img src="contributors.png" style="align:centre" />
 
 
 ----
 
-## Wrapping Up
+## Ongoing Stuff
 
 Mirage OS 2.0 is an important step forward, supporting **more**, and **more
 diverse**, **backends** with much **greater modularity**.
@@ -710,7 +703,7 @@ For information about the many components we could not cover here, see
 Unikernels are an incredibly interesting way to code functionally at scale.
 Nothing stresses a toolchain like building a whole OS.
 
-- **Choices**: [Mirage OS](http://openmirage.org) in OCaml, [HaLVM](http://halvm.org) in Haskell.
+- **Choices**: [Mirage OS](http://openmirage.org) in OCaml, [HaLVM](http://halvm.org) in Haskell, Rump Kernels or OSv for compatibility, ClickOS for routing.
 - **Scenarios**: Static websites, dynamic content, custom routers.
 - **Performance**: There's no hiding behind abstractions.  HalVM *vs* Mirage is a fun contest in evaluating abstraction cost.
 
@@ -726,13 +719,10 @@ _The Cloud_:
 
 + **Without** having to become (Linux) **sysadmins**!
 
-> <center>How can we achieve this?</center>
++ How can we achieve this?
 
-<br/>
-Mirage/ARM is the foundation for building **personal clouds**, securely
-interconnecting and synchronising our devices.
-
-<!-- .element: class="fragment" data-fragment-index="1" -->
+> Mirage/ARM is the foundation for building **personal clouds**, securely
+> interconnecting and synchronising our devices.
 
 
 ## <http://openmirage.org/>
@@ -751,9 +741,11 @@ Featuring blog posts on new features by:
 [Dave Scott](http://dave.recoil.org/),
 and [Jeremy Yallop](https://github.com/yallop).
 
-<p style="font-size: 48px; font-weight: bold;
+<p style="font-size: 40px; font-weight: bold;
           display: float; padding: 2ex 0; text-align: center">
   Thanks for listening! Questions?
   <br />
   Contributions very welcome at [openmirage.org](http://openmirage.org)
+  <br />
+  Mailing list at <mirageos-devel@lists.xenproject.org>
 </p>
