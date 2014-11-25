@@ -419,6 +419,8 @@ A Mirage component usually contains:
   - Such a module is called a __functor__ in ML
   - Functors are a type-safe version of C++ templates.
 
+- Example: for the TCPv4 module type, we can have a direct OCaml TCP/IP or a standard kernel socket.
+
 
 ## Example: Website
 
