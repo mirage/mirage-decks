@@ -896,6 +896,21 @@ Low latency deployment of security updates
 + Use compiler optimisations for exotic environments
 
 
+## Implications
+
+Historical tracking of source code and built binaries in Git(hub)
+
+Low latency deployment of security updates
+
+Unified development for cloud and embedded environments
+
+**Highly responsive deployment to support legacy services**
+
++ DNS server interprets (e.g.) `git-commit-ref.service.name`
++ Checks out appropriate unikernel revision
++ Boots within 20&mdash;30ms while Synjitsu proxies TCP handshake
+
+
 ----
 
 ## Ongoing Stuff
