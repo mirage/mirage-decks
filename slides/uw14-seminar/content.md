@@ -116,7 +116,6 @@ The enemy is **complexity**:
 
 + Applications are **deeply intertwined** with system APIs, and so lack
   portability
-
 + Modern operating systems offer **dynamic support** for **many users** to run
   **multiple applications** simultaneously
 
@@ -171,7 +170,7 @@ Docker bundles up all this state making it easy to transport, install and manage
 
 ## Can We Do Better?
 
-**Disentangle applications from the operating system**
+**We need to disentangle applications from the operating system**:
 
 - Break up operating system functionality into modular libraries
 - Link only the system functionality your app needs
@@ -182,13 +181,10 @@ Docker bundles up all this state making it easy to transport, install and manage
 
 ## The Unikernel Approach
 
-Can we disentangle the application from the operating system?
-
 > Unikernels are specialised virtual machine images compiled from the full stack
 > of application code, system libraries and configuration
 
-<!-- .element: class="fragment" data-fragment-index="1" -->
-
+<br/>
 This means they realise several benefits:
 <!-- .element: class="fragment" data-fragment-index="2" -->
 
@@ -255,39 +251,42 @@ Swap system libraries to target different platforms:<br/>
 
 As easy as 1&mdash;2&mdash;3!
 
-1. Write your OCaml application using the Mirage module types
-   + Express its configuration as OCaml code too!
-
-           $ mirage configure app/config.ml --unix
+1. Write your OCaml application using the Mirage module types, expressing its
+   configuration as OCaml code too!
+```
+$ mirage configure app/config.ml --unix
+```
 
 
 ## Mirage OS 2.0 Workflow
 
 As easy as 1&mdash;2&mdash;3!
 
-1. Write your OCaml application using the Mirage module types
-   + Express its configuration as OCaml code too!
+1. Write your OCaml application using the Mirage module types, expressing its
+   configuration as OCaml code too!
 
 2. Compile it and debug under Unix using the `mirage` tool
-
-         $ cd app
-         $ make depend # install library dependencies
-         $ make build  # build the unikernel
+```
+$ cd app
+$ make depend # install library dependencies
+$ make build  # build the unikernel
+```
 
 
 ## Mirage OS 2.0 Workflow
 
 As easy as 1&mdash;2&mdash;3!
 
-1. Write your OCaml application using the Mirage module types
-   + Express its configuration as OCaml code too!
+1. Write your OCaml application using the Mirage module types, expressing its
+   configuration as OCaml code too!
 
 2. Compile it and debug under Unix using the `mirage` tool
 
 3. Once debugged, simply retarget it to Xen, and rebuild!
-
-          $ mirage configure app/config.ml --xen
-          $ cd app && make depend && make build
+```
+$ mirage configure app/config.ml --xen
+$ cd app && make depend && make build
+```
 
    + All the magic happens via the OCaml module system.
 
@@ -686,9 +685,8 @@ user-space library performance vastly outweighs language effects_
   <img src="scaling-instances.png" />
 </p>
 
-_Request throughput for serving a simple static page using Apache on Linux vs. a
-Mirage appliance. Rather than pay the cost of interlocking for thread-level
-parallelism, we scale by running many instances of the Mirage appliance_
+_Static page request throughput: Mirage scales by running many instances rather
+than paying interlocking for thread-level parallelism_
 
 
 ## Openflow Controller
@@ -697,8 +695,148 @@ parallelism, we scale by running many instances of the Mirage appliance_
   <img src="openflow-controller.png">
 </p>
 
-_OpenFlow controller is competitive with NOX (C++), but much higher level.
-Applications can link directly against the switch to route their data_
+_Competitive with NOX (C++) but much higher level and both switch and controller
+can be linked as libraries_
+
+
+----
+
+## Faster than light?
+
+Many network services suffer as _latency_ increases:
+
++ Siri
++ Google Glass
++ ...to say nothing of operation when disconnected
+
+> So let's move the computation close to the data
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+
+## Stronger than steel?
+
+We earlier noted the many recent network security problems:
+
++ Heartbleed
++ Shellshock
++ ...and such bugs will reoccur, now in our homes, cars, fridges
+
+> So let's interpose network protection
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+
+## Jitsu!
+
+__Just-in-Time Summoning of Unikernels__
+
+A toolstack to launch unikernels on-demand with negligible latency:
+
++ __Performance improvements__ to the Xen toolstack
++ __Conduit__, shared-memory communication between unikernels
++ __Synjitsu__ and the Jitsu Directory Service
+
+
+## Jitsu Architecture
+
+<p class="center stretch">
+  <img src="jitsu-arch.png" />
+</p>
+
+
+## Xen/ARM Toolstack
+
++ Removal of `libc` reduces attack surface and image size
+  + Did need to add floating point formatting routines back, copied from `musl`
+  `libc`
++ Xen PV driver model only &ndash; no hardware emulation
+  + ARM does not need all the legacy support of Xen/x86
++ Deserialising device attachment and boot transactions
+  + Custom merge function in the OCaml Xenstore implementation reduces spurious
+    conflicts during boot
+  + The backend runs _dom0_ `VIF` hotplug scripts in parallel with the domain
+    builder
+
+
+## Deserialisation
+
+<p class="center stretch">
+  <img style="height: 100%; max-height: 85%" src="boot-txns.png" />
+</p>
+
+
+## Conduit
+
++ Establishes _zero-copy shared-memory_ pages between peers
+  + Xen grant tables map pages between VMs (`/dev/gntmap`), synchronised via
+    event channels (`/dev/evtchn`)
++ Provides a _rendezvous facility_ for VMs to discover named peers
+  + Also supports unikernel and legacy VM rendezvous
++ Hooks into higher-level _name services_ like DNS
+
++ ...and is compatible with the `vchan` inter-VM communication protocol
+
+
+
+## Rendezvous
+
+<div>
+  <div style="max-width:58%" class="left">
+    <ul>
+      <li>Xenstore acts as an incoming connection queue</li>
+      <li>
+        Callbacks are registered on a new `/conduit/server=domid/listen` subtree
+      </li>
+      <li>
+        Client picks port and writes to `listen` queue
+      </li>
+      <li>
+        Connection metadata (grant table, event channel refs) is written into
+        `/local/domain/domid/vchan`
+      </li>
+      <li>Data flows</li>
+    </ul>
+  </div>
+  <div style="max-width:40%" class="right">
+    <img src="xs-conduit.png" />
+  </div>
+</div>
+
+
+## Masking boot latency
+
+<p class="center stretch">
+  <img style="width:75%" src="synjitsu.png" />
+</p>
+
+_By buffering TCP requests into Xenstore and then replaying, Synjitsu
+parallelises connection setup and unikernel boot_
+
+
+## Masking boot latency
+
+<div style="max-width:49%" class="left">
+  <ul>
+    <li>
+      Jitsu optimisations bring boot latency down to ~350&mdash;400 ms      
+    </li>
+    <li>
+      Docker time was 1.1s (Linux), 1.2s (Xen) from an SD card
+    </li>
+
+    <li>
+      Mounting Docker's volumes on an `ext4` loopback volume inside of a `tmpfs`
+      reduced latency but often terminated early due to many buffer IO, `ext4`
+      and `VFS` errors
+    </li>
+  </ul>
+</div>
+
+<div style="max-width:48%" class="right">
+  <img src="jitsu-startup.png" />
+  <img src="jitsu-docker.png" />
+</div>
 
 
 ----
@@ -757,26 +895,6 @@ Low latency deployment of security updates
 + Recompile to swap in different versions of system libraries
 + Use compiler optimisations for exotic environments
 
-...but this is all rather _ad hoc_ and, frankly, slow
-
-
-----
-
-##
-
-What should a unikernel hosting service look like?<br />We're finding out!
-<https://github.com/MagnusS/jitsu>
-
-- __Fast boot__ + __Git Workflow__ == unikernel CDN!
-  - DNS unikernel responds to request
-  - HTTPS unikernel spins up in 20ms (x86) or 150ms (ARM)
-  - Unikernels spins down upon DNS TTL
-
-- __Challenges__:
-  - Balancing the per-VM isolation resource requirements _vs_ session
-    scalability for many connections.
-  - DNS can route between Xen unikernels or Unix services.
-
 
 ----
 
@@ -825,6 +943,8 @@ _The Cloud_:
 
 > Mirage/ARM is the foundation for building **personal clouds**, securely
 > interconnecting and synchronising our devices.
+
+<!-- .element: class="fragment" data-fragment-index="1" -->
 
 
 ## <http://openmirage.org/>
