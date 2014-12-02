@@ -5,10 +5,10 @@
 Richard Mortier <small>University of Nottingham^WCambridge</small>
 [@mort\_\_\_](http://twitter.com/mort___)
 
-_on behalf of a merry crew:_ Thomas Gazagnaire, David Scott, <br>
-Anil Madhavapeddy, Thomas Leonard, Magnus Skjegstad, <br>
-David Sheets, Amir Chaudhry, Jon Crowcroft, Balraj Singh, <br>
-Mindy Preston
+_on behalf of a merry crew:_ Anil Madhavapeddy, <br>
+Thomas Gazagnaire, David Scott, Thomas Leonard, <br>
+Magnus Skjegstad, David Sheets, Amir Chaudhry, <br>
+Jon Crowcroft, Balraj Singh, Mindy Preston
 
 [http://openmirage.org/](http://openmirage.org/)<br/>
 [http://decks.openmirage.org/uw14-seminar/](http://decks.openmirage.org/uw14-seminar/)
@@ -288,22 +288,49 @@ $ mirage configure app/config.ml --xen
 $ cd app && make depend && make build
 ```
 
-   + All the magic happens via the OCaml module system.
+All the magic happens via the OCaml module system
 
 
 ----
 
-## Modular Architecture
+## Modularity is Good
 
-MirageOS restructures all system components as modules:
+Mirage OS restructures all system components as __modules__:
 
-1. A collection of __module types__, describing the structural "shapes" of an
-   operating system (including device drivers).
+1. A collection of __module types__, describing the structural "shapes" of the
+   components of an operating system (e.g., device drivers)
 
-2. A collection of independent __libraries that implement the
-   module types.__  Only libraries that application needs
-   are linked.
+2. A collection of independent __libraries implementing those module types__
 
+As with all library OSs, only the required libraries are linked
+
+
+## Modular to the max
+
+Modules are used everywhere in Mirage to describe OS layers:
+
+- For the __whole application/OS__: we've a full implementation of the network
+  stack (including TLS) in OCaml
+
+- Very __flexible approach__ for customising OS stacks for weird applications
+  (e.g., HTTP over UPnP over UDP)
+
+- Lots of __separate implementations__ of the module signatures: Unix, Xen
+  microkernels, JavaScript, kernel modules, ...
+
+
+## Writing a component
+
+A Mirage component usually contains
+
++ a module that __implements a specific module type__,
++ having __very limited dependencies__ (typically on just the Mirage module
+  types)
+
+In OCaml, modules can be abstracted over other modules:
+
+- ML calls such modules __functors__
+- Functors are a type-safe version of C++ templates
 
 
 ## Module Types: Devices
@@ -343,10 +370,9 @@ module type FLOW = sig
   val writev : flow -> buffer list -> [`Ok of unit | `Eof | `Error of exn ] io
 
 end
-
 ```
 
-...or any I/O flows in the system.
+...or IO flow
 
 
 ## Module Types: Inclusion
@@ -368,8 +394,8 @@ module type TCPV4 = sig
   and  type flow   := flow
 ```
 
-...and they can be composed together into other module types, avoiding
-the diamond problem.
+...and they can be composed together into other module types, avoiding the
+diamond problem
 
 
 ## Module Types: Entropy
@@ -394,8 +420,8 @@ module type ENTROPY = sig
 end
 ```
 
-Complex driver models can be expressed abstractly
-(see [V1.ml](https://github.com/mirage/mirage/tree/master/types/)).
+Complex driver models can be expressed abstractly (see
+[V1.ml](https://github.com/mirage/mirage/tree/master/types/))
 
 
 ## Module Types: Refinement
@@ -418,56 +444,24 @@ module type ETHIF = ETHIF
    and type ipv4addr = Ipaddr.V4.t
 ```
 
-The abstract types can be specialised into concrete
-library types for common uses
-(see [V1_LWT.ml](https://github.com/mirage/mirage/tree/master/types/)).
+The abstract types are specialised into concrete library types for common uses
+(see [V1_LWT.ml](https://github.com/mirage/mirage/tree/master/types/))
 
 
-## Modules Everywhere
-
-Modules are used everywhere in Mirage to describe OS layers:
-
-- For the __whole application/OS__. We have a full
-  implementation of the network stack (including TLS) in OCaml.
-
-- Very __flexible approach__ for customising OS stacks for weird applications
-  (HTTP over UPnP over UDP...)
-
-- Lots of __separate implementations__ of the module signatures:
-  Unix, Xen microkernels, Javascript, kernel modules, ...
-
+----
 
 ## Writing a component
 
 A Mirage component usually contains:
 
-- a module that __implements a specific module type__: very limited dependencies, usually only on
-  the Mirage module types.
+- Code parameterised by functors with very limited (Mirage-only) dependencies,
+  and particularly __no OS dependencies__
 
-- in OCaml, modules can be abstracted over other modules.
-  - Such a module is called a __functor__ in ML
-  - Functors are a type-safe version of C++ templates.
+- A collection of libraries where the functors are (fully or partially) applied,
+  suitable for interactive use
 
-
-## Example: Website
-
-```
-module Main (C:CONSOLE) (FS:KV_RO) (H:HTTP.Server) = struct
-
-  let start c fs http =
-    ...
-
-    let callback conn_id request body =
-      C.log "HTTP request received" ...
-      >>= fun () ->
-      let uri = H.Request.uri request in
-      dispatcher (split_path uri)
-    in
-    let conn_closed (_,conn_id) () = ...  in
-    http { S.callback; conn_closed }
-
-end
-```
+> Functors clearly separate dependencies between OS components, breaking
+> the monolithic OS down into components
 
 
 ## Modularizing the OS
@@ -491,23 +485,30 @@ end
 </p>
 
 
-## Writing a component
+## Example: A Website
 
-A Mirage component usually contains:
+```
+module Main (C:CONSOLE) (FS:KV_RO) (H:HTTP.Server) = struct
 
-- code parameterised by functors: very limited dependencies, usually only on
-  the Mirage module types.  __No OS dependencies__.
+  let start c fs http =
+    ...
 
-- a collection of libraries where the functors are (fully or partially) applied,
-  suitable for interactive use.
+    let callback conn_id request body =
+      C.log "HTTP request received" ...
+      >>= fun () ->
+      let uri = H.Request.uri request in
+      dispatcher (split_path uri)
+    in
+    let conn_closed (_,conn_id) () = ...  in
+    http { H.callback; conn_closed }
 
-> Functors clearly separate the dependencies between OS components
-> and break down the monolithic into components.
+end
+```
 
 
-## Configuration: Website
+## Configuration EDSL
 
-Your server is just an OCaml function.
+Your web server is just an OCaml function:
 
 ```
 let server =
@@ -521,8 +522,8 @@ let () =
   register "www" [ main $ default_console $ fs $ server ]
 ```
 
-This configuration is evaluated at compilation time to generate a main entry point
-for that _particular_ setup.
+The configuration is evaluated at compilation time to generate a main entry
+point for that _particular_ setup
 
 
 ## Correspondence
@@ -541,7 +542,7 @@ let main = foreign "Dispatch.Main"
 Application Code:
 
 ```
-module Main (C:CONSOLE) (FS:KV_RO) (S:Cohttp_lwt.Server) = struct
+module Main (C:CONSOLE) (FS:KV_RO) (H:HTTP.Server) = struct
 
   let start c fs http = ...
 ```
@@ -556,12 +557,21 @@ module Http1 = HTTP.Make(Conduit1)
 module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
 ```
 
-Fairly simple application of a kernel socket C binding to a network stack, which is passed to the application.
+Fairly simple application where:
+
++ A kernel socket `C` binding, `Tcpip_stack_socket`, takes...
++ A `Console` to build...
++ A network stack, `Stackv41`, over which we instantiate...
++ An `HTTP` server
+
+...which is finally passed to the application (along with a static filesystem
+and a console)
 
 
 ## Correspondence: Xen
 
-A more complex module assembly for Xen...
+In Xen, we build the network stack "by hand" starting with the Ethernet device,
+as we have no kernel sockets
 
 ```
 module Stackv41 = struct
@@ -581,20 +591,6 @@ module M1 = Dispatch.Main(Console)(Static1)(Http1.Server)
 let () =
   OS.Main.run (join [t1 ()])
 ```
-
-
-## Flexibility
-
-Website can now be assembled via host code:
-
-* Xen unikernel with all data built into image.
-* Xen unikernel with data dynamically read from disk.
-* Unix binary with data passed through to filesystem.
-* Unix binary with OCaml userlevel TCP/IP stack
-* and an emerging JavaScript model: [H261 Decoding](http://andrewray.github.io/iocamljs/oh261.html).
-
-<br />
-> Well-typed rope to hang yourself with, in the grand Unix tradition!
 
 
 ----
@@ -686,7 +682,7 @@ user-space library performance vastly outweighs language effects_
 </p>
 
 _Static page request throughput: Mirage scales by running many instances rather
-than paying interlocking for thread-level parallelism_
+than paying for thread-level interlocking_
 
 
 ## Openflow Controller
@@ -695,7 +691,7 @@ than paying interlocking for thread-level parallelism_
   <img src="openflow-controller.png">
 </p>
 
-_Competitive with NOX (C++) but much higher level and both switch and controller
+_Competitive with NOX (C++) but much higher level, and both switch and controller
 can be linked as libraries_
 
 
@@ -703,13 +699,14 @@ can be linked as libraries_
 
 ## Faster than light?
 
-Many network services suffer as _latency_ increases:
+Many network services suffer as _latency_ increases, e.g.,
 
 + Siri
 + Google Glass
-+ ...to say nothing of operation when disconnected
 
-> So let's move the computation close to the data
+...to say nothing of how they operate when disconnected
+
+> So let's move the computation closer to the data
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
@@ -720,7 +717,8 @@ We earlier noted the many recent network security problems:
 
 + Heartbleed
 + Shellshock
-+ ...and such bugs will reoccur, now in our homes, cars, fridges
+
+...and such bugs will reoccur, now in our homes, cars, fridges
 
 > So let's interpose network protection
 
@@ -729,11 +727,11 @@ We earlier noted the many recent network security problems:
 
 ## Jitsu!
 
-__Just-in-Time Summoning of Unikernels__
+> __Just-in-Time Summoning of Unikernels__
 
 A toolstack to launch unikernels on-demand with negligible latency:
 
-+ __Performance improvements__ to the Xen toolstack
++ __Performance improvements__ to Xen's boot process & toolstack
 + __Conduit__, shared-memory communication between unikernels
 + __Synjitsu__ and the Jitsu Directory Service
 
@@ -753,7 +751,7 @@ A toolstack to launch unikernels on-demand with negligible latency:
 + Xen PV driver model only &ndash; no hardware emulation
   + ARM does not need all the legacy support of Xen/x86
 + Deserialising device attachment and boot transactions
-  + Custom merge function in the OCaml Xenstore implementation reduces spurious
+  + Custom merge function in the OCaml XenStore implementation reduces spurious
     conflicts during boot
   + The backend runs _dom0_ `VIF` hotplug scripts in parallel with the domain
     builder
@@ -761,21 +759,29 @@ A toolstack to launch unikernels on-demand with negligible latency:
 
 ## Deserialisation
 
-<p class="center stretch">
-  <img style="height: 100%; max-height: 85%" src="boot-txns.png" />
-</p>
+<div>
+  <div style="max-width:50%" class="left stretch">
+    <img src="boot-txns.png" />
+  </div>
+  <div style="max-width:49%" class="right">
+    <img src="jitsu-boot-time.png" />
+  </div>
+</div>
+
+_Improving XenStore parallelism addresses scaling problems, and optimising boot
+process dramatically reduces boot time_
 
 
 ## Conduit
 
-+ Establishes _zero-copy shared-memory_ pages between peers
++ Establishes __zero-copy shared-memory__ pages between peers
   + Xen grant tables map pages between VMs (`/dev/gntmap`), synchronised via
     event channels (`/dev/evtchn`)
-+ Provides a _rendezvous facility_ for VMs to discover named peers
++ Provides a __rendezvous facility__ for VMs to discover named peers
   + Also supports unikernel and legacy VM rendezvous
-+ Hooks into higher-level _name services_ like DNS
++ Hooks into higher-level __name services__ like DNS
 
-+ ...and is compatible with the `vchan` inter-VM communication protocol
++ Compatible with the __`vchan`__ inter-VM communication protocol
 
 
 
@@ -784,7 +790,7 @@ A toolstack to launch unikernels on-demand with negligible latency:
 <div>
   <div style="max-width:58%" class="left">
     <ul>
-      <li>Xenstore acts as an incoming connection queue</li>
+      <li>XenStore acts as an incoming connection queue</li>
       <li>
         Callbacks are registered on a new `/conduit/server=domid/listen` subtree
       </li>
@@ -795,13 +801,27 @@ A toolstack to launch unikernels on-demand with negligible latency:
         Connection metadata (grant table, event channel refs) is written into
         `/local/domain/domid/vchan`
       </li>
-      <li>Data flows</li>
     </ul>
+    <p>...and the data flows</p>
   </div>
   <div style="max-width:40%" class="right">
     <img src="xs-conduit.png" />
   </div>
 </div>
+
+
+## Jitsu Directory Service
+
+Performs the role of Unix's `inetd`:
+
++ Jitsu VM launches at boot time to handle name resolution (whether local via
+  a well known `jitsud` Conduit node in XenStore or remote via DNS)
+
++ When a request arrives for a live unikernel, Jitsu returns the appropriate
+  endpoint
+
++ If the unikernel is not live, Jitsu boots it, and acts as proxy until the
+  unikernel is ready
 
 
 ## Masking boot latency
@@ -810,17 +830,17 @@ A toolstack to launch unikernels on-demand with negligible latency:
   <img style="width:75%" src="synjitsu.png" />
 </p>
 
-_By buffering TCP requests into Xenstore and then replaying, Synjitsu
+_By buffering TCP requests into XenStore and then replaying, Synjitsu
 parallelises connection setup and unikernel boot_
 
 
 ## Masking boot latency
 
 <div style="max-width:49%" class="left">
+  <p>
+    Jitsu optimisations bring boot latency down to __~350&mdash;400 ms__
+  </p>
   <ul>
-    <li>
-      Jitsu optimisations bring boot latency down to ~350&mdash;400 ms      
-    </li>
     <li>
       Docker time was 1.1s (Linux), 1.2s (Xen) from an SD card
     </li>
@@ -908,7 +928,8 @@ Unified development for cloud and embedded environments
 
 + DNS server interprets (e.g.) `git-commit-ref.service.name`
 + Checks out appropriate unikernel revision
-+ Boots within 20&mdash;30ms while Synjitsu proxies TCP handshake
++ x86 boots in 20&mdash;30ms while Synjitsu proxies TCP handshake
++ Conduit channels created, allowing (per-client?) unikernel to protect legacy VM
 
 
 ----
