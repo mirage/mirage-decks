@@ -27,7 +27,8 @@ These slides were written using Mirage on Mac OSX:
 
 - They are hosted in a **938kB Xen unikernel** written in statically type-safe
   OCaml, including device drivers and network stack
-
+  - Including all content statically encoded as an OCaml string, 7.2MB
+  
 - Their application logic is just a **couple of source files**, written
   independently of any OS dependencies
 
