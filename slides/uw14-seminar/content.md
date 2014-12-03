@@ -87,7 +87,7 @@ environment but a modern programmer deals with diverse targets:
 - **Internet of Things** devices that have little ARM M0 processors
 - **Kernel modules** to extend operating system functionality
 
-> No code reuse so we repeat the mistakes of the past
+> No (little) code reuse between platforms
 
 
 ## The IoT Spring
@@ -107,7 +107,8 @@ environment but a modern programmer deals with diverse targets:
   single data breach
 * **Target**: 40 million credit cards stolen electronically
 
-> System security is in a disastrous state, and seemingly getting worse!
+> System security is in a disastrous state, and improving only slowly, at much
+> cost!
 
 
 ## Complexity Kills You
@@ -181,8 +182,8 @@ Docker bundles up all this state making it easy to transport, install and manage
 
 ## The Unikernel Approach
 
-> Unikernels are specialised virtual machine images compiled from the full stack
-> of application code, system libraries and configuration
+> __Unikernels__ are specialised virtual machine images compiled from the full
+> stack of application code, system libraries and configuration
 
 <br/>
 This means they realise several benefits:
