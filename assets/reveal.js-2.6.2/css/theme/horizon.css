@@ -60,9 +60,17 @@ body {
     padding: 0.1ex 0;
 }
 
+.reveal .slides ul,
 .reveal .slides ol {
     margin-left: 1.1em;
+    margin-bottom: 1ex;
 }
+
+.reveal .slides ul > li > ul,
+.reveal .slides ol > li > ol {
+    margin-bottom: 0;
+}
+
 
 .reveal #footer {
     background-size: auto 50px;
@@ -256,6 +264,10 @@ body {
 
 .reveal section pre {
     box-shadow: none;
+}
+
+.reveal section pre > code {
+    padding: 1ex 1em;
 }
 
 .reveal section code {
