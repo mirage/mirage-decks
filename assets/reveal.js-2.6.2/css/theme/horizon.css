@@ -60,9 +60,17 @@ body {
     padding: 0.1ex 0;
 }
 
+.reveal .slides ul,
 .reveal .slides ol {
     margin-left: 1.1em;
+    margin-bottom: 1ex;
 }
+
+.reveal .slides ul > li > ul,
+.reveal .slides ol > li > ol {
+    margin-bottom: 0;
+}
+
 
 .reveal #footer {
     background-size: auto 50px;
@@ -258,10 +266,14 @@ body {
     box-shadow: none;
 }
 
+.reveal section pre > code {
+    padding: 1ex 1em;
+}
+
 .reveal section code {
     font-size: 90%;
-    padding: 1ex;
-    margin: 0 0.5ex;
+    padding: 0;
+    margin: 0;
 }
 
 /** quotes */
@@ -270,6 +282,8 @@ body {
     background: #bbb;
     padding: 1ex 0.5em 0.5ex;
     text-align: center;
+    max-width: 75%;
+    width: 75%;
 }
 
 /** printing tweaks */
