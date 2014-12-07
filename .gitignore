@@ -1,5 +1,6 @@
 .DS_Store
 .*.swp
+
 # mirage build outputs
 log
 src/Makefile
@@ -8,6 +9,12 @@ src/main.ml
 src/main.native
 src/mir-decks
 src/decks.xl
+src/decks.xe
+src/decks_libvirt.xml
+src/mir-decks.elf
+src/mir-decks.xen
+src/static*.ml
+src/static*.mli
 
 # un-minified reveal.css for debugging
 assets/reveal-2.4.0/css/reveal.css

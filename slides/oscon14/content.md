@@ -238,8 +238,9 @@ As easy as 1&mdash;2&mdash;3!
 1. Write your OCaml application using the Mirage module types.
    + Express its configuration as OCaml code too!
 
-           $ mirage configure app/config.ml --unix
-<!-- .element: class="no-highlight" -->
+```
+$ mirage configure app/config.ml --unix
+```
 
 
 ## Mirage OS 2.0 Workflow
@@ -251,10 +252,11 @@ As easy as 1&mdash;2&mdash;3!
 
 2. Compile it and debug under Unix using the `mirage` tool.
 
-         $ cd app
-         $ make depend # install library dependencies
-         $ make build  # build the unikernel
-<!-- .element: class="no-highlight" -->
+```
+$ cd app
+$ make depend # install library dependencies
+$ make build  # build the unikernel
+```
 
 
 ## Mirage OS 2.0 Workflow
@@ -268,9 +270,10 @@ As easy as 1&mdash;2&mdash;3!
 
 3. Once debugged, simply retarget it to Xen, and rebuild!
 
-          $ mirage configure app/config.ml --xen
-          $ cd app && make depend && make build
-<!-- .element: class="no-highlight" -->
+```
+$ mirage configure app/config.ml --xen
+$ cd app && make depend && make build
+```
 
    + All the magic happens via the OCaml module system.
 
