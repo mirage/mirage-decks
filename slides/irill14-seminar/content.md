@@ -1097,24 +1097,20 @@ For information about the many components we could not cover here, see
   modular C foreign function bindings
 + __[Profiling](http://roscidus.com/blog/blog/2014/10/27/visualising-an-asynchronous-monad/)__
   via a visualisation tool
+
+
+## Ongoing Stuff (2)
+
+Mirage OS 2.0 is an important step forward, supporting **more**, and **more
+diverse**, **backends** with much **greater modularity**.
+
+For information about the many components we could not cover here, see
+[openmirage.org](http://openmirage.org/blog/):
+
 + __[IMAP](https://github.com/gregtatcam/imaplet-lwt/)__ client and server with Irmin backend.
 + __[XMPP](https://github.com/hannes/ocaml-xmpp)__ communication using OCaml-TLS and nocrypto.
-
-
-## Get Involved!
-
-Unikernels are an incredibly interesting way to code functionally at scale.
-Nothing stresses a toolchain like building a whole OS.
-
-- **Choices**: [Mirage OS](http://openmirage.org) in OCaml,
-  [HaLVM](http://halvm.org) in Haskell, Rump Kernels or OSv for compatibility,
-  ClickOS for routing.
-- **Scenarios**: Static websites, dynamic content, custom routers.
-- **Performance**: There's no hiding behind abstractions. HalVM *vs* Mirage is a
-  fun contest in evaluating abstraction cost.
-
-> Most important: need contributors to build the library base of safe protocol
-> implementations (TLS has been done!)
++ __[mDNS](https://github.com/mirage/ocaml-dns)__ multicast DNS for local names.
++ __[IPv6](https://github.com/mirage/mirage-tcpip)__ throughout the TCP/IP stack.
 
 
 ## Why? [nymote.org](http://nymote.org/)
@@ -1129,7 +1125,22 @@ _The Cloud_:
 > Mirage/ARM is the foundation for building **personal clouds**, securely
 > interconnecting and synchronising our devices.
 
-<!-- .element: class="fragment" data-fragment-index="1" -->
+
+## Get Involved!
+
+Unikernels are an incredibly interesting way to code functionally at scale.
+Nothing stresses a toolchain like building a whole OS.
+
+- **Choices**: [Mirage OS](http://openmirage.org) in OCaml,
+  [HaLVM](http://halvm.org) in Haskell, Rump Kernels or OSv for compatibility,
+  ClickOS for routing.
+- **Scenarios**: Static websites, dynamic content, custom routers.
+- **Performance**: There's no hiding behind abstractions. HalVM *vs* Mirage is a
+  fun contest in evaluating abstraction cost.
+
+> Need contributors to build the library base of safe protocol
+> implementations (TLS has been done!) and integrate verification 
+> and automated testing
 
 
 ## <http://openmirage.org/>
