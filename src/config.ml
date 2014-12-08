@@ -18,13 +18,13 @@ let fs =
   match mode, get_mode () with
   | `Fat,    _     -> fat_ro "../assets"
   | `Crunch, `Xen  -> crunch "../assets"
-  | `Crunch, `Unix -> direct_kv_ro "../assets"
+  | `Crunch, _     -> direct_kv_ro "../assets"
 
 let tmpl =
   match mode, get_mode () with
   | `Fat,    _     -> fat_ro "../slides"
   | `Crunch, `Xen  -> crunch "../slides"
-  | `Crunch, `Unix -> direct_kv_ro "../slides"
+  | `Crunch, _     -> direct_kv_ro "../slides"
 
 let net =
   try match Sys.getenv "NET" with
