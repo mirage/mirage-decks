@@ -710,7 +710,7 @@ Libraries are the heart of Mirage, and OPAM manages this all: <https://opam.ocam
   * _(soon!)_ Cross-referenced documentation via `opam doc`
 
 
-## Modular Community!
+## Modular Community (1)
 
 Many of the Mirage libraries use components developed at IRILL:
 
@@ -718,13 +718,30 @@ Many of the Mirage libraries use components developed at IRILL:
 * __js_of_ocaml__ to compile for trace viewing.
 * __Re__ for pure OCaml regular expressions.
 
-We release community libraries with no Mirage; e.g.:
+The focus on portability in Lwt via Unix, Windows and JavaScript
+really helped bootstrap Mirage.
+
+Can we give back?
+
+
+## Modular Community (2)
+
+Our protocol libraries are highly modular.  E.g., HTTP:
 
 * __`Cohttp`__ portable parsing core in pure OCaml
 * __`Cohttp_lwt`__ which adds concurrent I/O.
 * __`Cohttp_lwt_unix`__ maps I/O to `Lwt_io` under Unix.
 * __`Cohttp_lwt_mirage`__ adds further functors.
 * __`Cohttp_async`__ uses Jane Street Core instead of Lwt.
+
+
+## Modular Community (3)
+
+And the best/worst for last...
+
+* __`Cohttp_js`__ maps `Cohttp.Client` to JavaScript's XMLHTTPRequest!
+* Existing OCaml Cohttp bindings (such as GitHub) compile straight to efficient JavaScript or native code.
+* See [H261 video decoding](http://andrewray.github.io/iocamljs/oh261.html) using this.
 
 
 ## eDSL: Summary
@@ -1111,6 +1128,17 @@ For information about the many components we could not cover here, see
 + __[XMPP](https://github.com/hannes/ocaml-xmpp)__ communication using OCaml-TLS and nocrypto.
 + __[mDNS](https://github.com/mirage/ocaml-dns)__ multicast DNS for local names.
 + __[IPv6](https://github.com/mirage/mirage-tcpip)__ throughout the TCP/IP stack.
++ __OcsiMiragegen__ : almost there!
+
+
+## Ongoing Stuff (3)
+
+* __Formal reasoning about POSIX filesystems__ using Lem/HOL4/OCaml.
+  * _AKA_: how do we build a POSIX-compatible Mirage filesystem?
+* __Expanding the OS notion of dynamic linking__ to work across virtual machine boundaries
+  * _AKA_: giving the world an alternative to OpenSSL
+* __Generalising the Mirage model via staged  programming__ via Metacaml and generic programming
+  * _AKA_: really exercise the new OCaml inliner
 
 
 ## Why? [nymote.org](http://nymote.org/)
