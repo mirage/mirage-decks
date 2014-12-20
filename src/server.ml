@@ -88,17 +88,14 @@ module Main
 
       dispatch ~c_log ~read_assets ~read_slides ~conn_id ~req
     in
-    let conn_closed (_,conn_id) () =
+    let conn_closed (_, conn_id) =
       (* XXX shouldn't i be able to use the Console logging here?
             C.log_s c (sp "conn %s closed\n%!" (Cohttp.Connection.to_string conn_id))
       *)
       Printf.printf "conn %s closed\n%!" (Cohttp.Connection.to_string conn_id)
     in
 
-    let spec = {
-      S.callback;
-      conn_closed;
-    } in
+    let spec = S.make ~callback ~conn_closed () in
     http spec
 
 end
