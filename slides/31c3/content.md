@@ -22,7 +22,6 @@ David Kaloper and Hannes Mehnert<br/>
 ----
 ## IM Client TCB
 
-(XXX: kloc would be nice)
 + Client software itself
 + Libraries it depends on (OpenSSL, libotr, libpurple)
 + GUI framework (picture, font renderer)
@@ -39,89 +38,106 @@ Attack vector is sum of attack vectors in all components!
 ----
 ## What can we do?
 
-(XXX: pics would be nice)
 + Compartmentalize
 + Mitigate known vulnerabilities
 + Shrink the TCB
 
 
 ----
-## Compartmentalization
+## Compartments
+
+<p class="stretch center">
+  <img src="container.jpg"/>
+</p>
 
 Limits the impact of a successful attack.
 
-+ `chroot`
-+ FreeBSD jail, Linux containers
-+ Hypervisor (Xen / KVM / ..)
-+ Docker
-
-Are these mechanisms without flaws? Can an attacker escape a `chroot`?
++ `chroot`, FreeBSD jail, Linux containers
++ Hypervisor (Xen / KVM / VMWare / VirtualBox / ...)
 
 
 ----
-## Mitigate vulnerabilities
+## Compartments
 
-Detects and defends against known attacks.
++ Can an attacker escape a `chroot`?
 
-+ Stack protection
+<p class="stretch center">
+  <img src="jail.jpg"/>
+</p>
+
+
+----
+## Mitigation
+
+Detect known attacks by adding another layer.
+
+<p class="stretch center">
+  <img src="ids.jpg" alt="source http://seit.unsw.adfa.edu.au/research/details2.php?page_id=28"/>
+</p>
+
++ ASLR Stack protection
 + Firewall
 + IDS
 
-These increase the TCB, there have been issues with firewall implementations.
+
+----
+## Minimize TCB
+
+> All problems in computer science can be solved by another level of indirection... Except for the problem of too many layers of indirection.
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+*&mdash; *David Wheeler
+
+<p class="stretch center">
+  <img src="complex.png"/>
+</p>
 
 
 ----
-## Shrink TCB
+## Wrong Approach
 
-Contradicts computer science law - if in doubt, add another layer of abstraction
-
-We built these huge monolithic systems since the 70s
-
-Well, get over it. Start from scratch. Learn from mistakes. Use decent tools.
+<p class="stretch center">
+  <img src="system-is-wrong.jpg"/>
+</p>
 
 
 ----
-## Outline
+## Programming Languages
 
-+ Trusted Computing Base (we saw this)
-
-+ Development tools - why functional programming matters
-
-+ Mirage OS overview
-
-+ OCaml-TLS development
++ Focus on problem, do not distract with boilerplate
++ Abstraction crucial for handling complex systems
+    + Variables, functions, higher-order functions, modules, ..
++ Type systems spot errors at compile time
++ Automation in certain areas: memory management
 
 
 ----
-## Development Tools
+## Side Effects
 
-You can chose between a manual screwdriver and an electrical screwdriver with laserpointer for aiming and integrated torque tester.
+Always dangerous areas in your program. Mark these explicitly!
 
-+ Programming language
++ Network input/output
++ Mutable memory
 
-    + Communication between people
-    + Abtraction mechanisms: variables, functions, higher-order functions, monads, ...
-    + Type system finds errors at compile time
-    + Fewer boilerplate and bookkeeping lets you focus on the problem
-    + Shared mutable state is the root of all evil!
-    + Automated memory management is not rocket science anymore
+<p class="stretch center">
+  <img src="smash-state.jpg"/>
+</p>
 
 
 ----
 ## Functional programming
 
-+ Explicitly mark side effects (these are dangerous areas in your program)!
++ Allows readable **declarative** programming
++ Combinators compose tiny mathematical functions
 
-    + Network input/output
-    + User input/output
-    + Mutation of memory
-
-+ Declarative programming makes code readable
-+ Algorithmic core is easily comprehensible
+<p class="stretch center">
+  <img src="functional-xkcd.png"/>
+</p>
 
 
 ----
-## Motivation
+## Complexity
 
 Complexity kills you:
 
@@ -132,9 +148,8 @@ Complexity kills you:
 
 Almost unbounded scope for uncontrolled interaction!
 
-+ Why should my DNS server have a file system? User management? Processes?
 + Ad hoc application configuration under `/etc`
-+ Complex configuration management, eased by shell scripts
++ Shell scripts manage configurations and deployment
 + But: shell becomes part of TCB (Shellshock!)
 
 
