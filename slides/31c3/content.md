@@ -20,7 +20,7 @@ David Kaloper and Hannes Mehnert<br/>
 
 
 ----
-## IM Client TCB
+## TCB of IM Client
 
 + Client software itself
 + Libraries it depends on (OpenSSL, libotr, libpurple)
@@ -160,17 +160,27 @@ Almost unbounded scope for uncontrolled interaction!
 
 
 ----
-## Mirage OS
+## Clean slate
 
-+ From scratch modular operating system
-+ Started 2009 as research project at University of Cambridge, UK
-+ BSD/MIT licensed
-+ Completely written in OCaml
-+ Targets: UNIX binary, Xen virtual machine, FreeBSD kernel module, JavaScript, ...
++ Services communicate via binary protocols
++ Seemless migration requires those protocols
++ API of the Internet: TCP/IP, DHCP, DNS, HTTP, TLS, SASL, XMPP, GIT, SSH, ...
++ Persistent data storage
 
 
 ----
-## The Unikernel Approach
+## Mirage OS
+
++ Modular operating system
++ Since 2009 project at University of Cambridge, UK
++ BSD/MIT licensed
++ OCaml - modular functional programming language
++ Not a general purpose OS
++ Application and configuration specific binaries!
+
+
+----
+## Unikernel
 
 > __Unikernels__ are specialised virtual machine images compiled from the
 > modular stack of application code, system libraries and configuration
@@ -188,16 +198,26 @@ This means they realise several benefits:
 
 
 ----
-## Mirage on Xen
-
-+ No processes, file system, user management
-+ Single address space
-+ No C library (we use openlibm and have printf)
-+ OCaml runtime including garbage collector
-+ Runs on either amd64 or ARM
+## Modularize the OS
 
 <p class="stretch center">
-  <img src="stack.png" />
+  <img src="modules1.png" />
+</p>
+
+
+----
+## Modularize the OS
+
+<p class="stretch center">
+  <img src="modules2.png" />
+</p>
+
+
+----
+## Modularize the OS
+
+<p class="stretch center">
+  <img src="modules3.png" />
 </p>
 
 
@@ -210,7 +230,7 @@ This means they realise several benefits:
 
 
 ----
-## Interlude: Cubieboard 2
+## Cubieboard 2
 
 + __AllWinnerTech SOC A20, ARM Cortex-A7 Dual-Core__
 + GPU: ARM Mali400 MP2 (OpenGL ES 2.0/1.1)
@@ -223,60 +243,53 @@ This means they realise several benefits:
 
 
 ----
-## Modularizing the OS
+## Modularize the OS
 
-<p class="stretch center">
-  <img src="modules1.png" />
-</p>
+Run the same library _and_ application code as:
 
-
-----
-## Modularizing the OS
-
-<p class="stretch center">
-  <img src="modules2.png" />
-</p>
++ UNIX binary
++ Xen virtual machine (ARM or AMD64)
++ Rackspace/Amazon EC2/... instance
++ FreeBSD kernel module*
++ Inside of your web browser*
 
 
 ----
-## Modularizing the OS
+## Mirage on Xen
 
 <p class="stretch center">
-  <img src="modules3.png" />
+  <img src="stack.png" />
 </p>
+
++ Single address space
++ No processes, file system, user management
++ No C library (but openlibm and printf)
++ OCaml runtime including garbage collector
 
 
 ----
-## Modularizing the OS
+## Modularity (code!)
 
-Run the same code as:
++ Applications are abstracted over devices (console, TCP/IP stack)
 
-+ native UNIX binary
-+ Xen virtual machine on your ARM board
-+ Amazon EC2 instance
-+ FreeBSD kernel module
-+ Inside of your web browser
+
+----
+## Libraries
+
++ Irmin, persistent branchable store (similar to git)
++ Git
++ OCaml-TLS
++ HTTP, DNS, TCP/IP, DHCP, ...
++ Unikernel size is small (HTTPS including TCP/IP and OCaml runtime < 2MB)
++ Development and deployment via git
 
 
 ----
 ## Performance
 
 + On par with Linux on ARM serving HTTP
-+ We cut lots of layers and have a single address space
-+ Startup time below 20ms (we start services on demand - when a DNS request came in)
-
-
-----
-## Mirage OS
-
-+ Irmin, persistent branchable store (similar to git, but in OCaml)
-+ ARM
-+ OCaml-TLS
-+ Xentropyd
-+ Devices are modules, refinement via module system
-+ Configuration at compile time
-+ www.openmirage.org is on GitHub - including the virtual machines (automatically built and deployed by a push)!
-+ Size: web server including TCP/IP, TLS, etc. is below 2 MB
++ Startup time below 20ms
++ Start service after DNS request was processed
 
 
 ----
@@ -288,13 +301,12 @@ Run the same code as:
 
 
 ----
-## OCaml-TLS design goals
+## OCaml-TLS
 
-+ Protocol logic encapsulated in declarative functional core
-
-+ Side effects isolated in frontends
-
-+ Concise, useful, well-designed API
++ Early 2014 in Mirleft - before `goto fail`, Heartbleed
++ Crypto primitives `nocrypto`
++ X.509 certificate verification (ASN.1)
++ Design goal: small API footprint (unlike OpenSSL)
 
 <p class="stretch center">
   <img src="aftas-mirleft.jpg" />
@@ -302,47 +314,65 @@ Run the same code as:
 
 
 ----
+## Nocrypto
+
+> Never develop your own crypto library
+
++ Cipher cores in C - allocation and loop free code
++ Cipher modes in OCaml - ECB, CBC, CTR, GCM, CCM
++ Fortuna RNG
++ Bignum (via GMP), RSA/DSA/DH
++ Hashes and HMAC - cores again in C
++ Timing
+
+
+----
+## ASN.1
+
++ Composable parsers and unparsers using GADTs
++ No magic 0 bytes
++ No manual decoding
++ BER/DER - all the way up to X.509v3 certificates
+
+
+----
+## X.509 authenticator
+
+````
+val chain_of_trust : ?time:float -> Cert.t list -> t
+
+val server_fingerprint : ?time:float -> hash:hash
+  -> fingerprints:(string * Cstruct.t) list -> t
+````
+
+Hostname is always verified!
+
+Either RFC 5280 chain of trust or trust on first use.
+
+
+----
+## OCaml-TLS
+
++ Protocol logic encapsulated in declarative functional core
++ Side effects isolated in frontends
++ `lwt` (event-based on UNIX) and `mirage`
++ Expose API to C as shared object (planned)
+
+
+----
 ## What is TLS?
 
 + Cryptographically secure channel (TCP) between two nodes
-
 + Most widely used security protocol (since > 15 years)
-
 + Protocol family (SSLv3.0, TLS 1.0, 1.1, 1.2)
-
 + Algorithmic agility: negotiation of key exchange, cipher and hash
-
-+ Uses X.509 (ASN.1 encoding) PKI for certificates
-
-
-----
-## Protocol details
-
-+ Security properties:
-
-    + Authentication (optional mutual)
-    + Secrecy
-    + Integrity
-    + Confidentiality
-    + Forward secrecy (using ephemeral Diffie Hellman)
-
-+ Handshake, Change Cipher Spec, Alert, Application Data, Heartbeat subprotocols
-
-
-----
-## Authentication (X.509)
-
-+ Client has set of trust anchors (CA certificates)
-
-+ Server has certificate signed by a CA
-
-+ During handshake client receives server certificate chain
-
-+ Client verifies that server certificate is signed by a trust anchor
++ X.509 (ASN.1 encoding) PKI for certificates
 
 
 ----
 ## Handshake
+
+Tracing of our server side stack
 
 Showing live at
 
@@ -355,58 +385,70 @@ cd mirage/tls-demo-server
 
 
 ----
-## Code statistics
+## OCaml-TLS
 
-+ Disclaimer: ``cloc`` statistics, use with a grain of salt
++ Interoperability both client and server side (demo server served > 50000 sessions)
++ Pull requests for client authentication, AEAD ciphers, SNI
++ No session resumption
++ No ECC (yet)
++ Started in January, first release in July - 3 months, 5 hackers rule!
++ 350kloc (OpenSSL) vs 20kloc (OCaml-TLS)
++ [Blog series about OCaml-TLS, ...](http://openmirage.org/blog/introducing-ocaml-tls)
 
-+ Linux kernel, glibc (1187), apache (209), OpenSSL (354): 17553kloc code (mostly C)
 
-+ Mirage OS, cohttp, OCaml-TLS: 125kloc (75 C, 43 OCaml, 7 assembly)
-   + 26 C: OCaml runtime
-   + 17 C: MiniOS
-   + 22 C: OpenLibm
-   + 8 C + 7 asm: gmp
+----
+## Moving Forward
 
++ [Conduit](https://github.com/mirage/ocaml-conduit) - abstracting over connections (shared memory (Xen vchan), TCP, TLS, ..)
++ [Ocaml-OTR](https://github.com/hannesm/ocaml-otr) - (no SMP) - 4 weeks (including DSA)
++ [Jackline](https://github.com/hannesm/jackline) - command-line XMPP client - 4 weeks
+
+<p class="stretch center">
+  <img src="jackline.png" />
+</p>
 
 ----
 ## Trusted Code Base
 
 + Linux network device driver (separate Xen domain)
 + Xen hypervisor
++ MiniOS (printf, other stubs)
 + OpenLibm math library
-+ MiniOS
 + GNU multiple precision library
 + OCaml runtime
++ OCaml libraries: cstruct, zarith, cohttp, x509, asn1, tls, nocrypto
 + OCaml and C compiler
-+ Various OCaml libraries: cstruct, zarith, cohttp, x509, asn1, tls, nocrypto
 
 
 ----
 ## Conclusion
 
-+ Operating systems in a functional language is fun and achievable!
-
-+ Working hard on support for various protocols
-
-+ Starting from scratch: 350kloc vs 20kloc for TLS
-
-+ Join the #nolibc movement
-
-+ Everything BSD-licensed, and available via OPAM (OCaml package manager)
-
-+ [Jackline](https://github.com/hannesm/jackline) is a command-line XMPP client using OCaml-TLS, XMPP, OTR
-
-+ [Blog series about OCaml-TLS http://openmirage.org/blog/introducing-ocaml-tls](http://openmirage.org/blog/introducing-ocaml-tls)
-
++ Functional operating systems are real now!
++ Why OCaml? Also Haskell (HalVM), Erlang on Xen, ...
++ Fuck legacy and traditions, let's start to build secure and resilient systems!
++ Keep it simple, complexity is the enemy
++ Join our #nolibc movement
 + [http://openmirage.org](http://openmirage.org)
+
+
+----
+## We need help
+
++ Try it, run it, break it
++ Join the movement: audit code, write tests, fuzz it, ...
++ Discuss design choices and code snippets with us
++ Implement your favorite protocol
++ Here at 31c3: serving you espresso at coffeenerds (4th floor, [@espressobicycle](https://twitter.com/espressobicycle)) while discussing
 
 
 ----
 ## Thanks
 
 + Anil Madhavapeddy
-+ Peter Sewell
-+ Richard Mortier, John Crowcraft, Thomas Leonard
-+ The whole Mirage team in Cambridge, OCamllabs
-+ miTLS team
-+ [http://openmirage.org](http://openmirage.org)
++ Peter Sewell - talks here<br/>
+Day 4, 12:45, Saal 1 - `Why computers are so @#!*`
++ Daniel B&uuml;nzli, Thomas Leonard, Thomas Gazagnaire, Dave Scott, Richard Mortier, John Crowcraft
++ Edwin T&ouml;r&ouml;k, Andreas Bogk, Gregor Kopf
++ Mirage team in Cambridge, OCaml Labs
++ miTLS team - formally verified TLS stack in F7/F#
++ All we forgot (sorry!)
