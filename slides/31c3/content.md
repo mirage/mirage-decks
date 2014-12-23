@@ -154,6 +154,12 @@ Almost unbounded scope for uncontrolled interaction!
 
 
 ----
+<p class="stretch center">
+  <img src="RiseUpSun.png"/>
+</p>
+
+
+----
 ## Mirage OS
 
 + From scratch modular operating system
