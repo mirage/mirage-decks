@@ -9,23 +9,12 @@ David Kaloper and Hannes Mehnert<br/>
 
 
 ----
-## Trusted Computing Base
-
-> The trusted computing base (TCB) of a computer system is the set of all hardware, firmware, and/or software components that are critical to its security, in the sense that bugs or vulnerabilities occurring inside the TCB might jeopardize the security properties of the entire system.
-
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-*&mdash; *([Wikipedia](http://en.wikipedia.org/wiki/Trusted_computing_base))*
-
-
-----
 ## TCB of IM Client
 
 + Client software itself
-+ Libraries it depends on (OpenSSL, libotr, libpurple)
++ Dependent libraries (crypto, XML parsing, communication)
 + GUI framework (picture, font renderer)
-+ Programming language runtime (Python? Ruby?)
++ Programming language runtime
 + C library
 + Memory allocator
 + Operating system kernel (TCP/IP, device drivers)
@@ -36,11 +25,17 @@ Attack vector is sum of attack vectors in all components!
 
 
 ----
-## What can we do?
+## Trusted Computing Base
 
-+ Compartmentalize
-+ Mitigate known vulnerabilities
-+ Shrink the TCB
+> Trusted computing base (TCB) of a computer system is all hardware and software that is critical to its security; bugs inside the TCB jeopardize security properties of entire system.
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+*&mdash; *([Wikipedia](http://en.wikipedia.org/wiki/Trusted_computing_base)), shortened*
+
+
+----
+## What can we do?
 
 
 ----
@@ -52,8 +47,8 @@ Attack vector is sum of attack vectors in all components!
 
 Limits the impact of a successful attack.
 
-+ `chroot`, FreeBSD jail, Linux containers
-+ Hypervisor (Xen / KVM / VMWare / VirtualBox / ...)
++ `chroot`, Solaris Zones, FreeBSD jail, Linux containers, Docker
++ Hypervisor such as Xen, KVM, ... used for Amazon EC2, Rackspace, ...
 
 
 ----
@@ -67,7 +62,7 @@ Limits the impact of a successful attack.
 
 
 ----
-## Mitigation
+## More layers
 
 Detect known attacks by adding another layer.
 
@@ -75,13 +70,13 @@ Detect known attacks by adding another layer.
   <img src="ids.jpg" alt="source http://seit.unsw.adfa.edu.au/research/details2.php?page_id=28"/>
 </p>
 
-+ ASLR Stack protection
++ ASLR stack protection
 + Firewall
-+ IDS
++ Intrusion detection systems
 
 
 ----
-## Minimize TCB
+## Piling Layers
 
 > All problems in computer science can be solved by another level of indirection... Except for the problem of too many layers of indirection.
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -95,7 +90,6 @@ Detect known attacks by adding another layer.
 
 
 ----
-## Wrong Approach
 
 <p class="stretch center">
   <img src="system-is-wrong.jpg"/>
@@ -103,22 +97,46 @@ Detect known attacks by adding another layer.
 
 
 ----
-## Programming Languages
+## Clean slate
 
++ Software systems are complex
++ Communication via protocols - implement and interact with the world
++ API of the Internet: TCP/IP, DHCP, DNS, HTTP, TLS, SASL, XMPP, GIT, SSH, IMAP, ...
++ Persistent data storage
+
+
+----
+## Our Tools
+
++ Programming language
++ Abstraction features
++ Libraries
+
+
+----
+## Programming Language
+
++ Concise readable code is the goal
 + Focus on problem, do not distract with boilerplate
 + Abstraction crucial for handling complex systems
     + Variables, functions, higher-order functions, modules, ..
+
+
+----
+## Type systems
+
 + Type systems spot errors at compile time
-+ Automation in certain areas: memory management
++ Early error detection crucial for critical services
++ Type driven development
 
 
 ----
 ## Side Effects
 
-Always dangerous areas in your program. Mark these explicitly!
+Side effects are mutation of state which are observable outside of a function in addition to their return value.
 
-+ Network input/output
-+ Mutable memory
++ Hard to reason locally when side effects are there
++ Functional programming marks them explicitly
 
 <p class="stretch center">
   <img src="smash-state.jpg"/>
@@ -129,54 +147,17 @@ Always dangerous areas in your program. Mark these explicitly!
 ## Functional programming
 
 + Allows readable **declarative** programming
-+ Combinators compose tiny mathematical functions
++ Combinators compose small functions
 
-<p class="stretch center">
-  <img src="functional-xkcd.png"/>
-</p>
+````
+let l1 = [ 1 ; 2 ; 3 ] in
+List.map (fun x -> x + 1) l1
 
+>> [ 2 ; 3 ; 4 ]
 
-----
-## Complexity
-
-Complexity kills you:
-
-+ Applications are **deeply intertwined** with system APIs, and so lack
-  portability
-+ Modern operating systems offer **dynamic support** for **many users** to run
-  **multiple applications** simultaneously
-
-Almost unbounded scope for uncontrolled interaction!
-
-+ Ad hoc application configuration under `/etc`
-+ Shell scripts manage configurations and deployment
-+ But: shell becomes part of TCB (Shellshock!)
-
-
-----
-<p class="stretch center">
-  <img src="RiseUpSun.png"/>
-</p>
-
-
-----
-## Clean slate
-
-+ Services communicate via binary protocols
-+ Seemless migration requires those protocols
-+ API of the Internet: TCP/IP, DHCP, DNS, HTTP, TLS, SASL, XMPP, GIT, SSH, ...
-+ Persistent data storage
-
-
-----
-## Mirage OS
-
-+ Modular operating system
-+ Since 2009 project at University of Cambridge, UK
-+ BSD/MIT licensed
-+ OCaml - modular functional programming language
-+ Not a general purpose OS
-+ Application and configuration specific binaries!
+l1
+>> [ 1 ; 2 ; 3 ]
+````
 
 
 ----
@@ -185,16 +166,36 @@ Almost unbounded scope for uncontrolled interaction!
 > __Unikernels__ are specialised virtual machine images compiled from the
 > modular stack of application code, system libraries and configuration
 
-<br/>
-This means they realise several benefits:
-<!-- .element: class="fragment" data-fragment-index="2" -->
 
-+ __Contained__, simplifying deployment and management
-+ __Compact__, reducing attack surface and boot times
-+ __Efficient__, able to fit 10,000s onto a single host
-+ __Portable__, to many compilation environments beyond Xen
+----
+## Mirage OS
 
-<!-- .element: class="fragment" data-fragment-index="2" -->
++ Started in 2009 at University of Cambridge, UK
++ BSD/MIT licensed
++ OCaml, a modular functional programming language
++ Compiles to a Xen virtual machine (amongst others)
++ 2MB virtual machine size (for HTTPS server)
+
+
+----
+## Mirage on Xen
+
+<p class="stretch center">
+  <img src="stack.png" />
+</p>
+
++ OCaml runtime
++ Single address space
++ No C library
+
+
+----
+## Modularity
+
++ Modules are composable units assembling complex systems together
++ Libraries can use modules as parameters
++ Mirage is a modularized OS
++ Same application code can use various stacks
 
 
 ----
@@ -233,67 +234,44 @@ This means they realise several benefits:
 ## Cubieboard 2
 
 + __AllWinnerTech SOC A20, ARM Cortex-A7 Dual-Core__
-+ GPU: ARM Mali400 MP2 (OpenGL ES 2.0/1.1)
-+ 1GB DDR3, 3.4GB internal NAND flash
++ 1GB DDR3
 + 10/100 ethernet, support USB WiFi
-+ 2x USB 2.0 HOST, mini USB 2.0 OTG, micro SD, SATA
-+ HDMI 1080P display output
-+ IR, line in, line out, 96 extend PIN interface, including I2C, SPI, RGB/LVDS, CSI/TS, FM-IN, ADC, CVBS, VGA, SPDIF-OUT, R-TP, and more
-+ roughly 40 &euro;
++ 2x USB 2.0 HOST, micro SD, SATA
++ HDMI
++ ...
 
 
 ----
-## Modularize the OS
+## Xen security
 
-Run the same library _and_ application code as:
-
-+ UNIX binary
-+ Xen virtual machine (ARM or AMD64)
-+ Rackspace/Amazon EC2/... instance
-+ FreeBSD kernel module*
-+ Inside of your web browser*
++ Handle each PCI ID in a separate VM (like Qubes)
++ Shared memory for input/output of ethernet card
++ Inter-VM communication
 
 
 ----
-## Mirage on Xen
+## What Mirage can
 
-<p class="stretch center">
-  <img src="stack.png" />
-</p>
-
-+ Single address space
-+ No processes, file system, user management
-+ No C library (but openlibm and printf)
-+ OCaml runtime including garbage collector
-
-
-----
-## Modularity (code!)
-
-+ Applications are abstracted over devices (console, TCP/IP stack)
-
-
-----
-## Libraries
-
++ TCP/IP, DHCP, HTTP, DNS, IMAP, ...
 + Irmin, persistent branchable store (similar to git)
-+ Git
-+ OCaml-TLS
-+ HTTP, DNS, TCP/IP, DHCP, ...
-+ Unikernel size is small (HTTPS including TCP/IP and OCaml runtime < 2MB)
-+ Development and deployment via git
++ TLS
++ Deployment via git - small VM size
 
 
 ----
 ## Performance
 
-+ On par with Linux on ARM serving HTTP
-+ Startup time below 20ms
-+ Start service after DNS request was processed
++ Similar to Linux on ARM (serving static HTTP data)
++ Startup time really fast 20ms
++ DNS server starts unikernel when service requested
++ Services on-demand
 
 
 ----
 ## Tracing
+
++ Visualise all events currently being processed
++ Debug tool for unikernels (no shell/logs)
 
 <p class="stretch center">
   <img src="tracer.png" />
@@ -303,14 +281,20 @@ Run the same library _and_ application code as:
 ----
 ## OCaml-TLS
 
-+ Early 2014 in Mirleft - before `goto fail`, Heartbleed
-+ Crypto primitives `nocrypto`
-+ X.509 certificate verification (ASN.1)
-+ Design goal: small API footprint (unlike OpenSSL)
-
 <p class="stretch center">
   <img src="aftas-mirleft.jpg" />
 </p>
+
++ Early 2014 in Mirleft - before `goto fail`, Heartbleed
+
+
+----
+## OCaml-TLS
+
++ Crypto primitives `nocrypto`
++ X.509 certificate verification (ASN.1)
++ Design goal: small API
++ Complex TLS APIs are used wrongly (see "The most dangerous code in the wild" and "Frankencert")
 
 
 ----
@@ -318,21 +302,52 @@ Run the same library _and_ application code as:
 
 > Never develop your own crypto library
 
++ Someone has to do that (esp. with Heartbleed etc.)
++ Variety is better than monoculture
++ Read relevant literature
++ Don't invent your own cryptosystem!
+
+
+----
+## Nocrypto
+
 + Cipher cores in C - allocation and loop free code
 + Cipher modes in OCaml - ECB, CBC, CTR, GCM, CCM
 + Fortuna RNG
-+ Bignum (via GMP), RSA/DSA/DH
++ RSA/DSA/DH (bignums via GNU gmp)
 + Hashes and HMAC - cores again in C
-+ Timing
 
 
 ----
 ## ASN.1
 
-+ Composable parsers and unparsers using GADTs
-+ No magic 0 bytes
-+ No manual decoding
-+ BER/DER - all the way up to X.509v3 certificates
++ Abstract syntax notation, version 1
++ Language for describing tag-length-value data
+
+```
+-- Simple name bindings
+UniqueIdentifier ::= BIT STRING
+
+-- Products
+Validity ::= SEQUENCE {
+  notBefore Time,
+  notAfter  Time
+}
+
+-- Sums
+Time ::= CHOICE {
+  utcTime     UTCTime,
+  generalTime GeneralizedTime
+}
+```
+
+
+----
+## Asn1-combinators
+
++ Parser and generator combinators
++ BER and DER encoding
++ Up to full X.509v3 certificates
 
 
 ----
@@ -341,8 +356,8 @@ Run the same library _and_ application code as:
 ````
 val chain_of_trust : ?time:float -> Cert.t list -> t
 
-val server_fingerprint : ?time:float -> hash:hash
-  -> fingerprints:(string * Cstruct.t) list -> t
+val server_fingerprint : ?time:float -> hash:hash ->
+  fingerprints:(string * Cstruct.t) list -> t
 ````
 
 Hostname is always verified!
@@ -353,20 +368,43 @@ Either RFC 5280 chain of trust or trust on first use.
 ----
 ## OCaml-TLS
 
-+ Protocol logic encapsulated in declarative functional core
-+ Side effects isolated in frontends
-+ `lwt` (event-based on UNIX) and `mirage`
-+ Expose API to C as shared object (planned)
++ Protocol logic in pure core
+
+````
+val handle_tls : state -> Cstruct.t ->
+  | `Ok of [ `Ok of state | `Eof | `Alert of alert ]
+         * [ `Response of Cstruct.t option ]
+         * [ `Data of Cstruct.t option ]
+  | `Fail of alert * [ `Response of Cstruct.t ]
+
+val send_application_data : state -> Cstruct.t list ->
+  (state * Cstruct.t) option
+````
+
+
+----
+## OCaml-TLS
+
++ Effectful layers for `lwt` and `mirage`
++ Network input and output
++ Hide details from developer
+
+````
+val accept : X509_lwt.priv -> Lwt_unix.file_descr ->
+  ((ic * oc) * Lwt_unix.sockaddr) Lwt.t
+
+val connect : X509_lwt.authenticator -> string * int ->
+  (ic * oc) Lwt.t
+````
 
 
 ----
 ## What is TLS?
 
-+ Cryptographically secure channel (TCP) between two nodes
-+ Most widely used security protocol (since > 15 years)
-+ Protocol family (SSLv3.0, TLS 1.0, 1.1, 1.2)
++ Transport layer security
++ Most widely used security protocol since 1999
 + Algorithmic agility: negotiation of key exchange, cipher and hash
-+ X.509 (ASN.1 encoding) PKI for certificates
++ Trust anchors (certificate authorities)
 
 
 ----
@@ -381,27 +419,34 @@ cd mirage/tls-demo-server
 ./main.native
 ````
 
-[https://127.0.0.1:4433](https://127.0.0.1:4433)
+[https://tls.openmirage.org](https://tls.openmirage.org)
 
 
 ----
 ## OCaml-TLS
 
 + Interoperability both client and server side (demo server served > 50000 sessions)
++ Develop working TLS stack in small time frame is doable
++ Learned patterns for robust implementation of security protocols
++ 350 000 loc (OpenSSL) vs 100 000 (PolarSSL) 20 000 loc (OCaml-TLS)
+  (used `cloc` for counting)
+
+
+----
+## Open issues in OCaml-TLS
+
 + Pull requests for client authentication, AEAD ciphers, SNI
 + No session resumption
-+ No ECC (yet)
-+ Started in January, first release in July - 3 months, 5 hackers rule!
-+ 350kloc (OpenSSL) vs 20kloc (OCaml-TLS)
-+ [Blog series about OCaml-TLS, ...](http://openmirage.org/blog/introducing-ocaml-tls)
++ No elliptic curve cryptography
 
 
 ----
 ## Moving Forward
 
++ Healthy functional code base easy to extend
 + [Conduit](https://github.com/mirage/ocaml-conduit) - abstracting over connections (shared memory (Xen vchan), TCP, TLS, ..)
-+ [Ocaml-OTR](https://github.com/hannesm/ocaml-otr) - (no SMP) - 4 weeks (including DSA)
-+ [Jackline](https://github.com/hannesm/jackline) - command-line XMPP client - 4 weeks
++ November: [Ocaml-OTR](https://github.com/hannesm/ocaml-otr) - DSA for nocrypto, no socialists millionairs problem
++ December: [Jackline](https://github.com/hannesm/jackline) - command-line XMPP client
 
 <p class="stretch center">
   <img src="jackline.png" />
@@ -428,6 +473,7 @@ cd mirage/tls-demo-server
 + Fuck legacy and traditions, let's start to build secure and resilient systems!
 + Keep it simple, complexity is the enemy
 + Join our #nolibc movement
++ [Blog series about OCaml-TLS, ...](http://openmirage.org/blog/introducing-ocaml-tls)
 + [http://openmirage.org](http://openmirage.org)
 
 
@@ -446,8 +492,8 @@ cd mirage/tls-demo-server
 
 + Anil Madhavapeddy
 + Peter Sewell - talks here<br/>
-Day 4, 12:45, Saal 1 - `Why computers are so @#!*`
-+ Daniel B&uuml;nzli, Thomas Leonard, Thomas Gazagnaire, Dave Scott, Richard Mortier, John Crowcraft
+Why computers are so @#!* - Day 4, 12:45, Saal 1
++ Daniel B&uuml;nzli, Thomas Leonard, Thomas Gazagnaire, Dave Scott, Richard Mortier, Jon Crowcraft
 + Edwin T&ouml;r&ouml;k, Andreas Bogk, Gregor Kopf
 + Mirage team in Cambridge, OCaml Labs
 + miTLS team - formally verified TLS stack in F7/F#
