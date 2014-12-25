@@ -9,22 +9,6 @@ David Kaloper and Hannes Mehnert<br/>
 
 
 ----
-## TCB of IM Client
-
-+ Client software itself
-+ Dependent libraries (crypto, XML parsing, communication)
-+ GUI framework (picture, font renderer)
-+ Programming language runtime
-+ C library
-+ Memory allocator
-+ Operating system kernel (TCP/IP, device drivers)
-+ Hardware
-+ Compilers
-
-Attack vector is sum of attack vectors in all components!
-
-
-----
 ## Trusted Computing Base
 
 > Trusted computing base (TCB) of a computer system is all hardware and software that is critical to its security; bugs inside the TCB jeopardize security properties of entire system.
@@ -32,6 +16,65 @@ Attack vector is sum of attack vectors in all components!
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 *&mdash; *([Wikipedia](http://en.wikipedia.org/wiki/Trusted_computing_base)), shortened*
+
+
+
+----
+## TCB of IM Client
+
+Client software <img src="pidgin.png"/><img src="adium.png"/>
+
+
+----
+## TCB of IM Client
+
+<img src="pidgin.png"/><img src="adium.png"/>
+
+Dependencies (crypto, XML, ...) <img src="openssl.png"/><img src="gnutls.png"/>
+
+
+----
+## TCB of IM Client
+
+<img src="pidgin.png"/><img src="adium.png"/><img src="openssl.png"/><img src="gnutls.png"/>
+
+GUI framework (picture, font renderer) <img src="gtk.png"/>
+
+
+----
+## TCB of IM Client
+
+<img src="pidgin.png"/><img src="adium.png"/><img src="openssl.png"/><img src="gnutls.png"/><img src="gtk.png"/>
+
+Programming language runtime <img src="java.png"/><img src="ruby.png"/><img src="python.jpg"/>
+
+
+----
+## TCB of IM Client
+
+C library <p class="stretch center"><img src="linux-glibc.svg"/></p>
+
+
+----
+## TCB of IM Client
+
+<img src="pidgin.png"/><img src="adium.png"/><img src="openssl.png"/><img src="gnutls.png"/><img src="gtk.png"/><img src="java.png"/><img src="ruby.png"/><img src="python.jpg"/><img src="glibc.png"/>
+
+Operating system (TCP/IP, device drivers) <img src="freebsd.jpg"/><img src="linux.png"/>
+
+
+----
+## TCB of IM Client
+
+<img src="pidgin.png"/><img src="adium.png"/><img src="openssl.png"/><img src="gnutls.png"/><img src="gtk.png"/><img src="java.png"/><img src="ruby.png"/><img src="python.jpg"/><img src="glibc.png"/><img src="freebsd.jpg"/><img src="linux.png"/>
+
+Hardware <img src="hardware.png"/>
+
+
+----
+## Weakest link?
+
+<img src="pidgin.png"/><img src="adium.png"/><img src="openssl.png"/><img src="gnutls.png"/><img src="gtk.png"/><img src="java.png"/><img src="ruby.png"/><img src="python.jpg"/><img src="glibc.png"/><img src="freebsd.jpg"/><img src="linux.png"/><img src="hardware.png"/>
 
 
 ----
