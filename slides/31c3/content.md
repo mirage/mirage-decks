@@ -18,7 +18,6 @@ David Kaloper and Hannes Mehnert<br/>
 *&mdash; *([Wikipedia](http://en.wikipedia.org/wiki/Trusted_computing_base)), shortened*
 
 
-
 ----
 ## TCB of IM Client
 
@@ -143,7 +142,7 @@ Detect known attacks by adding another layer.
 ## Clean slate
 
 + Software systems are complex
-+ Communication via protocols - implement and interact with the world
++ Communication via protocols
 + API of the Internet: TCP/IP, DHCP, DNS, HTTP, TLS, SASL, XMPP, GIT, SSH, IMAP, ...
 + Persistent data storage
 
@@ -166,8 +165,26 @@ Detect known attacks by adding another layer.
 
 
 ----
+## Functional programming
+
++ Small composable functions
++ Allows readable **declarative** programming
+
+````
+let l1 = [ 1 ; 2 ; 3 ] in
+List.map (fun x -> x + 1) l1
+
+>> [ 2 ; 3 ; 4 ]
+
+l1
+>> [ 1 ; 2 ; 3 ]
+````
+
+
+----
 ## Type systems
 
++ Lightweight invariants
 + Type systems spot errors at compile time
 + Early error detection crucial for critical services
 + Type driven development
@@ -184,23 +201,6 @@ Side effects are mutation of state which are observable outside of a function in
 <p class="stretch center">
   <img src="smash-state.jpg"/>
 </p>
-
-
-----
-## Functional programming
-
-+ Allows readable **declarative** programming
-+ Combinators compose small functions
-
-````
-let l1 = [ 1 ; 2 ; 3 ] in
-List.map (fun x -> x + 1) l1
-
->> [ 2 ; 3 ; 4 ]
-
-l1
->> [ 1 ; 2 ; 3 ]
-````
 
 
 ----
@@ -227,7 +227,6 @@ l1
   <img src="stack.png" />
 </p>
 
-+ OCaml runtime
 + Single address space
 + No C library
 
@@ -236,8 +235,7 @@ l1
 ## Modularity
 
 + Modules are composable units assembling complex systems together
-+ Libraries can use modules as parameters
-+ Mirage is a modularized OS
++ Mirage leverages the module system from OCaml
 + Same application code can use various stacks
 
 
@@ -287,9 +285,10 @@ l1
 ----
 ## Xen security
 
-+ Handle each PCI ID in a separate VM (like Qubes)
-+ Shared memory for input/output of ethernet card
-+ Inter-VM communication
++ Each PCI ID can be driven in a separate VM (Qubes)
++ Hypervisor (with hardware support) separates VMs
++ Inside of VM: network interface is mapped as shared memory
++ Inter-VM communication via shared memory possible
 
 
 ----
@@ -297,7 +296,7 @@ l1
 
 + TCP/IP, DHCP, HTTP, DNS, IMAP, ...
 + Irmin, persistent branchable store (similar to git)
-+ TLS
++ Transport layer security (TLS)
 + Deployment via git - small VM size
 
 
@@ -311,14 +310,27 @@ l1
 
 
 ----
-## Tracing
+## What is TLS?
 
-+ Visualise all events currently being processed
-+ Debug tool for unikernels (no shell/logs)
++ Transport layer security
++ Most widely used security protocol since 1999
++ Algorithmic agility: negotiation of key exchange, cipher and hash
++ Trust anchors (certificate authorities, X.509)
 
-<p class="stretch center">
-  <img src="tracer.png" />
-</p>
+
+----
+## Handshake
+
+Tracing of our server side stack
+
+Showing live at
+
+````
+cd mirage/tls-demo-server
+./main.native
+````
+
+[https://tls.openmirage.org](https://tls.openmirage.org)
 
 
 ----
@@ -336,7 +348,7 @@ l1
 
 + Crypto primitives `nocrypto`
 + X.509 certificate verification (ASN.1)
-+ Design goal: small API
++ Design goal: simplicity
 + Complex TLS APIs are used wrongly (see "The most dangerous code in the wild" and "Frankencert")
 
 
@@ -345,7 +357,7 @@ l1
 
 > Never develop your own crypto library
 
-+ Someone has to do that (esp. with Heartbleed etc.)
++ Someone has to develop crypto libraries
 + Variety is better than monoculture
 + Read relevant literature
 + Don't invent your own cryptosystem!
@@ -391,6 +403,20 @@ Time ::= CHOICE {
 + Parser and generator combinators
 + BER and DER encoding
 + Up to full X.509v3 certificates
+
+```
+(* Simple name bindings *)
+let uniqueIdentifier = bit_string
+
+(* Products *)
+let validity =
+  sequence2
+    (required ~label:notBefore time)
+    (required ~label:notAfter time)
+
+(* Sums *)
+let time = choice2 utc_time generalized_time
+```
 
 
 ----
@@ -442,43 +468,21 @@ val connect : X509_lwt.authenticator -> string * int ->
 
 
 ----
-## What is TLS?
-
-+ Transport layer security
-+ Most widely used security protocol since 1999
-+ Algorithmic agility: negotiation of key exchange, cipher and hash
-+ Trust anchors (certificate authorities)
-
-
-----
-## Handshake
-
-Tracing of our server side stack
-
-Showing live at
-
-````
-cd mirage/tls-demo-server
-./main.native
-````
-
-[https://tls.openmirage.org](https://tls.openmirage.org)
-
-
-----
 ## OCaml-TLS
 
-+ Interoperability both client and server side (demo server served > 50000 sessions)
-+ Develop working TLS stack in small time frame is doable
++ Interoperability with various stacks (demo server > 50000 sessions)
++ Developed working TLS stack in short time frame
 + Learned patterns for robust implementation of security protocols
 + 350 000 loc (OpenSSL) vs 100 000 (PolarSSL) 20 000 loc (OCaml-TLS)
   (used `cloc` for counting)
 
 
 ----
-## Open issues in OCaml-TLS
+## OCaml-TLS Future
 
-+ Pull requests for client authentication, AEAD ciphers, SNI
++ Client authentication
++ AEAD ciphers
++ Server-side SNI configuration
 + No session resumption
 + No elliptic curve cryptography
 
@@ -495,10 +499,10 @@ cd mirage/tls-demo-server
   <img src="jackline.png" />
 </p>
 
+
 ----
 ## Trusted Code Base
 
-+ Linux network device driver (separate Xen domain)
 + Xen hypervisor
 + MiniOS (printf, other stubs)
 + OpenLibm math library
@@ -523,11 +527,13 @@ cd mirage/tls-demo-server
 ----
 ## We need help
 
-+ Try it, run it, break it
-+ Join the movement: audit code, write tests, fuzz it, ...
-+ Discuss design choices and code snippets with us
-+ Implement your favorite protocol
-+ Here at 31c3: serving you espresso at coffeenerds (4th floor, [@espressobicycle](https://twitter.com/espressobicycle)) while discussing
++ Try mirage out, write code, audit code, break code
++ Discuss design choices and code pieces with us
++ 31c3: coffeenerds (4th floor, [@espressobicycle](https://twitter.com/espressobicycle))
+
+<p class="stretch center">
+  <img src="espressobicycle.jpg" />
+</p>
 
 
 ----
