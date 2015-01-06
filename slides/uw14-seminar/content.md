@@ -699,6 +699,19 @@ can be linked as libraries_
 
 ----
 
+## So, Mirage is Cool
+
+Unikernels are
+
++ Self-contained, compact, efficient, type-safe
++ Initially built to target the (x86) cloud
+
+But why the move to ARM?
+
+I earlier mentioned about the problems facing wide-spread deployment of the
+Internet-of-Things...
+
+
 ## Faster than light?
 
 Many network services suffer as _latency_ increases, e.g.,
@@ -765,7 +778,7 @@ A toolstack to launch unikernels on-demand with negligible latency:
   <div style="max-width:50%" class="left stretch">
     <img src="boot-txns.png" />
   </div>
-  <div style="max-width:49%" class="right">
+  <div style="max-width:49%" class="right stretch">
     <img src="jitsu-boot-time.png" />
   </div>
 </div>
@@ -876,7 +889,7 @@ Unikernels are **small enough to be tracked in GitHub**. For example, for the
 
 3. Unikernel pushed to   **[mirage/mirage-www-deployment](https://github.com/mirage/mirage-www-deployment)**
 
-4. Cloud toolstack spawns VMs based on pushes there.
+4. Cloud toolstack spawns VMs based on pushes there
 
 **Our *entire* cloud-facing deployment is version-controlled from the source
 code up**!
@@ -939,10 +952,10 @@ Unified development for cloud and embedded environments
 ## Ongoing Stuff
 
 Mirage OS 2.0 is an important step forward, supporting **more**, and **more
-diverse**, **backends** with much **greater modularity**.
+diverse**, **backends** with much **greater modularity**
 
-For information about the many components we could not cover here, see
-[openmirage.org](http://openmirage.org/blog/):
+For information about the many things I couldn't cover here, see
+[openmirage.org](http://openmirage.org/blog/), e.g.,
 
 + __[Irmin](http://openmirage.org/blog/introducing-irmin)__, Git-like
   distributed branchable storage
@@ -956,18 +969,18 @@ For information about the many components we could not cover here, see
 
 ## Get Involved!
 
-Unikernels are an incredibly interesting way to code functionally at scale.
-Nothing stresses a toolchain like building a whole OS.
+Unikernels are an incredibly interesting way to code functionally at scale:
+nothing stresses a toolchain like building a whole OS!
 
 - **Choices**: [Mirage OS](http://openmirage.org) in OCaml,
   [HaLVM](http://halvm.org) in Haskell, Rump Kernels or OSv for compatibility,
-  ClickOS for routing.
-- **Scenarios**: Static websites, dynamic content, custom routers.
-- **Performance**: There's no hiding behind abstractions. HalVM *vs* Mirage is a
-  fun contest in evaluating abstraction cost.
+  ClickOS for routing
+- **Scenarios**: Static websites, dynamic content, custom routers
+- **Performance**: There's no hiding behind abstractions &mdash; HalVM *vs*
+  Mirage is a fun contest in evaluating abstraction cost
 
 > Most important: need contributors to build the library base of safe protocol
-> implementations (TLS has been done!)
+> implementations (network, filesystem, etc)
 
 
 ## Why? [nymote.org](http://nymote.org/)
@@ -980,7 +993,7 @@ _The Cloud_:
 + How can we achieve this?
 
 > Mirage/ARM is the foundation for building **personal clouds**, securely
-> interconnecting and synchronising our devices.
+> interconnecting and synchronising our devices
 
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
