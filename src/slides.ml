@@ -33,6 +33,14 @@ let decks =
       style = Reveal262;
     };
 
+    { permalink = "oups15-irmin";
+      given = Date.t (2015, 01, 20);
+      speakers = [People.thomas];
+      venue = "OCaml User-meeting in PariS";
+      title = "Irmin: a Git-like database Library";
+      style = Reveal262;
+    };
+
     { permalink = "31c3";
       given = Date.t (2014, 12, 27);
       speakers = [People.david ; People.hannes];
