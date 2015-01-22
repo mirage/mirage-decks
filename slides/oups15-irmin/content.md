@@ -390,7 +390,7 @@ ocaml-git (Git formats and protocols in pure OCaml):
     - server-side protocols
 
 
-## Imin
+## Irmin
 
 - last release in `opam`: 0.9.2
 - 1.0.0 should be available at the end of the month
