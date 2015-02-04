@@ -15,7 +15,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-MODE  ?= unix
+MODE  ?= unix 
 NET   ?=
 MIRAGE = mirage
 
