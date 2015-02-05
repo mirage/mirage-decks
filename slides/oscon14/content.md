@@ -1,5 +1,5 @@
 <!-- .slide: class="title" -->
-<img width="200" src="ucn_logo.png" style="margin-left: -490px; margin-top: 0px; position: fixed" />
+
 # __[Nymote](http://nymote.org/)__: Git Your <br/>**Own** Cloud Here
 
 Anil Madhavapeddy <small>University of Cambridge</small>
@@ -415,4 +415,3 @@ and [Jeremy Yallop](https://github.com/yallop).
 <p style="font-size: 40px; display: float; padding: 2ex 2em; text-align: center">
   (_and please rate the talk_!)
 </p>
- Thanks to the EU-funded UCN Project. Grant No. 611001.
