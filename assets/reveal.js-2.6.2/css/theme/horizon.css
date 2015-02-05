@@ -45,6 +45,11 @@ body {
     text-align: left;
 }
 
+.reveal .slides > section,
+.reveal .slides > section > section {
+    padding: 0;
+}
+
 .reveal .slides > section.title {
     text-align: center;
 }
