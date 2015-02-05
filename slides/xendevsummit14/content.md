@@ -10,6 +10,12 @@ Anil Madhavapeddy <small>University of Cambridge</small> [@avsm](http://twitter.
 [http://decks.openmirage.org/xendevsummit14/](http://decks.openmirage.org/xendevsummit14/#/)
 
 <small>
+  Work funded in part by the EU FP7 User-Centric Networking project, Grant
+  No. 611001.
+</small>
+<img id="ucn-logo" src="/img/ucn-logo.png" />
+
+<small>
   Press &lt;esc&gt; to view the slide index, and the &lt;arrow&gt; keys to
   navigate.
 </small>

@@ -14,7 +14,7 @@
 /** lose transparent padding from cloud background image */
 
 body {
-  background: url(/graphics/cloud-bg.png) 0 -50px repeat-x;
+  background: url(/img/cloud-bg.png) 0 -50px repeat-x;
 }
 
 /** fonts */
@@ -45,6 +45,11 @@ body {
     text-align: left;
 }
 
+.reveal .slides > section,
+.reveal .slides > section > section {
+    padding: 0;
+}
+
 .reveal .slides > section.title {
     text-align: center;
 }
@@ -60,17 +65,20 @@ body {
     padding: 0.1ex 0;
 }
 
-.reveal .slides ul,
+.reveal section.title p {
+    font-size: 80%;
+}
+
 .reveal .slides ol {
     margin-left: 1.1em;
-    margin-bottom: 1ex;
 }
 
-.reveal .slides ul > li > ul,
-.reveal .slides ol > li > ol {
-    margin-bottom: 0;
+.reveal iframe {
+    min-height: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    max-width: 100%;
 }
-
 
 .reveal #footer {
     background-size: auto 50px;
@@ -108,7 +116,7 @@ body {
     padding-top: 1ex;
     letter-spacing: 1;
     text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
-    font-size: 86px;
+    font-size: 3em;
 }
 
 .reveal h2 {
@@ -262,19 +270,32 @@ body {
 
 /** code */
 
+.reveal section code {
+    font-size: 85%;
+    line-height: 120%;
+}
+
+/*
+
 .reveal section pre {
     box-shadow: none;
 }
 
-.reveal section pre > code {
-    padding: 1ex 1em;
-}
-
 .reveal section code {
     font-size: 90%;
-    padding: 0;
-    margin: 0;
+    background: #ddd;
+    color: #333;
+    padding: 0 1ex;
+    margin: 0 0.5ex;
 }
+
+.reveal section pre.dark > code {
+    font-size: 90%;
+    background: #fff;
+    padding: 0 1ex;
+    margin: 0 0.5ex;
+}
+*/
 
 /** quotes */
 
@@ -282,8 +303,6 @@ body {
     background: #bbb;
     padding: 1ex 0.5em 0.5ex;
     text-align: center;
-    max-width: 75%;
-    width: 75%;
 }
 
 /** printing tweaks */

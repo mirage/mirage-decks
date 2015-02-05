@@ -16,16 +16,16 @@
 #
 
 MODE  ?= unix
-NET   ?=
-MIRAGE = mirage
+NET   ?= socket
+PORT  ?= 80
 
-.PHONY: all configure build run depend clean
+.PHONY: all configure build run depend clean docs
 
 all: build
 	@ :
 
 configure:
-	$(MIRAGE) configure src/config.ml --$(MODE)
+	NET=$(NET) PORT=$(PORT) mirage configure src/config.ml --$(MODE)
 
 build:
 	cd src && make build
@@ -37,5 +37,5 @@ depend:
 	cd src && make depend
 
 clean:
-	cd src && make clean
-	$(RM) src/mir-decks log
+	[ -r src/Makefile ] && ( cd src && make clean ) || true
+	$(RM) log src/mir-tutorial src/main.ml src/Makefile
