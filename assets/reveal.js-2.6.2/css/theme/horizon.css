@@ -14,7 +14,7 @@
 /** lose transparent padding from cloud background image */
 
 body {
-  background: url(/graphics/cloud-bg.png) 0 -50px repeat-x;
+  background: url(/img/cloud-bg.png) 0 -50px repeat-x;
 }
 
 /** fonts */
@@ -121,6 +121,10 @@ body {
     background-repeat: no-repeat;
     background-size: 2.5em;
     color: white;
+}
+
+.reveal section.title p {
+    font-size: 80%;
 }
 
 /** links */
