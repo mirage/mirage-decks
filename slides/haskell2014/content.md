@@ -9,6 +9,12 @@ Anil Madhavapeddy <small>University of Cambridge</small>
 [http://decks.openmirage.org/haskell2014/](http://decks.openmirage.org/haskell2014/#/)
 
 <small>
+  Work funded in part by the EU FP7 User-Centric Networking project, Grant
+  No. 611001.
+</small>
+<img id="ucn-logo" src="/img/ucn-logo.png" />
+
+<small>
   Press &lt;esc&gt; to view the slide index, and the &lt;arrow&gt; keys to
   navigate.
 </small>
@@ -16,7 +22,7 @@ Anil Madhavapeddy <small>University of Cambridge</small>
 
 ----
 
-## Systems Programming 
+## Systems Programming
 
 > It's considered good programming practice to focus
 > on compositionality: build software out of small, well-defined
@@ -302,18 +308,18 @@ over the parameterised type using fmap.
 
 
 ## Modular Architecture
- 
-From an ML point-of-view, MirageOS is: 
- 
-1. A collection of __module types__, describing structural parts of an 
+
+From an ML point-of-view, MirageOS is:
+
+1. A collection of __module types__, describing structural parts of an
    operating system (including device drivers).
- 
-2. A collection of independent __libraries that implement the 
+
+2. A collection of independent __libraries that implement the
    module types.__  Only libraries that application needs
    are linked.
- 
-3. Use __functors to model dependencies__ between libraries/components. 
-   The functor arguments are the module types defined in 1. 
+
+3. Use __functors to model dependencies__ between libraries/components.
+   The functor arguments are the module types defined in 1.
 
 
 ## Mirage OS 2.0 Workflow
@@ -359,18 +365,18 @@ As easy as 1&mdash;2&mdash;3!
 
 
 ## Modular Architecture
- 
-From an ML point-of-view, MirageOS is: 
- 
-1. A collection of __module types__, describing structural parts of an 
+
+From an ML point-of-view, MirageOS is:
+
+1. A collection of __module types__, describing structural parts of an
    operating system (including device drivers).
- 
-2. A collection of independent __libraries that implement the 
+
+2. A collection of independent __libraries that implement the
    module types.__  Only libraries that application needs
    are linked.
- 
-3. Use __functors to model dependencies__ between libraries/components. 
-   The functor arguments are the module types defined in 1. 
+
+3. Use __functors to model dependencies__ between libraries/components.
+   The functor arguments are the module types defined in 1.
 
 
 ## Module Types: Devices
@@ -493,17 +499,17 @@ library types for common uses
 ----
 
 ## From Modules to Functors
- 
-Functors are used everywhere in Mirage to describe OS layers: 
- 
-- Similar to FoxNet, but for the __whole OS__. We have a full 
+
+Functors are used everywhere in Mirage to describe OS layers:
+
+- Similar to FoxNet, but for the __whole OS__. We have a full
   implementation of the network stack (including TLS) in OCaml.
- 
+
 - Very __flexible approach__ for customising OS stacks for weird applications
   (HTTP over UPnP over UDP...)
 
 - Lots of __separate implementations__ of the module signatures:
-  Unix, Xen microkernels, Javascript, kernel modules, ... 
+  Unix, Xen microkernels, Javascript, kernel modules, ...
 
 
 ## Writing a component
@@ -762,7 +768,7 @@ Can select default module implementations for CLOCK, RANDOM and TIME to save man
 
 Anyone can extend the eDSL with new devices:
 
-- define an abstract type corresponding to the module type signature (e.g. NETWORK or TCPV4 or KV_RO). 
+- define an abstract type corresponding to the module type signature (e.g. NETWORK or TCPV4 or KV_RO).
 - define a CONFIGURABLE implementation and pack it using first class modules to generate a new impl type.
 
 ```
@@ -857,7 +863,7 @@ Low latency deployment of security updates.
 
 A library OS needs good package management.  Learn from Cabal.
 
-* __No upper bounds__ on packages, and continuous integration to pick 
+* __No upper bounds__ on packages, and continuous integration to pick
   up violations.
 * __Distributed git workflow__ for feature branches (package collections can be composed).
 * __External constraint solver__ support via CUDF (can use Debian tools
