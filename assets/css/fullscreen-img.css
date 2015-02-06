@@ -3,7 +3,7 @@
  *********************************************/
 
 .fullscreen {
-  background-size: cover; 
+  background-size: cover;
   -moz-background-size: cover;
 }
 
@@ -52,4 +52,3 @@
   padding:20px;
   padding-top: 40px;
 }
-

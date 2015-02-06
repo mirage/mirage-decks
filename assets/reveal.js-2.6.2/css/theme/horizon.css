@@ -4,6 +4,8 @@
  * Based off Sky theme, Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
  */
 
+@import url(horizon-fonts.css); /* must come first */
+
 /** debug */
 /*
   .reveal .slides { border: 3px solid green; }
@@ -17,14 +19,10 @@ body {
   background: url(/img/cloud-bg.png) 0 -50px repeat-x;
 }
 
-/** fonts */
-
-@import url(horizon-fonts.css);
-
 /** slides */
 
 .reveal {
-    font-family: "PT Sans", sans-serif;
+    font-family: PT Sans, sans-serif;
     font-size: 36px;
     font-weight: normal;
     letter-spacing: -0.02em;
@@ -106,7 +104,7 @@ body {
 .reveal h5,
 .reveal h6 {
     color: #333333;
-    font-family: "PT Sans Narrow", sans-serif;
+    font-family: PT Sans Narrow, sans-serif;
     letter-spacing: -0.08em;
     text-transform: uppercase;
     text-shadow: none;
