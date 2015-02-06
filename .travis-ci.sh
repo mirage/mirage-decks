@@ -1,5 +1,5 @@
 # OPAM packages needed to build tests.
-OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct crunch travis-senv"
+OPAM_PACKAGES="mirage cow ssl cowabloga ipaddr lwt cstruct crunch"
 
 case "$OCAML_VERSION,$OPAM_VERSION" in
 3.12.1,1.1.0) ppa=avsm/ocaml312+opam11 ;;
@@ -24,8 +24,8 @@ echo OPAM versions
 opam --version
 opam --git-version
 
-opam init 
-# opam remote add mirage-dev git://github.com/mirage/mirage-dev
+opam init -a
+opam init git://github.com/ocaml/opam-repository >/dev/null 2>&1
 opam install ${OPAM_PACKAGES}
 eval `opam config env`
 mirage --version
@@ -38,6 +38,7 @@ make build
 cd ..
 
 if [ "$DEPLOY" = "1" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
+  opam install travis-senv
   # get the secure key out for deployment
   mkdir -p ~/.ssh
   SSH_DEPLOY_KEY=~/.ssh/id_dsa
