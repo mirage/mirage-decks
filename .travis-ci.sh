@@ -30,7 +30,7 @@ opam install ${OPAM_PACKAGES}
 eval `opam config env`
 mirage --version
 
-cp .travis-www.ml src/config.ml
+cp .travis-decks.ml src/config.ml
 cd src
 mirage configure --$MIRAGE_BACKEND
 make depend
