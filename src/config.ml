@@ -1,44 +1,57 @@
 open Mirage
 
-let mode =
-  try match String.lowercase (Unix.getenv "FS") with
-    | "fat" -> `Fat
-    | _     -> `Crunch
-  with Not_found -> `Crunch
+let mkip address netmask gateways =
+  let address = Ipaddr.V4.of_string_exn address in
+  let netmask = Ipaddr.V4.of_string_exn netmask in
+  let gateways = List.map Ipaddr.V4.of_string_exn gateways in
+  { address; netmask; gateways }
 
-let fat_ro dir = kv_ro_of_fs (fat_of_files ~dir ())
-
-let assetsfs =
+let mkfs fs =
+  let mode =
+    try match String.lowercase (Unix.getenv "FS") with
+      | "fat" -> `Fat
+      | _     -> `Crunch
+    with Not_found -> `Crunch
+  in
+  let fat_ro dir =
+    kv_ro_of_fs (fat_of_files ~dir ())
+  in
   match mode, get_mode () with
-  | `Fat,    _     -> fat_ro "../assets"
-  | `Crunch, `Xen  -> crunch "../assets"
-  | `Crunch, _     -> direct_kv_ro "../assets"
+  | `Fat,    _    -> fat_ro fs
+  | `Crunch, `Xen -> crunch fs
+  | `Crunch, _    -> direct_kv_ro fs
 
-let slidesfs =
-  match mode, get_mode () with
-  | `Fat,    _     -> fat_ro "../slides"
-  | `Crunch, `Xen  -> crunch "../slides"
-  | `Crunch, _     -> direct_kv_ro "../slides"
+let assetsfs = mkfs "../assets"
+let slidesfs = mkfs "../slides"
+let staticip = mkip "46.43.42.134" "255.255.255.128" [ "46.43.42.129" ]
 
 let https =
   let net =
     try match Sys.getenv "NET" with
-      | "direct" -> `Direct
       | "socket" -> `Socket
       | _        -> `Direct
     with Not_found -> `Direct
   in
   let dhcp =
     try match Sys.getenv "DHCP" with
-      | "" -> false
-      | _  -> true
+      | "1" | "true" | "yes" -> true
+      | _  -> false
+    with Not_found -> false
+  in
+  let deploy =
+    try match Sys.getenv "DEPLOY" with
+      | "1" | "true" | "yes" -> true
+      | _ -> false
     with Not_found -> false
   in
   let stack console =
-    match net, dhcp with
-    | `Direct, true  -> direct_stackv4_with_dhcp console tap0
-    | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
-    | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
+    match deploy with
+    | true -> direct_stackv4_with_static_ipv4 console tap0 staticip
+    | false ->
+      match net, dhcp with
+      | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
+      | `Direct, true  -> direct_stackv4_with_dhcp console tap0
+      | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
   in
   let port =
     try match Sys.getenv "PORT" with
@@ -52,7 +65,7 @@ let https =
 
 let main =
   let libraries = [ "cow.syntax"; "cowabloga" ] in
-  let packages = [ "cow";"cowabloga" ] in
+  let packages = [ "cow"; "cowabloga" ] in
   foreign ~libraries ~packages "Server.Main"
     (console @-> kv_ro @-> kv_ro @-> http @-> job)
 
