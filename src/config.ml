@@ -65,7 +65,7 @@ let https =
 
 let main =
   let libraries = [ "cow.syntax"; "cowabloga" ] in
-  let packages = [ "cow";"cowabloga" ] in
+  let packages = [ "cow"; "cowabloga" ] in
   foreign ~libraries ~packages "Server.Main"
     (console @-> kv_ro @-> kv_ro @-> http @-> job)
 
