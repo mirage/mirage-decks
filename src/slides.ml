@@ -274,7 +274,8 @@ let decks =
     };
   ]
 
-let index ~req ~path =
+let index readf ~req ~path =
+  readf ("templates/preamble.html") >>= fun preamble ->
   let open Cowabloga in
   let content =
     let decks = decks
@@ -282,17 +283,19 @@ let index ~req ~path =
                 |> List.map (fun d ->
                     let speakers =
                       d.Deck.speakers
-                      |> List.map (fun s -> Cow.Html.to_string (
+                      |> List.map (fun s -> Cow.Xml.to_string (
                           match s.Atom.uri with
                           | Some u ->
                             <:html<
                               <em><a href="$str:u$">$str:s.Atom.name$</a></em>
                             >>
                           | None ->
-                            <:html<<em>$str:s.Atom.name$</em>&>>
+                            <:html<
+                              <em>$str:s.Atom.name$</em>
+                            >>
                         ))
                       |> String.concat ", "
-                      |> Cow.Html.of_string
+                      |> Cow.Xml.of_string
                     in
                     <:html<
                       <article>
@@ -369,7 +372,7 @@ let index ~req ~path =
       </html>
     >>
   in
-  return (Foundation.page ~body)
+  return (preamble ^ (Foundation.page ~body) ^ "</html>")
 
 let deck readf ~deck =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
