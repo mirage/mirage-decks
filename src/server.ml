@@ -61,7 +61,7 @@ module Main
         in
         match path with
         | [] | [""] ->
-          Slides.index ~req ~path |> respond_ok
+          Slides.index read_slides ~req ~path |> respond_ok
         | deck :: [] ->
           Slides.deck read_slides ~deck |> respond_ok
         | deck :: asset :: [] ->
