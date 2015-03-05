@@ -69,19 +69,6 @@ These slides were written using Mirage on Mac OSX:
 
 ----
 
-## Systems Programming
-
-> It's considered good programming practice to focus on compositionality: build
-> software out of small, well-defined modules that combine to give rise to other
-> modules with different behaviors.
-
-> **This is simply too difficult to do in distributed systems. Why?**
-
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-*&mdash; Marius Eriksen, Principal Engineer, Twitter*
-*([source](http://monkey.org/~marius/sosp13.html))*
-
-
 ## From simple servers...
 
 Traditional systems programming has involved building services in *one*
@@ -475,7 +462,7 @@ A Mirage component usually contains:
 - Code parameterised by functors with very limited (Mirage-only) dependencies,
   and particularly __no OS dependencies__
 
-- A collection of libraries where the functors are (fully or partially) applied,
+- A collection of libraries where the functors are applied,
   suitable for interactive use
 
 > Functors clearly separate dependencies between OS components, breaking
@@ -831,8 +818,7 @@ process dramatically reduces boot time_
 ## Conduit
 
 + Establishes __zero-copy shared-memory__ pages between peers
-  + Xen grant tables map pages between VMs (`/dev/gntmap`), synchronised via
-    event channels (`/dev/evtchn`)
+  + Xen grant tables map memory pages between VMs
 + Provides a __rendezvous facility__ for VMs to discover named peers
   + Also supports unikernel and legacy VM rendezvous
 + Hooks into higher-level __name services__ like DNS
@@ -1032,13 +1018,14 @@ Unikernels are an incredibly interesting way to code functionally at scale.
 Nothing stresses a toolchain like building a whole OS.
 
 - **Choices**: [Mirage OS](http://openmirage.org) in OCaml,
-  [HaLVM](http://halvm.org) in Haskell, Rump Kernels or OSv for compatibility,
+  [HaLVM](http://halvm.org) in Haskell, Rump Kernels/OSv for compatibility,
   ClickOS for routing.
 - **Scenarios**: Static websites, dynamic content, custom routers.
+  See Adam Wick at [QConSF](https://www.youtube.com/watch?v=oHcHTFleNtg) explain when *not* to use it.
 - **Performance**: There's no hiding behind abstractions. HalVM *vs* Mirage is a
   fun contest in evaluating abstraction cost.
 
-> Need contributors to build the library base of safe protocol
+> Need contributors to build the  base of safe protocol
 > implementations (TLS has been done!) and integrate verification
 > and automated testing
 
@@ -1047,8 +1034,7 @@ Nothing stresses a toolchain like building a whole OS.
 
 A Linux Foundation Incubator Project lead from the University of Cambridge and
 Citrix Systems.
-
-Featuring blog posts on new features by:
+Featuring blog posts by:
 
 [Amir Chaudhry](http://amirchaudhry.com/),
 [Thomas Gazagnaire](http://gazagnaire.org/),
@@ -1065,6 +1051,8 @@ and [Jeremy Yallop](https://github.com/yallop).
   Thanks for listening! Questions?
   <br />
   Contributions very welcome at [openmirage.org](http://openmirage.org)
+  <br />
+  These slides are up at [decks.openmirage.org](http://decks.openmirage.org)
   <br />
   Mailing list at <mirageos-devel@lists.xenproject.org>
 </p>
