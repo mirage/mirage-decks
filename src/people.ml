@@ -24,6 +24,12 @@ let anil = {
   email     = Some "anil@recoil.org";
 }
 
+let magnus = {
+  Atom.name = "Magnus Skjegstad";
+  uri       = Some "http://skjegstad.org";
+  email     = Some "magnus@v0.no";
+}
+
 let thomas = {
   Atom.name = "Thomas Gazagnaire";
   uri       = Some "http://gazagnaire.org";

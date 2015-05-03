@@ -25,6 +25,14 @@ let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 let decks =
   let open Deck in
   [
+    { permalink = "nsdi2015";
+      given = Date.t (2015, 05, 06);
+      speakers = [People.anil; People.magnus; People.mort];
+      venue = "USENIX Networked System Design and Implementation (NSDI)";
+      title = "Jitsu: Just-in-Time Summoning of Unikernels";
+      style = Reveal262;
+    };
+
     { permalink = "darmstadt-seminar";
       given = Date.t (2015, 03, 18);
       speakers = [People.crowcroft];
