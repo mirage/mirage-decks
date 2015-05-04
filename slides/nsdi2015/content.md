@@ -69,6 +69,18 @@ We earlier noted the many recent network security problems:
 
 ----
 
+## The Challenges
+
+* **VMs are the strongest practical isolation on physical devices**
+  * *But resource heavy on embedded devices*
+  * *Long boot times and management overheads*
+* **Containers are really easy to use**
+  * *But isolation is poor due to wide interfaces*
+  * *Often requires disk I/O to boot*
+
+> Can we eliminate tradeoff between latency and isolation at the edge?
+
+
 ## The Unikernel Approach
 
 > Unikernels are specialised virtual machine images compiled from the full stack
@@ -85,35 +97,7 @@ This means they realise several benefits:
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 
-## End Result?
-
-Unikernels are compact enough to boot and respond to network traffic in
-real-time.
-
-<table style="border-bottom: 1px black solid">
-  <thead style="font-weight: bold">
-    <td style="border-bottom: 1px black solid; width: 15em">Appliance</td>
-    <td style="border-bottom: 1px black solid">Standard Build</td>
-    <td style="border-bottom: 1px black solid">Dead Code Elimination</td>
-  </thead>
-  <tbody>
-    <tr style="background-color: rgba(0, 0, 1, 0.2)">
-      <td>DNS</td><td>0.449 MB</td><td>0.184 MB</td>
-    </tr>
-    <tr>
-      <td>Web Server</td><td>0.674 MB</td><td>0.172 MB</td>
-    </tr>
-    <tr style="background-color: rgba(0, 0, 1, 0.2)">
-      <td>Openflow learning switch</td><td>0.393 MB</td><td>0.164 MB</td>
-    </tr>
-    <tr>
-      <td>Openflow controller</td><td>0.392 MB</td><td>0.168 MB</td>
-    </tr>
-  </tbody>
-</table>
-
-
-## End Result?
+## Real Time Boot
 
 Unikernels can boot and respond to network traffic in
 real-time.
@@ -163,15 +147,16 @@ These slides were written using MirageOS on Mac OS X:
 
 ----
 
-## Jitsu!
+## Just-in-Time Summoning 
 
-> __Just-in-Time Summoning of Unikernels__
-
-A toolstack to launch unikernels on-demand with negligible latency:
+A toolstack to launch unikernels on-demand with low latency:
 
 + __Performance improvements__ to Xen's boot process & toolstack
+  - *Are VMs fundamantally too slow for real-time launch?*
 + __Conduit__, shared-memory communication between unikernels
+  - *Low-latency toolstack communications*
 + __Synjitsu__ and the Jitsu Directory Service
+  - *Launch services on-demand in real time*
 
 
 ## Jitsu Architecture
@@ -183,25 +168,33 @@ A toolstack to launch unikernels on-demand with negligible latency:
 
 ## Xen/ARM Toolstack
 
-+ __Removal of `libc`__ reduces attack surface and image size
-  + Did need to add floating point formatting routines back, copied from `musl`
-  `libc`
++ Required a new "MiniOS" for new Xen/ARMv7 architecture.
+  + Removal of `libc` reduces attack surface and image size
 + Xen PV driver model only &ndash; __no hardware emulation__
-  + ARM does not need all the legacy support of Xen/x86
-+ __Deserialising device attachment__ and boot transactions
-  + Custom merge function in the OCaml XenStore implementation reduces spurious
-    conflicts during boot
-  + The backend runs _dom0_ `VIF` hotplug scripts in parallel with the domain
+  + ARM does not need all the legacy support of Xen/x86!
++ Much less CPU available, so need to optimise toolstack
+  + Deserialising device attachment and boot transactions
+  + New XenStore reduces spurious parallel conflicts
+  + Backend runs _dom0_ `VIF` hotplug scripts in parallel with domain
     builder
 
 
 ## Deserialisation
 
 <div>
-  <div style="max-width:48%" class="left stretch">
+  <div style="max-width:95%">
     <img src="boot-txns.png" />
   </div>
-  <div style="max-width:48%" class="right">
+</div>
+
+_Improving XenStore parallelism addresses scaling problems, and optimising boot
+process dramatically reduces boot time_
+
+
+## Deserialisation
+
+<div>
+  <div style="max-width:95%">
     <img src="jitsu-boot-time.png" />
   </div>
 </div>
@@ -303,9 +296,9 @@ parallelises connection setup and unikernel boot_
 
 ## Demo
 
-TODO 
+Walkthrough of the key functionality with and without Synjitsu:
 
-<https://www.dropbox.com/s/ra5qib321d53nfi/nsdi_screencast.mov?dl=0>
+<https://www.dropbox.com/s/ra5qib321d53nfi/nsdi_screencast.mov>
 
 
 ----
@@ -321,18 +314,6 @@ TODO
 * **More platforms**
   * Integrating [rump kernels](http://rumpkernel.org) to boot without Xen
   * Starting real home router deployments with Technicolor
-
-
-## Get Involved!
-
-Unikernels are an incredibly interesting way to code functionally at scale.
-Nothing stresses a toolchain like building a whole OS.
-
-- **Choices**: [Mirage OS](http://openmirage.org) in OCaml, [HaLVM](http://halvm.org) in Haskell, Rump Kernels or OSv for compatibility, ClickOS for routing.
-- **Scenarios**: Static websites, dynamic content, custom routers.
-- **Performance**: There's no hiding behind abstractions.  HalVM *vs* Mirage is a fun contest in evaluating language abstraction cost.
-
-> Most important: need contributors to build the library base of safe protocol implementations (TLS has been done!)
 
 
 ## <http://openmirage.org/>
