@@ -8,7 +8,7 @@ Anil Madhavapeddy <small>University of Cambridge</small>
 Magnus Skjegstad <small>University of Cambridge</small>
 [@MagnusS](http://twitter.com/magnuss)
 
-_on behalf of:_ Thomas Gazagnaire, David Scott, Richard Mortier, Thomas Leonard, David Sheets, Amir Chaudhry, Jon Crowcroft, Balraj Singh, Jon Crowcroft, Ian Leslie
+_on behalf of:_ Thomas Gazagnaire, David Scott, Richard Mortier, Thomas Leonard, David Sheets, Amir Chaudhry, Balraj Singh, Jon Crowcroft, Ian Leslie
 
 [http://openmirage.org/](http://openmirage.org/)<br/>
 [http://decks.openmirage.org/nsdi2015/](http://decks.openmirage.org/nsdi2015/#/)
@@ -119,7 +119,7 @@ Built platform support required for ARM cloud deployments:
 * **Constructed Jitsu toolstack to launch unikernels on-demand**
   * *Race-free booting of unikernels in response to DNS*
 
-* **Evaluated *vs* alternative service isolation techniques**
+* **Evaluated against alternative service isolation techniques**
   * *E.g. Docker containers*
 
 
@@ -147,7 +147,7 @@ These slides were written using MirageOS on Mac OS X:
 
 ----
 
-## Just-in-Time Summoning 
+## Just-in-Time Summoning
 
 A toolstack to launch unikernels on-demand with low latency:
 
@@ -313,7 +313,8 @@ Walkthrough of the key functionality with and without Synjitsu:
   * First ARM cloud hosting via [Scaleway](http://scaleway.com)
 * **More platforms**
   * Integrating [rump kernels](http://rumpkernel.org) to boot without Xen
-  * Starting real home router deployments with Technicolor
+  * Working with UCN partners to provide home router platform for future
+    deployments
 
 
 ## <http://openmirage.org/>
@@ -340,4 +341,3 @@ and [Jeremy Yallop](https://github.com/yallop).
   <br />
   Mailing list at <mirageos-devel@lists.xenproject.org>
 </p>
-
