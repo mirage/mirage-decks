@@ -28,7 +28,7 @@ configure:
 	NET=$(NET) PORT=$(PORT) mirage configure src/config.ml --$(MODE)
 
 build:
-	cd src && make build
+	cd src && make
 
 run:
 	cd src && sudo make run
