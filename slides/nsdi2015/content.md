@@ -81,6 +81,13 @@ We earlier noted the many recent network security problems:
 > Can we eliminate tradeoff between latency and isolation at the edge?
 
 
+## Meanwhile, in your car...
+
+<img width="150%" src="infotainment.png" />
+
+--  [embedded-computing.com](http://embedded-computing.com/articles/virtualizations-impact-mobile-devices-the-iot/#) via [@whitequark](https://twitter.com/whitequark/status/595918241224097792)
+
+
 ## The Unikernel Approach
 
 > Unikernels are specialised virtual machine images compiled from the full stack
@@ -115,6 +122,7 @@ Built platform support required for ARM cloud deployments:
 
 * **Ported unikernels to the new Xen/ARMv7 architecture**
   * *Runs VMs on commodity ARM hardware (Cubieboard)*
+  * *Type-safe, native code down to the device drivers*
 
 * **Constructed Jitsu toolstack to launch unikernels on-demand**
   * *Race-free booting of unikernels in response to DNS*
@@ -153,8 +161,10 @@ A toolstack to launch unikernels on-demand with low latency:
 
 + __Performance improvements__ to Xen's boot process & toolstack
   - *Are VMs fundamantally too slow for real-time launch?*
+  - *Currently: 3-4s to boot a Linux VM on ARM*
 + __Conduit__, shared-memory communication between unikernels
   - *Low-latency toolstack communications*
+  - *Currently: loopback TCP over bridge*
 + __Synjitsu__ and the Jitsu Directory Service
   - *Launch services on-demand in real time*
 
@@ -168,18 +178,16 @@ A toolstack to launch unikernels on-demand with low latency:
 
 ## Xen/ARM Toolstack
 
-+ Required a new "MiniOS" for new Xen/ARMv7 architecture.
-  + Removal of `libc` reduces attack surface and image size
++ Required a **new "MiniOS" for Xen/ARMv7** architecture.
+  + *Removal of `libc` reduces attack surface and image size*
+  + *Vast majority of networking code in pure OCaml*
 + Xen PV driver model only &ndash; __no hardware emulation__
-  + ARM does not need all the legacy support of Xen/x86!
+  + *ARM does not need all the legacy support of Xen/x86!*
 + Much less CPU available, so need to optimise toolstack
-  + Deserialising device attachment and boot transactions
-  + New XenStore reduces spurious parallel conflicts
-  + Backend runs _dom0_ `VIF` hotplug scripts in parallel with domain
-    builder
+  + *Linux VM takes 3-4s to boot on Cubieboard *
 
 
-## Deserialisation
+## Parallel Boot
 
 <div>
   <div style="max-width:95%">
@@ -187,8 +195,8 @@ A toolstack to launch unikernels on-demand with low latency:
   </div>
 </div>
 
-_Improving XenStore parallelism addresses scaling problems, and optimising boot
-process dramatically reduces boot time_
+_Improving inter-VM XenStore coordination database had scaling problems with concurrency
+ conflicts, resolved via custom merge functions._
 
 
 ## Deserialisation
@@ -199,8 +207,7 @@ process dramatically reduces boot time_
   </div>
 </div>
 
-_Improving XenStore parallelism addresses scaling problems, and optimising boot
-process dramatically reduces boot time_
+_Methodical elimination of forking crimes such as dom0 shell scripts_
 
 
 ## Conduit
@@ -259,7 +266,37 @@ Performs the role of Unix's `inetd`:
 ## Masking boot latency
 
 <p class="center stretch">
-  <img style="width:75%" src="synjitsu.png" />
+  <img style="width:75%" src="parallelboot1.png" />
+</p>
+
+_The Jitsu toolstack listens for DNS requests and boots the
+ relevant unikernel and responds immediately._
+
+
+## Masking boot latency
+
+<p class="center stretch">
+  <img style="width:75%" src="parallelboot2.png" />
+</p>
+
+_But a fast client might still lose a TCP SYN if unikernel
+ isnt ready, thus causing SYN retransmits (slow!)._
+
+
+## Masking boot latency
+
+<p class="center stretch">
+  <img style="width:75%" src="parallelboot3.png" />
+</p>
+
+_Synjitsu responds to requests and serialises connection
+ state until VM is ready and network plugged in._
+
+
+## Masking boot latency
+
+<p class="center stretch">
+  <img style="width:75%" src="parallelboot4.png" />
 </p>
 
 _By buffering TCP requests into XenStore and then replaying, Synjitsu
@@ -303,17 +340,30 @@ Walkthrough of the key functionality with and without Synjitsu:
 
 ----
 
+## Summary
+
+* __Xen/ARM is here!__ Good way to run embedded experiments.
+  + *GitHub build scripts: [mirage/xen-arm-builder](https://github.com/mirage/xen-arm-builder)*
+  + *GitHub libraries: protocol code at [openmirage.org](http://openmirage.org)*
+  + Robust existing Xen tools all continue to work.
+  + Jitsu optimises away a lot of latency at the edge.
+* __No fundamental drawback to VMs vs containers__
+  + Unikernels competitive with containers on embedded
+  + Shipping out specialised type-safe code is practical
+  + Not touching disk while booting further improves latency
+
+
 ## Ongoing Work
 
 * **Multiprotocol Synjitsu**
-  * Extend to the SSL/TLS handshake to further pipeline secure connections
+  * Extend to the TLS handshake to pipeline secure connections
   * Add vanilla TCP load balancing support
 * **Wide area redirection**
   * DNS proxy to redirect to cloud if ARM node is down
   * First ARM cloud hosting via [Scaleway](http://scaleway.com)
 * **More platforms**
   * Integrating [rump kernels](http://rumpkernel.org) to boot without Xen
-  * Working with UCN partners to provide home router platform for future
+  * Working with [UCN](http://usercentricnetworking.eu) partners to provide home router platform for future
     deployments
 
 
