@@ -6,9 +6,9 @@ Anil Madhavapeddy <small>University of Cambridge</small>
 [@avsm](http://twitter.com/avsm)
 
 Magnus Skjegstad <small>University of Cambridge</small>
-[@MagnusS](http://twitter.com/magnuss)
+[@MagnusSkjegstad](http://twitter.com/MagnusSkjegstad)
 
-_on behalf of:_ Thomas Gazagnaire, David Scott, Richard Mortier, Thomas Leonard, David Sheets, Amir Chaudhry, Balraj Singh, Jon Crowcroft, Ian Leslie
+_on behalf of:_ Thomas Gazagnaire, David Scott, Richard Mortier, Thomas Leonard, David Sheets, Amir Chaudhry, Jon Ludlam, Balraj Singh, Jon Crowcroft, Ian Leslie
 
 [http://openmirage.org/](http://openmirage.org/)<br/>
 [http://decks.openmirage.org/nsdi2015/](http://decks.openmirage.org/nsdi2015/#/)
@@ -160,7 +160,7 @@ These slides were written using MirageOS on Mac OS X:
 A toolstack to launch unikernels on-demand with low latency:
 
 + __Performance improvements__ to Xen's boot process & toolstack
-  - *Are VMs fundamantally too slow for real-time launch?*
+  - *Are VMs fundamentally too slow for real-time launch?*
   - *Currently: 3-4s to boot a Linux VM on ARM*
 + __Conduit__, shared-memory communication between unikernels
   - *Low-latency toolstack communications*
