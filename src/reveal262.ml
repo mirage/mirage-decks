@@ -10,6 +10,7 @@ let page readf site d =
   let description = d.venue in
   let title = site ^ " [ " ^ d.permalink ^ " ] " ^ d.title in
   let base = "/" ^ d.permalink ^ "/" in
+  let theme = match d.style with |Reveal262 (Some s) -> s | _ -> "horizon" in
   lwt preamble = readf ("templates/preamble.html") in
 
   let page = <:html<
@@ -31,7 +32,7 @@ let page readf site d =
 
       <link rel="stylesheet" href="/reveal.js-2.6.2/css/reveal.min.css"> </link>
       <link rel="stylesheet" href="/highlight.js-8.2/styles/zenburn.css"> </link>
-      <link rel="stylesheet" href="/reveal.js-2.6.2/css/theme/horizon.css" id="theme"
+      <link rel="stylesheet" href=$str:"/reveal.js-2.6.2/css/theme/"^theme^".css"$ id="theme"
             media="all"> </link>
 
       <!--[if lt IE 9]>

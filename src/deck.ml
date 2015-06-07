@@ -39,7 +39,7 @@ end
 
 type style =
   | Reveal240
-  | Reveal262
+  | Reveal262 of string option
 
 type t = {
   permalink: string;
