@@ -25,12 +25,20 @@ let (|>) x f = f x (* ...else only in 4.01 not 4.00.1 *)
 let decks =
   let open Deck in
   [
+    { permalink = "qcon15-unik";
+      given = Date.t (2015, 06, 06);
+      speakers = [People.anil];
+      venue = "QCon NYC 2015";
+      title = "Unikernels: the next million operating systems";
+      style = Reveal262 None;
+    };
+
     { permalink = "nsdi2015";
       given = Date.t (2015, 05, 06);
       speakers = [People.anil; People.magnus; People.mort];
       venue = "USENIX Networked System Design and Implementation (NSDI)";
       title = "Jitsu: Just-in-Time Summoning of Unikernels";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "darmstadt-seminar";
@@ -38,7 +46,7 @@ let decks =
       speakers = [People.crowcroft];
       venue = "TU Darmstadt";
       title = "Stage of the Mirage: Mar 2015";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "qconlondon15";
@@ -46,7 +54,7 @@ let decks =
       speakers = [People.anil];
       venue = "QCon London";
       title = "Building Functional Infrastructure with Mirage OS";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "bob15";
@@ -54,7 +62,7 @@ let decks =
       speakers = [People.anil];
       venue = "Bob Konf";
       title = "Towards Functional Operating Systems";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "ic15-seminar";
@@ -62,7 +70,7 @@ let decks =
       speakers = [People.anil];
       venue = "Imperial College London";
       title = "Unikernels: a Principled Foundation for Networked Services";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "oups15-irmin";
@@ -70,7 +78,7 @@ let decks =
       speakers = [People.thomas];
       venue = "OCaml User-meeting in PariS";
       title = "Irmin: a Git-like database Library";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "31c3";
@@ -78,7 +86,7 @@ let decks =
       speakers = [People.david ; People.hannes];
       venue = "31st Chaos Communication Congress";
       title = "Trustworthy secure modular operating system engineering";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "irill14-seminar";
@@ -86,7 +94,7 @@ let decks =
       speakers = [People.anil];
       venue = "IRILL Paris";
       title = "Stage of the Mirage: Dec 2014";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "uw14-seminar";
@@ -94,7 +102,7 @@ let decks =
       speakers = [People.mort];
       venue = "University of Washington, Systems Group";
       title = "Git Your Own Cloud: Summoning Unikernels";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "osio2014";
@@ -102,7 +110,7 @@ let decks =
       speakers = [People.anil];
       venue = "New Directions in Operating Systems 2014";
       title = "Jitsu: Just-in-Time Summoning of Unikernels";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "codemesh2014";
@@ -110,7 +118,7 @@ let decks =
       speakers = [People.anil];
       venue = "Codemesh 2014";
       title = "Nymote: Git Your Own Cloud Here";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "functionalconf14";
@@ -118,7 +126,7 @@ let decks =
       speakers = [People.thomas];
       venue = "Functional Conf 2014, Bangalore";
       title = "Compile your Own Cloud with Mirage OS";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "bt2014";
@@ -126,7 +134,7 @@ let decks =
       speakers = [People.anil];
       venue = "British Telecom CIO Briefing";
       title = "Let a Billion Clouds Bloom";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "itu-copenhagen14";
@@ -134,7 +142,7 @@ let decks =
       speakers = [People.hannes];
       venue = "IT University of Copenhagen";
       title = "Mirage OS and OCaml-TLS -- Fun operating system engineering";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "ocaml14-tls";
@@ -142,7 +150,7 @@ let decks =
       speakers = [People.hannes];
       venue = "OCaml 2014";
       title = "Transport Layer Security purely in OCaml";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "haskell2014";
@@ -150,7 +158,7 @@ let decks =
       speakers = [People.anil];
       venue = "Haskell Symposium 2014 Keynote";
       title = "Unikernels: Functional Operating System Design";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "ml14";
@@ -158,7 +166,7 @@ let decks =
       speakers = [People.anil; People.thomas; People.dave; People.mort; ];
       venue = "ML Workshop";
       title = "Metaprogramming with ML modules in the MirageOS";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "xendevsummit14";
@@ -166,7 +174,7 @@ let decks =
       speakers = [People.anil; People.dave; People.thomas];
       venue = "Xen dev summit";
       title = "MirageOS 2.0: branch consistency for Xen Stub Domains";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "oscon14";
@@ -174,7 +182,7 @@ let decks =
       speakers = [People.mort; People.anil];
       venue = "OSCON 2014";
       title = "Nymote: Git Your Own Cloud Here";
-      style = Reveal262;
+      style = Reveal262 None;
     };
 
     { permalink = "cl-mirage20";
@@ -404,7 +412,7 @@ let deck readf ~deck =
   let open Deck in
   match d.style with
   | Reveal240 -> Reveal240.page readf title d
-  | Reveal262 -> Reveal262.page readf title d
+  | Reveal262 _ -> Reveal262.page readf title d
 
 let asset readf ~deck ~asset =
   let (/) a b = a ^ "/" ^ b in
