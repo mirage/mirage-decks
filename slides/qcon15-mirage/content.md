@@ -1,6 +1,6 @@
 <!-- .slide: class="title" -->
 
-# Unikernels: Functional Infrastructure with Mirage OS
+# Designing Secure Services with Unikernels
 
 Anil Madhavapeddy<small>University of Cambridge</small>
 [@avsm](http://twitter.com/avsm)
@@ -218,6 +218,42 @@ This means they realise several benefits:
 + __Portable__, to many compilation environments beyond Xen
 
 <!-- .element: class="fragment" data-fragment-index="2" -->
+
+
+## Application First
+
+With unikernels, the operating system disappears and becomes
+a set of libraries linked against a boot loader.
+
+* Application can figure out which components it needs
+* Libraries can easily be customised (e.g. TCP/IP stack)
+* Profiling and tracing work in a single domain.
+* Replace C libraries with type-safe equivalents!
+
+> Every application is compiled into its own specialised
+> operating system that runs on the cloud.
+
+
+## Tradeoffs
+
+<div class="left" style="width: 50%; color:#006600">
+  <p>**Good for:**</p>
+  <ul>
+    <li>Specialising microservice endpoint APIs</li>
+    <li>Flash traffic resilience with real-time spawning</li>
+    <li>Mobile/embedded environments as well as cloud</li>
+  </ul>
+</div>
+<div class="right" style="width:50%; color:#660000">
+<p class="right">
+  <p>**Bad for:**</p>
+  <ul>
+    <li>Monolithic application stacks that are hard to break up</li>
+    <li>Graphical user interfaces with deep OS requirements</li>
+    <li>Multi-user interaction within a single microservice</li>
+  </ul>
+</p>
+</div>
 
 
 ## It's All Functional Code
@@ -742,140 +778,55 @@ can be linked as libraries_
 
 ----
 
-## Faster than light?
+## Clean-slate TLS
 
-Many network services suffer as _latency_ increases, e.g.,
+* Started development in January 2014 (David Kaloper, Hannes Mehnert)
+* Full reimplementation of X509, ASN.1 baggage.
+* Built in functional style, so *same* codebase  for trace checking.
+* Maintains full type-safety for a HTTPS unikernel.
+* Self-describing demo server at <https://tls.openmirage.org>
 
-+ Siri
-+ Google Glass
-
-...to say nothing of how they operate when disconnected
-
-> So let's move the computation closer to the data
-
-<!-- .element: class="fragment" data-fragment-index="1" -->
+<br />
+> The BitCoin Pinata : <http://ownme.ipredator.se/>
 
 
-## Stronger than steel?
+## TLSTunnel
 
-We earlier noted the many recent network security problems:
+* Unix version of the stack that terminates TLS with type-safety.
+* Can be installed via OPAM (opam.ocaml.org)
+    
 
-+ Heartbleed
-+ Shellshock
+    $ sudo add-apt-repository ppa:avsm/ppa
+    $ sudo apt-get install opam
 
-...and such bugs will reoccur, now in our homes, cars, fridges
-
-> So let's interpose network protection
-
-<!-- .element: class="fragment" data-fragment-index="1" -->
-
-
-## Jitsu!
-
-> __Just-in-Time Summoning of Unikernels__
-
-A toolstack to launch unikernels on-demand with negligible latency:
-
-+ __Performance improvements__ to Xen's boot process & toolstack
-+ __Conduit__, shared-memory communication between unikernels
-+ __Synjitsu__ and the Jitsu Directory Service
+    $ opam init -a
+    $ eval `opam config env`
 
 
-## Jitsu Architecture
+## TLSTunnel
 
-<p class="center stretch">
-  <img src="jitsu-arch.png" />
-</p>
+* Unix version of the stack that terminates TLS with type-safety.
+* Can be installed via OPAM (opam.ocaml.org)
 
+    
+    $ opam install tlstunnel
+    $ tlstunnel -f <ip> -b <ip> --cert <file>
 
-## Xen/ARM Toolstack
-
-+ __Removal of `libc`__ reduces attack surface and image size
-  + Did need to add floating point formatting routines back, copied from `musl`
-  `libc`
-+ Xen PV driver model only &ndash; __no hardware emulation__
-  + ARM does not need all the legacy support of Xen/x86
-+ __Deserialising device attachment__ and boot transactions
-  + New XenStore db reduces spurious boot conflicts
-  + _dom0_ device hotplug scripts in parallel with the VM builder
+<br />
+> Looking for feedback from weird (e.g. mobile or proxy) TLS
+> setups!
 
 
-## Deserialisation
+## Mirage-Seal
 
-<div>
-  <div style="max-width:50%" class="left stretch">
-    <img src="boot-txns.png" />
-  </div>
-  <div style="max-width:49%" class="right">
-    <img src="jitsu-boot-time.png" />
-  </div>
-</div>
+* Create static SSL Xen unikernels with one command.
+* https://github.com/mirage/mirage-seal
 
-_Improving XenStore parallelism addresses scaling problems, and optimising boot
-process dramatically reduces boot time_
-
-
-## Conduit
-
-+ Establishes __zero-copy shared-memory__ pages between peers
-  + Xen grant tables map memory pages between VMs
-+ Provides a __rendezvous facility__ for VMs to discover named peers
-  + Also supports unikernel and legacy VM rendezvous
-+ Hooks into higher-level __name services__ like DNS
-
-+ Compatible with the __`vchan`__ inter-VM communication protocol
-
-Code: <https://github.com/mirage/ocaml-conduit>
-
-
-## Jitsu Directory Service
-
-Performs the role of Unix's `inetd`:
-
-+ Jitsu VM launches at boot time to handle name resolution (whether local via
-  a well known `jitsud` Conduit node in XenStore or remote via DNS)
-
-+ When a request arrives for a live unikernel, Jitsu returns the appropriate
-  endpoint
-
-+ If the unikernel is not live, Jitsu boots it, and acts as proxy until the
-  unikernel is ready
-
-
-## Masking boot latency
-
-<p class="center stretch">
-  <img style="width:75%" src="synjitsu.png" />
-</p>
-
-_By buffering TCP requests into XenStore and then replaying, Synjitsu
-parallelises connection setup and unikernel boot_
-
-
-## Masking boot latency
-
-<div style="max-width:49%" class="left">
-  <p>
-    Jitsu optimisations bring boot latency down to __~30&mdash;45 ms__ (x86) and
-    __~350&mdash;400 ms__ (ARM).
-  </p>
-  <ul>
-    <li>
-      Docker time was 1.1s (Linux), 1.2s (Xen) from an SD card
-    </li>
-
-    <li>
-      Mounting Docker's volumes on an `ext4` loopback volume inside of a `tmpfs`
-      reduced latency but often terminated early due to many buffer IO, `ext4`
-      and `VFS` errors
-    </li>
-  </ul>
-</div>
-
-<div style="max-width:48%" class="right">
-  <img src="jitsu-startup.png" />
-  <img src="jitsu-docker.png" />
-</div>
+    
+    $ opam remote add dev git://github.com/mirage/opam-repo-dev
+    $ opam install mirage-seal
+    $ mirage-seal --data=<dir> --keys=<secrets>
+    $ xl create -c seal.xl
 
 
 ----
@@ -953,20 +904,6 @@ Unified development for cloud and embedded environments
 
 ----
 
-## Clean-slate TLS
-
-* Started development in January 2014 (David Kaloper, Hannes Mehnert)
-* Full reimplementation of X509, ASN.1 baggage.
-* Built in functional style, so *same* codebase  for trace checking.
-* Maintains full type-safety for a HTTPS unikernel.
-* Self-describing demo server at <https://tls.openmirage.org>
-
-<br />
-> The BitCoin Pinata : <http://ownme.ipredator.se/>
-
-
-----
-
 ## Ongoing Stuff
 
 Mirage OS 2.0 is an important step forward, supporting **more**, and **more
@@ -997,19 +934,6 @@ For information about the many components we could not cover here, see
 + __[XMPP](https://github.com/hannes/ocaml-xmpp)__ communication using OCaml-TLS and nocrypto.
 + __[mDNS](https://github.com/mirage/ocaml-dns)__ multicast DNS for local names.
 + __[IPv6](https://github.com/mirage/mirage-tcpip)__ throughout the TCP/IP stack.
-
-
-## Why? [nymote.org](http://nymote.org/)
-
-We need to claim control over our online lives rather than abrogate it to
-_The Cloud_:
-
-+ Doing so means we **all** need to be able to run **our own infrastructure**
-+ **Without** having to become (Linux) **sysadmins**!
-+ How can we achieve this?
-
-> Mirage/ARM is the foundation for building **personal clouds**, securely
-> interconnecting and synchronising our devices.
 
 
 ## Get Involved!
