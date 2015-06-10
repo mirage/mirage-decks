@@ -38,4 +38,4 @@ depend:
 
 clean:
 	[ -r src/Makefile ] && ( cd src && make clean ) || true
-	$(RM) log src/mir-tutorial src/main.ml src/Makefile
+	$(RM) log src/mir-decks src/main.ml src/Makefile
