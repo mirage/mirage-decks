@@ -29,7 +29,7 @@ let decks =
       given = Date.t (2015, 06, 10);
       speakers = [People.anil];
       venue = "QCon NYC 2015";
-      title = "Building Functional Infrastructure with Mirage OS";
+      title = "Designing Secure Services with Unikernels";
       style = Reveal262 None;
     };
 
