@@ -931,7 +931,7 @@ For information about the many components we could not cover here, see
 [openmirage.org](http://openmirage.org/blog/):
 
 + __[IMAP](https://github.com/gregtatcam/imaplet-lwt/)__ client and server with Irmin backend.
-+ __[XMPP](https://github.com/hannes/ocaml-xmpp)__ communication using OCaml-TLS and nocrypto.
++ __[XMPP](https://github.com/hannesm/jackline)__ communication using OCaml-TLS and nocrypto.
 + __[mDNS](https://github.com/mirage/ocaml-dns)__ multicast DNS for local names.
 + __[IPv6](https://github.com/mirage/mirage-tcpip)__ throughout the TCP/IP stack.
 
