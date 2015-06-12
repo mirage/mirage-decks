@@ -66,24 +66,26 @@ module Main
           Slides.deck read_slides ~deck |> respond_ok
         | deck :: asset :: [] ->
           Slides.asset read_slides ~deck ~asset |> respond_ok
-        | x -> S.respond_not_found ~uri:(S.Request.uri req) ()
+        | x -> S.respond_not_found ~uri:(Cohttp.Request.uri req) ()
       in
 
       let dispatch ~c_log ~read_assets ~read_slides ~conn_id ~req =
-        let path = req |> S.Request.uri |> Uri.path in
+        let path = req |> Cohttp.Request.uri |> Uri.path in
         let cpts = path
                    |> Re_str.(split_delim (regexp_string "/"))
                    |> List.filter (fun e -> e <> "")
         in
         c_log (sp "URL: '%s'" path)
         >>= fun () ->
-        try_lwt
-          read_assets path >>= fun body ->
-          S.respond_string ~status:`OK ~body ()
-        with
-        | Failure m ->
-          Printf.printf "CATCH: '%s'\n%!" m;
-          dynamic read_slides req cpts
+        Lwt.catch
+          (fun () ->
+             read_assets path >>= fun body ->
+             S.respond_string ~status:`OK ~body ()
+          ) (function
+              | Failure m ->
+                Printf.printf "CATCH: '%s'\n%!" m;
+                dynamic read_slides req cpts
+              | e -> Lwt.fail e)
       in
 
       dispatch ~c_log ~read_assets ~read_slides ~conn_id ~req
@@ -96,6 +98,6 @@ module Main
     in
 
     let spec = S.make ~callback ~conn_closed () in
-    http spec
+    http (`TCP 80) spec
 
 end
