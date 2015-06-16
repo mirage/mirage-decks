@@ -335,7 +335,7 @@ parallelises connection setup and unikernel boot_
 
 Walkthrough of the key functionality with and without Synjitsu:
 
-<https://www.dropbox.com/s/ra5qib321d53nfi/nsdi_screencast.mov>
+<http://www.skjegstad.com/data/nsdi15_screencast.mov>
 
 
 ----
