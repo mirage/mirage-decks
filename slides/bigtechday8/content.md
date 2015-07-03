@@ -279,7 +279,7 @@ Swap system libraries to target different platforms:<br/>
 As easy as 1&mdash;2&mdash;3!
 
 1. Write your OCaml application using the Mirage module types, expressing its
-   configuration as OCaml code too!
+   configuration as OCaml code!
 ```
 $ mirage configure app/config.ml --unix
 ```
@@ -292,7 +292,7 @@ As easy as 1&mdash;2&mdash;3!
 1. Write your OCaml application using the Mirage module types, expressing its
    configuration as OCaml code too!
 
-2. Compile it and debug under Unix using the `mirage` tool
+2. Compile it and debug under Unix using `make`
 ```
 $ cd app
 $ make depend # install library dependencies
@@ -307,7 +307,7 @@ As easy as 1&mdash;2&mdash;3!
 1. Write your OCaml application using the Mirage module types, expressing its
    configuration as OCaml code too!
 
-2. Compile it and debug under Unix using the `mirage` tool
+2. Compile it and debug under Unix using `make`
 
 3. Once debugged, simply retarget it to Xen, and rebuild!
 ```
@@ -337,14 +337,14 @@ application image.
 
 Modules are used everywhere in Mirage to describe OS layers:
 
-- For the __whole application/OS__: we've a full implementation of the network
+- For the __whole application__: we've a full implementation of the network
   stack (including TLS) in OCaml
 
 - Very __flexible approach__ for customising OS stacks for weird applications
   (e.g., HTTP over UPnP over UDP)
 
-- Lots of __separate implementations__ of the module signatures: Unix, Xen
-  microkernels, JavaScript, kernel modules, ...
+- Lots of __separate implementations__ of the module signatures: Unix, Xen,
+  JavaScript, kernel modules, ...
 
 
 ## Writing a component
