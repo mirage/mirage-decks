@@ -26,7 +26,7 @@ let anil = {
 
 let magnus = {
   Atom.name = "Magnus Skjegstad";
-  uri       = Some "http://skjegstad.org";
+  uri       = Some "http://www.skjegstad.com";
   email     = Some "magnus@v0.no";
 }
 
