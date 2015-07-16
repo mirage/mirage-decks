@@ -57,6 +57,14 @@ let decks =
       style = Reveal262 None;
     };
 
+    { permalink = "iot-summit15";
+      given = Date.t (2015, 05, 11);
+      speakers = [People.amir];
+      venue = "IoT Summit 2015";
+      title = "Giving users control (and why Unikernels are the way to do it)";
+      style = Reveal262 None;
+    };
+
     { permalink = "nsdi2015";
       given = Date.t (2015, 05, 06);
       speakers = [People.anil; People.magnus; People.mort];
