@@ -73,6 +73,14 @@ let decks =
       style = Reveal262 None;
     };
 
+    { permalink = "pcampldn15";
+      given = Date.t (2015, 03, 28);
+      speakers = [People.amir];
+      venue = "ProductCamp London 2015";
+      title = "New Open Source Tech for IoT Products";
+      style = Reveal262 None;
+    };
+
     { permalink = "darmstadt-seminar";
       given = Date.t (2015, 03, 18);
       speakers = [People.crowcroft];
