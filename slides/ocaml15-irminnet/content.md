@@ -21,18 +21,33 @@ _on behalf of:_ Magnus Skjegstad, Thomas Gazagnaire, Richard Mortier and Anil Ma
 
 ## "Network Datastores"
 
-* 802.11 connection state
 * ARP cache
-* IP fragmentation/reassembly
-* TCP connection state, seq/ack numbers, window status
+* NAT table
 * DNS cache
 * DHCP client lease status
-* upstream network: NAT table, DHCP server lease status, IDS/IPS, ...
+* IP fragmentation/reassembly
+* TCP connection state, seq/ack numbers, window status
+* upstream network: DHCP server lease status, IDS/IPS, ...
 
 
 ----
 
 ## MirageOS + Irmin = <3
+
++ MirageOS: library operating system: code like networking and storage looks like your application-layer code
+  + Lift data structures out of kernel memory
+
++ Irmin: library for persistent stores with built-in snapshot, branching, & reverting mechanisms
+  + Mediate and track access to data structures in a type-aware way
+
+
+----
+
+## What Updating Irmin Looks Like
+
+* Clone a new branch from primary
+* Make edits to the branch
+* Attempt to merge the branch back into primary
 
 
 ----
@@ -52,10 +67,13 @@ $ grep -C2 ======= upnp.ml
 >>>>>>> names
 ```
 
++ Conflict is avoidable here: changes aren't mutually exclusive
++ Why doesn't Git know that?
+
 
 ## Example: ARP
 
-A lookup table between `Macaddr.t` and `Ipaddr.V4.t` with expiration.
+A lookup table between `Ipaddr.V4.t` and `Macaddr.t` with expiration.
 
 Multiple code paths to access the cache:
 
@@ -68,7 +86,7 @@ Multiple code paths to access the cache:
 
 + Set some rules for conflicts & always return something
 
-```
+```ocaml
   let merge _path ~(old : Nat_table.Entry.t Irmin.Merge.promise) t1 t2 =        
     let winner =                                                                
       match compare t1 t2 with                                                  
@@ -78,6 +96,8 @@ Multiple code paths to access the cache:
     Irmin.Merge.OP.ok winner  
 ```
 
++ History!
+
 
 ----
 
@@ -85,7 +105,7 @@ Multiple code paths to access the cache:
 
 + Flipping between in-memory and Git-backed FS:
 
-```
+```ocaml
 module A_fs = Irmin_arp.Arp.Make(Irmin_unix.Irmin_git.FS)
 module A_mem = Irmin_arp.Arp.Make(Irmin_mem.Make)   
 module A = A_fs (* change to A_mem for in-memory store! *)
@@ -102,10 +122,20 @@ module A = A_fs (* change to A_mem for in-memory store! *)
   - entries expire after 60s
 
 
+## Another Demo: NAT + Irmin_http
+
+* CubieTruck has two network interfaces: WiFi and Ethernet
+* Xen hypervisor assigns a virtual bridge to each
+* MirageOS unikernel has an interface on each (plus a management interface)
+* Unikernel acts as a NAT device
+  * Network packets on the WiFi interface are rewritten to appear to come from the Ethernet interface
+
+
 ## NAT + ARP
 
-* NAT: translate packets from one (src, dst) to another (src, dst)
-* IPs change!
+* NAT: translate packets from one (src_ip, src_port, dst_ip, dst_port) to another (src_ip, src_port, dst_ip, dst_port)
+* But IPs change!
+* Instead of lengthy connection timeout and retry, an aware NAT table could just remap them
 
 
 ## Issues
@@ -121,37 +151,35 @@ module A = A_fs (* change to A_mem for in-memory store! *)
 * Run a DNS server on xenbr0
 * Run a client unikernel on xenbr1
 * Client unikernel resolves a name using the DNS server on xenbr0
-
-
-## Performance
-
 * Measure time delta between packet arrival on xenbr0 and xenbr1
 * DNS queries require table entry insertion; DNS responses only require a lookup
 
 
-## MirageOS Hashtable NAT implementation:
+## MirageOS Hashtable NAT:
 
 + max latency for lookup: ~140us
 + max latency for insertion: ~450us
+
+
+## MirageOS Hashtable NAT:
 
 <p class="center">
   <img src="hashtable_32mb_udp_latency.png"/>
 </p>
 
 
-## MirageOS Irmin NAT implementation:
+## MirageOS Irmin NAT:
++ max latency for lookup: ~220us
+  + (down from 450us last week)
++ max latency for insertion: ~10,000us (!)
+  + (down from 25,000us yesterday)
 
-+ max latency for lookup: ~240us
-+ max latency for insertion: ~25,000us (!)
+
+## MirageOS Irmin NAT:
 
 <p class="center">
   <img src="irmin_32mb_udp_latency.png"/>
 </p>
-
-
-## Time to Reestablish Connections after NAT Reboot
-
-+ much lower ;)
 
 
 ## Imagined Futures
@@ -161,5 +189,9 @@ module A = A_fs (* change to A_mem for in-memory store! *)
 
 ## Thanks!
 
+* Questions?
+
+<small>
 + Some of the research leading to these results has received funding from the European Union's Seventh Framework Programme FP7/2007-2013 under the UCN project, grant agreement no 611001.
+</small>
 
