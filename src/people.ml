@@ -90,4 +90,10 @@ let crowcroft = {
   email     = Some "jon.crowcroft@cl.cam.ac.uk";
 }
 
+let mindy = {
+  Atom.name = "Mindy Preston";
+  uri       = Some "https://www.somerandomidiot.com";
+  email     = Some "mindy.preston@cl.cam.ac.uk";
+}
+
 let rights = Some "All rights reserved by the author"
