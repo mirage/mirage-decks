@@ -14,6 +14,12 @@ Jon Crowcroft, Balraj Singh, Mindy Preston
 [http://decks.openmirage.org/uw14-seminar/](http://decks.openmirage.org/uw14-seminar/)
 
 <small>
+  Work funded in part by the EU FP7 User-Centric Networking project, Grant
+  No. 611001.
+</small>
+<img id="ucn-logo" src="/img/ucn-logo.png" />
+
+<small>
   Press &lt;esc&gt; to view the slide index, and the &lt;arrow&gt; keys to
   navigate
 </small>
