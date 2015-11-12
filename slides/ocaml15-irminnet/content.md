@@ -12,6 +12,13 @@ _on behalf of:_ Magnus Skjegstad, Thomas Gazagnaire, Richard Mortier and Anil Ma
 [http://decks.openmirage.org/ocaml15-irminnet/](http://decks.openmirage.org/ocaml15-irminnet/)
 
 <small>
+  Work funded in part by the EU FP7 User-Centric Networking project, Grant
+    No. 611001.
+    </small>
+<img id="ucn-logo" src="/img/ucn-logo.png" />
+
+
+<small>
   Press &lt;esc&gt; to view the slide index, and the &lt;arrow&gt; keys to
   navigate.
 </small>

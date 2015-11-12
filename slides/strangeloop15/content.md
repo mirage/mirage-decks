@@ -7,6 +7,12 @@ Mindy Preston <small>University of Cambridge</small>
 
 [https://www.somerandomidiot.com](https://www.somerandomidiot.com)<br/>
 
+<small>
+  Work funded in part by the EU FP7 User-Centric Networking project, Grant
+    No. 611001.
+</small>
+<img id="ucn-logo" src="/img/ucn-logo.png" />
+
 
 ----
 
