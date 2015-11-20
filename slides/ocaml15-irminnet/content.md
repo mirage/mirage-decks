@@ -7,7 +7,7 @@ Mindy Preston <small>University of Cambridge</small>
 
 _on behalf of:_ Magnus Skjegstad, Thomas Gazagnaire, Richard Mortier and Anil Madhavapeddy
 
-[https://irmin.io](https://irmin.io)<br/>
+[http://irmin.io](http://irmin.io)<br/>
 [https://mirage.io](https://mirage.io)<br/>
 [http://decks.openmirage.org/ocaml15-irminnet/](http://decks.openmirage.org/ocaml15-irminnet/)
 
