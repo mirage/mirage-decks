@@ -150,10 +150,10 @@ _A unikernel platform built in OCaml_
 &#x2713;_Efficient resource use_
 
 + **Reduced memory footprint**: a typical stateless MirageOS app is
-  ~10&ndash;20MB of RAM
+  ~10MB of RAM
 
 + **Small on-disk footprint**: whole-program optimisation can create a MirageOS
-  DNS server that comes in at ~100KB
+  DNS server that comes in at ~200kB
 
 
 # Benefits
