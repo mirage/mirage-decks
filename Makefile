@@ -27,11 +27,11 @@ all: build
 
 configure:
 	FS=$(FS) DEPLOY=$(DEPLOY) NET=$(NET) DHCP=$(DHCP) \
-		mirage configure src/config.ml --$(MODE)
+		mirage configure -f src/config.ml --$(MODE)
 
 build:
-	mirage build src/config.ml
+	mirage build -f src/config.ml
 
 clean:
-	[ -r src/Makefile ] && mirage clean src/config.ml || true
+	[ -r src/Makefile ] && mirage clean -f src/config.ml || true
 	$(RM) log

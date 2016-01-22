@@ -18,3 +18,5 @@ src/static*.mli
 
 # un-minified reveal.css for debugging
 assets/reveal-2.4.0/css/reveal.css
+/src/decks.xl.in
+/src/key_gen.ml
