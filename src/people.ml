@@ -16,84 +16,88 @@
  *
  *)
 
-open Cow
+type t = {
+  name: string;
+  uri: string option;
+  email: string option;
+}
 
 let anil = {
-  Atom.name = "Anil Madhavapeddy";
-  uri       = Some "http://anil.recoil.org";
-  email     = Some "anil@recoil.org";
+  name = "Anil Madhavapeddy";
+  uri = Some "http://anil.recoil.org";
+  email = Some "anil@recoil.org";
 }
 
 let magnus = {
-  Atom.name = "Magnus Skjegstad";
-  uri       = Some "http://www.skjegstad.com";
-  email     = Some "magnus@v0.no";
+  name = "Magnus Skjegstad";
+  uri = Some "http://www.skjegstad.com";
+  email = Some "magnus@v0.no";
 }
 
 let thomas = {
-  Atom.name = "Thomas Gazagnaire";
-  uri       = Some "http://gazagnaire.org";
-  email     = Some "thomas@gazagnaire.org";
+  name = "Thomas Gazagnaire";
+  uri = Some "http://gazagnaire.org";
+  email = Some "thomas@gazagnaire.org";
 }
 
 let raphael = {
-  Atom.name = "Raphael Proust";
-  uri       = Some "https://github.com/raphael-proust";
-  email     = Some "raphlalou@gmail.com";
+  name = "Raphael Proust";
+  uri = Some "https://github.com/raphael-proust";
+  email = Some "raphlalou@gmail.com";
 }
 
 let dave = {
-  Atom.name = "Dave Scott";
-  uri       = Some "http://dave.recoil.org/";
-  email     = Some "dave@recoil.org";
+  name = "Dave Scott";
+  uri = Some "http://dave.recoil.org/";
+  email = Some "dave@recoil.org";
 }
 
 let balraj = {
-  Atom.name = "Balraj Singh";
-  uri       = None;
-  email     = Some "balraj.singh@cl.cam.ac.uk";
+  name = "Balraj Singh";
+  uri = None;
+  email = Some "balraj.singh@cl.cam.ac.uk";
 }
 
 let mort = {
-  Atom.name = "Richard Mortier";
-  uri       = Some "http://mort.io/";
-  email     = Some "mort@cantab.net";
+  name = "Richard Mortier";
+  uri = Some "http://mort.io/";
+  email = Some "mort@cantab.net";
 }
 
 let vb = {
-  Atom.name = "Vincent Bernardoff";
-  uri       = Some "https://github.com/vbmithr";
-  email     = Some "vb@luminar.eu.org";
+  name = "Vincent Bernardoff";
+  uri = Some "https://github.com/vbmithr";
+  email = Some "vb@luminar.eu.org";
 }
 
 let jon = {
-  Atom.name = "Jon Ludlam";
-  uri       = Some "http://jon.recoil.org";
-  email     = Some "jon@recoil.org"
+  name = "Jon Ludlam";
+  uri = Some "http://jon.recoil.org";
+  email = Some "jon@recoil.org"
 }
 
 let hannes = {
-  Atom.name = "Hannes Mehnert";
-  uri       = Some "https://github.com/hannesm";
-  email     = Some "hannes@mehnert.org"
+  name = "Hannes Mehnert";
+  uri = Some "https://github.com/hannesm";
+  email = Some "hannes@mehnert.org"
 }
 
 let david = {
-  Atom.name = "David Kaloper";
-  uri       = Some "https://github.com/pqwy";
-  email     = Some "david@numm.org"
+  name = "David Kaloper";
+  uri = Some "https://github.com/pqwy";
+  email = Some "david@numm.org"
 }
 
 let crowcroft = {
-  Atom.name = "Jon Crowcroft";
-  uri       = Some "www.cl.cam.ac.uk/~jac22";
-  email     = Some "jon.crowcroft@cl.cam.ac.uk";
+  name = "Jon Crowcroft";
+  uri = Some "www.cl.cam.ac.uk/~jac22";
+  email = Some "jon.crowcroft@cl.cam.ac.uk";
 }
 
 let mindy = {
-  Atom.name = "Mindy Preston";
-  uri       = Some "https://www.somerandomidiot.com";
-  email     = Some "mindy.preston@cl.cam.ac.uk";
+  name = "Mindy Preston";
+  uri = Some "https://www.somerandomidiot.com";
+  email = Some "mindy.preston@cl.cam.ac.uk";
 }
 
 let rights = Some "All rights reserved by the author"
