@@ -15,8 +15,9 @@
 #
 
 MODE   ?= unix
-FS     ?= direct
 DEPLOY ?= false
+
+FS     ?=  # direct is implicit default until mirage#607 merged
 NET    ?= socket
 DHCP   ?= false
 
@@ -26,12 +27,15 @@ all: build
 	@ :
 
 configure:
-	FS=$(FS) DEPLOY=$(DEPLOY) NET=$(NET) DHCP=$(DHCP) \
-		mirage configure -f src/config.ml --$(MODE)
+	mirage configure -f src/config.ml -t $(MODE) --net=$(NET) --dhcp=$(DHCP) \
+	  # --kv_ro=$(FS)
 
 build:
-	mirage build -f src/config.ml
+	@ [ -r src/Makefile ] \
+	  && ( cd src && make ) \
+	  || echo '"make configure" first!'
 
 clean:
-	[ -r src/Makefile ] && mirage clean -f src/config.ml || true
-	$(RM) log
+	[ -r src/Makefile ] && ( cd src && make clean ) || true
+	mirage clean -f src/config.ml || true
+	$(RM) log src/*.img
