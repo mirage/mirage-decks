@@ -1,1 +1,4 @@
-PKG mirage mirage-types lwt cohttp tyxml
+PKG mirage mirage-types lwt cohttp tyxml cowabloga
+
+S .
+B ./_build/**
