@@ -1,4 +1,4 @@
-open Tyxml
+open Tyxml.Html
 
 module Date = struct
 
@@ -11,19 +11,17 @@ module Date = struct
   let t (year, month, day) = { year; month; day }
 
   let to_html d =
-    let xml_of_month = function
+    let string_of_month = function
         | 1  -> "Jan" | 2  -> "Feb" | 3  -> "Mar" | 4  -> "Apr"
         | 5  -> "May" | 6  -> "Jun" | 7  -> "Jul" | 8  -> "Aug"
         | 9  -> "Sep" | 10 -> "Oct" | 11 -> "Nov" | 12 -> "Dec"
         | _  -> "???"
     in
-    Html.(
       div ~a:[a_class ["date"]] [
-        div ~a:[a_class ["month"]] [ pcdata (xml_of_month d.month) ];
+        div ~a:[a_class ["month"]] [ pcdata (string_of_month d.month) ];
         div ~a:[a_class ["day"]] [ pcdata (string_of_int d.day) ] ;
         div ~a:[a_class ["year"]] [ pcdata (string_of_int d.year) ] ;
       ]
-    )
 
   let compare {year=ya; month=ma; day=da} {year=yb; month=mb; day=db} =
     match ya - yb with
