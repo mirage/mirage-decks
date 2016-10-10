@@ -15,9 +15,6 @@
  *
  *)
 
-open V1_LWT
-open Cohttp
-open Lwt
 open Tyxml
 
 let decks =
@@ -348,42 +345,38 @@ let decks =
     };
   ]
 
-let speaker_to_html s =
-  let open Html in
-  match s.uri with
-  | Some u -> em [a ~a:[a_href [u]] [s.name]]
-  | None   -> a [s.name]
-
 let deck_to_html d =
+  let open Html in
+  let concat sep =
+    let rec aux acc sep = function
+    | []      -> List.rev acc
+    | h :: [] -> aux (h :: acc) sep []
+    | h :: tl -> aux (sep :: h :: acc) sep tl
+    in
+    aux [] sep
+  in
   let speakers =
     d.Deck.speakers
-    |> List.map speaker_to_html
-    |> String.concat ", "
+    |> List.map (fun s -> match s.People.uri with
+        | Some u -> em [a ~a:[a_href u] [pcdata s.People.name]]
+        | None   -> a [pcdata s.People.name]
+      )
+    |> concat (pcdata ", ")
   in
-  Html.(
-    article [
-      deck.Date.to_html d.Deck.given;
-      h4 [
-        a ~a:[a_href [d.Deck.permalink]] d.Deck.title
-      ];
-      p [
-        strong [d.Deck.venue];
-        speakers
-      ];
-      p [ br [] ]
-    ]
-  )
+  article [
+    Deck.Date.to_html d.Deck.given;
+    h4 [
+      a ~a:[a_href d.Deck.permalink] [pcdata d.Deck.title]
+    ];
+    p ([ strong [pcdata d.Deck.venue] ] @ speakers) ;
+    p [ br () ]
+  ]
 
-let index readf ~req ~path =
+let link_css ?(a=[]) css = Html.link ~a ~rel:[`Stylesheet] ~href:css ()
+
+let index _req _path =
   let open Html in
-  let preamble =
-    "<!DOCTYPE html>
-    \ <!--[if IE 8]><html class=\"no-js lt-ie9\" lang=\"en\" ><![endif]-->
-    \ <!--[if gt IE 8]><!--><html class=\"no-js\" lang=\"en\" ><!--<![endif]-->
-    "
-  in
-  let scriptf src = script ~a:[a_src src] (pcdata " ") in
-
+  let script src = script ~a:[a_src src] (pcdata " ") in
   let head =
     head (title (pcdata "openmirage :: slide decks")) [
       meta ~a:[a_charset "utf-8"] ();
@@ -391,20 +384,15 @@ let index readf ~req ~path =
       meta ~a:[a_name "apple-mobile-web-app-capable"; a_content "yes"] ();
       meta ~a:[a_name "apple-mobile-web-app-status-bar-style";
                a_content "black-translucent"] ();
-
       meta ~a:[a_name "description";
                a_content "OpenMirage presentations and lectures"] ();
-      link ~rel:[`Stylesheet] ~href:"/css/foundation.min.css" ();
-      link ~rel:[`Stylesheet] ~href:"/css/magula.css" ();
-      link ~rel:[`Stylesheet] ~href:"/css/site.css" ~a:[a_media [`All]] ();
-      link ~rel:[`Stylesheet] ~href:"/css/decks.css" ();
-      scriptf "/js/vendor/custom.modernizr.js";
-      link
-        ~rel:[`Stylesheet]
-        ~href:
-          "http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700"
-        ~a:[a_mime_type "text/css"]
-        ()
+      link_css "/css/foundation.min.css";
+      link_css "/css/magula.css";
+      link_css ~a:[a_media [`All]] "/css/site.css";
+      link_css "/css/decks.css";
+      script "/js/vendor/custom.modernizr.js";
+      link_css ~a:[a_mime_type "text/css"]
+        "http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700"
     ]
   in
 
@@ -432,40 +420,49 @@ let index readf ~req ~path =
                 (pcdata "Presentations ");
                 small [pcdata "and talks using Mirage"]
               ];
-              ul [ decks |> List.sort Deck.compare |> List.map deck_to_html ]
+              ul (decks |> List.sort Deck.compare
+                  |> List.map (fun d -> li [deck_to_html d])
+                 )
             ]
         ]
       ];
 
-      scriptf "/js/vendor/jquery-2.0.3.min.js";
-      scriptf "/js/foundation.min.js";
-      scriptf "/js/foundation/foundation.topbar.js";
-      script (cdata_script "$(document).foundation();");
-      script ~a:[a_mime_type "text/javascript"] (pcdata
-        "var _gaq = _gaq || [];
-        \ _gaq.push(['_setAccount', 'UA-19610168-1']);
-        \ _gaq.push(['_trackPageview']);
-        \
-        \ (function() {
-        \  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        \  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        \  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        \ })();
-        "
-      )
+      script "/js/vendor/jquery-2.0.3.min.js";
+      script "/js/foundation.min.js";
+      script "/js/foundation/foundation.topbar.js";
+      Html.script (cdata_script "$(document).foundation();");
+      Html.script ~a:[a_mime_type "text/javascript"]
+        (pcdata {__|
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-19610168-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script');
+  ga.type = 'text/javascript';
+  ga.async = true;
+  ga.src =
+    ('https:' == document.location.protocol ? 'https://ssl' : 'http://www')
+    + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(ga, s);
+})();
+|__}
+        )
     ]
   in
-  return (preamble ^ Html.(html ~a:[a_lang "en"] (head; Foundation.page ~body)))
+  Lwt.return
+    (Render.to_string @@ Html.html ~a:[Html.a_lang "en"] head body)
 
 let deck readf ~deck =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   let title = "openmirage.org | decks | " in
-  let open Deck in
-  match d.style with
-  | Reveal240 -> Reveal240.page readf title d
-  | Reveal262 _ -> Reveal262.page readf title d
+  Deck.(match d.style with
+      | Reveal240 -> Reveal240.page readf title d
+      | Reveal262 _ -> Reveal262.page title d
+    )
 
 let asset readf ~deck ~asset =
-  let (/) a b = a ^ "/" ^ b in
+  let ( / ) a b = a ^ "/" ^ b in
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   readf (d.Deck.permalink / asset)
