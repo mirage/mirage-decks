@@ -1,5 +1,5 @@
 (*
- * Copyright (c) 2013 Richard Mortier <mort@cantab.net>
+ * Copyright (C) 2013-2016 Richard Mortier <mort@cantab.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,87 +15,92 @@
  *
  *)
 
-open V1_LWT
-open Lwt
+open Lwt.Infix
+
+module type HTTP = Cohttp_lwt.Server
+
+let https_src = Logs.Src.create "https" ~doc:"HTTPS server"
+module Https_log = (val Logs.src_log https_src : Logs.LOG)
+
+let http_src = Logs.Src.create "http" ~doc:"HTTP server"
+module Http_log = (val Logs.src_log http_src : Logs.LOG)
+
+let log_info s = Http_log.info (fun f -> f "%s" s)
 
 module Main
-    (C: CONSOLE) (ASSETS: KV_RO) (SLIDES: KV_RO) (S: Cohttp_lwt.Server) = struct
+    (CLOCK: V1.CLOCK) (S: HTTP) (ASSETS: V1_LWT.KV_RO) (DECKS: V1_LWT.KV_RO)
+= struct
 
-  let start c assets slides http =
-    let read_assets name =
-      ASSETS.size assets name >>= function
+  module Logs_reporter = Mirage_logs.Make(CLOCK)
+
+  let dispatcher cid read_asset read_deck uri =
+    let respond_ok path body_lwt = body_lwt >>= fun body ->
+      Http_log.info (fun f -> f "[%s] ok [%s]" cid path);
+      let mime_type = Magic_mime.lookup path in
+      let headers = Cohttp.Header.init () in
+      let headers = Cohttp.Header.add headers "content-type" mime_type in
+      S.respond_string ~status:`OK ~body ~headers ()
+    in
+
+    let path = Uri.path uri in
+    Lwt.catch (fun () -> read_asset path |> respond_ok path)
+      (function
+        | Failure e -> (
+            Http_log.debug (fun f ->
+                f "[%s] not an asset, trying decks! [%s]" cid e
+              );
+
+            let cpts = Astring.String.cuts ~empty:false ~sep:"/" path in
+            match cpts with
+            | [] | [""] ->
+              Slides.index () |> respond_ok "/index.html"
+            | deck :: [] ->
+              Slides.deck ~readf:read_deck ~deck |> respond_ok path
+            | deck :: asset :: [] ->
+              Slides.asset ~readf:read_asset ~deck ~asset |> respond_ok path
+            | _ ->
+              Http_log.info (fun f -> f "[%s] not found [%s]" cid path);
+              S.respond_not_found ~uri ()
+          )
+        | e -> Lwt.fail e
+      )
+
+  let read_asset kv_ro asset =
+    ASSETS.size kv_ro asset >>= function
+    | `Error (ASSETS.Unknown_key _) ->
+      Lwt.fail (Failure ("asset size " ^ asset))
+    | `Ok size ->
+      ASSETS.read kv_ro asset 0 (Int64.to_int size) >>= function
       | `Error (ASSETS.Unknown_key _) ->
-        fail (Failure ("read_assets_size " ^ name))
-      | `Ok size ->
-        ASSETS.read assets name 0 (Int64.to_int size) >>= function
-        | `Error (ASSETS.Unknown_key _) ->
-          fail (Failure ("read_assets " ^ name))
-        | `Ok bufs -> return (Cstruct.copyv bufs)
+        Lwt.fail (Failure ("asset read " ^ asset))
+      | `Ok bufs -> Lwt.return (Cstruct.copyv bufs)
+
+  let read_deck kv_ro deck =
+    DECKS.size kv_ro deck >>= function
+    | `Error (DECKS.Unknown_key _) -> Lwt.fail (Failure ("deck size " ^ deck))
+    | `Ok size ->
+      DECKS.read kv_ro deck 0 (Int64.to_int size) >>= function
+      | `Error (DECKS.Unknown_key _) -> Lwt.fail (Failure ("deck read " ^ deck))
+      | `Ok bufs -> Lwt.return (Cstruct.copyv bufs)
+
+  let start _clock http assets decks =
+    Logs.(set_level (Some Info));
+    Logs_reporter.(create () |> run) @@ fun () ->
+
+    let callback (_, cid) request _body =
+      let uri = Cohttp.Request.uri request in
+      let cid = Cohttp.Connection.to_string cid in
+      Http_log.info (fun f -> f "[%s] serving [%s]" cid (Uri.to_string uri));
+      let read_deck = read_deck decks in
+      dispatcher cid (read_asset assets) read_deck uri
     in
-
-    let read_slides name =
-      SLIDES.size slides name >>= function
-      | `Error (SLIDES.Unknown_key _) ->
-        fail (Failure ("read_slides_size " ^ name))
-      | `Ok size ->
-        SLIDES.read slides name 0 (Int64.to_int size) >>= function
-        | `Error (SLIDES.Unknown_key _) ->
-          fail (Failure ("read_slides " ^ name))
-        | `Ok bufs -> return (Cstruct.copyv bufs)
+    let conn_closed (_, cid) =
+      let cid = Cohttp.Connection.to_string cid in
+      Http_log.info (fun f -> f "[%s] closing" cid);
     in
+    let port = Key_gen.port () in
+    Http_log.info (fun f -> f "listening on %d/TCP" port);
 
-    let c_log s = C.log_s c s in
-
-    let callback conn_id req body =
-      let sp = Printf.sprintf in
-      let dynamic read_slides req path =
-        Printf.(
-          eprintf "DISPATCH: %s\n%!"
-            (sprintf "[ %s ]"
-               (String.concat "; " (List.map (fun c -> sprintf "'%s'" c) path))
-            ));
-
-        let respond_ok body =
-          lwt body = body in
-          S.respond_string ~status:`OK ~body ()
-        in
-        match path with
-        | [] | [""] ->
-          Slides.index read_slides ~req ~path |> respond_ok
-        | deck :: [] ->
-          Slides.deck read_slides ~deck |> respond_ok
-        | deck :: asset :: [] ->
-          Slides.asset read_slides ~deck ~asset |> respond_ok
-        | x -> S.respond_not_found ~uri:(Cohttp.Request.uri req) ()
-      in
-
-      let dispatch ~c_log ~read_assets ~read_slides ~conn_id ~req =
-        let path = req |> Cohttp.Request.uri |> Uri.path in
-        let cpts = path
-                   |> Re_str.(split_delim (regexp_string "/"))
-                   |> List.filter (fun e -> e <> "")
-        in
-        c_log (sp "URL: '%s'" path)
-        >>= fun () ->
-        Lwt.catch
-          (fun () ->
-             read_assets path >>= fun body ->
-             S.respond_string ~status:`OK ~body ()
-          ) (function
-              | Failure m ->
-                Printf.printf "CATCH: '%s'\n%!" m;
-                dynamic read_slides req cpts
-              | e -> Lwt.fail e)
-      in
-
-      dispatch ~c_log ~read_assets ~read_slides ~conn_id ~req
-    in
-    let conn_closed (_, conn_id) =
-      let cid = Cohttp.Connection.to_string conn_id in
-      C.log c (Printf.sprintf "conn %s closed" cid)
-    in
-
-    let spec = S.make ~callback ~conn_closed () in
-    http (`TCP 80) spec
+    http (`TCP port) (S.make ~conn_closed ~callback ())
 
 end

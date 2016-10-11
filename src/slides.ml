@@ -349,9 +349,9 @@ let deck_to_html d =
   let open Html in
   let concat sep =
     let rec aux acc sep = function
-    | []      -> List.rev acc
-    | h :: [] -> aux (h :: acc) sep []
-    | h :: tl -> aux (sep :: h :: acc) sep tl
+      | []      -> List.rev acc
+      | h :: [] -> aux (h :: acc) sep []
+      | h :: tl -> aux (sep :: h :: acc) sep tl
     in
     aux [] sep
   in
@@ -374,7 +374,7 @@ let deck_to_html d =
 
 let link_css ?(a=[]) css = Html.link ~a ~rel:[`Stylesheet] ~href:css ()
 
-let index _req _path =
+let index () =
   let open Html in
   let script src = script ~a:[a_src src] (pcdata " ") in
   let head =
@@ -451,18 +451,17 @@ _gaq.push(['_trackPageview']);
         )
     ]
   in
-  Lwt.return
-    (Render.to_string @@ Html.html ~a:[Html.a_lang "en"] head body)
 
-let deck readf ~deck =
+  Lwt.return (Render.to_string @@ Html.html ~a:[Html.a_lang "en"] head body)
+
+let deck ~readf ~deck =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
   let title = "openmirage.org | decks | " in
   Deck.(match d.style with
-      | Reveal240 -> Reveal240.page readf title d
-      | Reveal262 _ -> Reveal262.page title d
+      | Reveal240 -> Reveal240.page ~readf ~site:title d
+      | Reveal262 _ -> Reveal262.page ~site:title d
     )
 
-let asset readf ~deck ~asset =
-  let ( / ) a b = a ^ "/" ^ b in
+let asset ~readf ~deck ~asset =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in
-  readf (d.Deck.permalink / asset)
+  readf (d.Deck.permalink ^ "/" ^ asset)

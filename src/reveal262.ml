@@ -1,7 +1,7 @@
 open Tyxml
 open Deck
 
-let page site d =
+let page ~site d =
   let head =
     let theme = match d.style with Reveal262 (Some s) -> s | _ -> "horizon" in
     let speakers =

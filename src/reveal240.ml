@@ -3,7 +3,7 @@ open Tyxml
 
 let link_css ?(a=[]) css = Html.link ~a ~rel:[`Stylesheet] ~href:css ()
 
-let page readf site d =
+let page ~readf ~site d =
   let ( / ) a b = a ^ "/" ^ b in
 
   readf (d.Deck.permalink / "index.html") >>= fun content ->
@@ -33,9 +33,9 @@ let page readf site d =
 
       base ~a:[a_href ("/" ^ d.Deck.permalink ^ "/")] ();
       (Xml.comment
-        {__|[if lt IE 9]
-            <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
-            <![endif]|__}
+         {__|[if lt IE 9]
+             <script src="/reveal-2.4.0/lib/js/html5shiv.js"> </script>
+             <![endif]|__}
        |> tot)
     ]
   in
@@ -44,7 +44,7 @@ let page readf site d =
     body [
       div ~a:[a_class ["reveal"]] [
         div ~a:[a_class ["slides"]] [
-          content;
+          pcdata content;
 
           div ~a:[a_id "footer"] [
             a ~a:[a_id "index"; a_href "/"] [
