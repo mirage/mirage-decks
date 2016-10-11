@@ -26,7 +26,7 @@ article a:hover {
 }
 
 body {
-  background: url(/graphics/cloud-bg.png) repeat-x;
+  background: url("/img/cloud-bg.png") repeat-x;
 }
 
 code {
