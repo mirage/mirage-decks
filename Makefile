@@ -14,12 +14,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-MODE   ?= unix
-DEPLOY ?= false
-
-FS     ?=  # direct is implicit default until mirage#607 merged
-NET    ?= socket
-DHCP   ?= false
+MIRAGE_BACKEND ?= unix
+FLAGS ?= -vv --net=socket --port=8080
 
 .PHONY: all configure build clean
 
@@ -27,8 +23,7 @@ all: build
 	@ :
 
 configure:
-	mirage configure -f src/config.ml -t $(MODE) --net=$(NET) --dhcp=$(DHCP) \
-	  # --kv_ro=$(FS)
+	mirage configure -f src/config.ml $(FLAGS) -t $(MIRAGE_BACKEND)
 
 build:
 	@ [ -r src/Makefile ] \
