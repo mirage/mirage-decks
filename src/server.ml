@@ -34,16 +34,20 @@ module Main
   module Logs_reporter = Mirage_logs.Make(CLOCK)
 
   let dispatcher cid read_asset read_deck uri =
-    let respond_ok path body_lwt = body_lwt >>= fun body ->
+    let respond_ok ?mime_type ~path body_lwt =
+      body_lwt >>= fun body ->
       Http_log.info (fun f -> f "[%s] ok [%s]" cid path);
-      let mime_type = Magic_mime.lookup path in
+      let mime_type = match mime_type with
+        | None -> Magic_mime.lookup path
+        | Some mime_type -> mime_type
+      in
       let headers = Cohttp.Header.init () in
       let headers = Cohttp.Header.add headers "content-type" mime_type in
       S.respond_string ~status:`OK ~body ~headers ()
     in
 
     let path = Uri.path uri in
-    Lwt.catch (fun () -> read_asset path |> respond_ok path)
+    Lwt.catch (fun () -> read_asset path |> respond_ok ~path)
       (function
         | Failure e -> (
             Http_log.debug (fun f ->
@@ -53,11 +57,14 @@ module Main
             let cpts = Astring.String.cuts ~empty:false ~sep:"/" path in
             match cpts with
             | [] | [""] ->
-              Slides.index () |> respond_ok "/index.html"
+              Slides.index ()
+              |> respond_ok ~path:"/index.html"
             | deck :: [] ->
-              Slides.deck ~readf:read_deck ~deck |> respond_ok path
+              Slides.deck ~readf:read_deck ~deck
+              |> respond_ok ~mime_type:"text/html" ~path
             | deck :: asset :: [] ->
-              Slides.asset ~readf:read_asset ~deck ~asset |> respond_ok path
+              Slides.asset ~readf:read_deck ~deck ~asset
+              |> respond_ok ~path
             | _ ->
               Http_log.info (fun f -> f "[%s] not found [%s]" cid path);
               S.respond_not_found ~uri ()
