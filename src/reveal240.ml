@@ -44,7 +44,7 @@ let page ~readf ~site d =
     body [
       div ~a:[a_class ["reveal"]] [
         div ~a:[a_class ["slides"]] [
-          pcdata content;
+          Unsafe.data content;
 
           div ~a:[a_id "footer"] [
             a ~a:[a_id "index"; a_href "/"] [
@@ -57,7 +57,7 @@ let page ~readf ~site d =
       script ~a:[a_src "/reveal-2.4.0/lib/js/head.min.js"] (pcdata " ");
       script ~a:[a_src "/reveal-2.4.0/js/reveal.min.js"] (pcdata " ");
       script ~a:[a_mime_type "text/javascript"]
-        (pcdata {__|
+        (Unsafe.data {__|
 // Full list of configuration options available here:
 // https://github.com/hakimel/reveal.js#configuration
 Reveal.initialize({
@@ -66,11 +66,11 @@ Reveal.initialize({
     history: true,
     center: false,
     margin:0.07,
-           \     // available themes are in /css/theme
+    // available themes are in /css/theme
     theme: Reveal.getQueryHash().theme,
     // default/cube/page/concave/zoom/linear/fade/none
     transition: Reveal.getQueryHash().transition || 'fade',
-           \     // Optional libraries used to extend on reveal.js
+    // Optional libraries used to extend on reveal.js
     dependencies: [
         { src: '/reveal-2.4.0/lib/js/classList.js',
           condition: function() {return !document.body.classList;}
