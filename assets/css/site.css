@@ -29,6 +29,13 @@ body {
   background: url("/img/cloud-bg.png") repeat-x;
 }
 
+.contain-to-grid {
+    background: url("/img/cloud-bg.png") repeat-x;
+}
+ul > li.index-entry {
+    list-style-type: none;
+}
+
 code {
   font-weight: normal;
   margin-bottom: 1em;

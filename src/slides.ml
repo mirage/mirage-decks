@@ -355,6 +355,7 @@ let deck_to_html d =
     in
     aux [] sep
   in
+
   let speakers =
     d.Deck.speakers
     |> List.map (fun s -> match s.People.uri with
@@ -363,6 +364,7 @@ let deck_to_html d =
       )
     |> concat (pcdata ", ")
   in
+
   article [
     Deck.Date.to_html d.Deck.given;
     h4 [
@@ -421,7 +423,9 @@ let index () =
                 small [pcdata "and talks using Mirage"]
               ];
               ul (decks |> List.sort Deck.compare
-                  |> List.map (fun d -> li [deck_to_html d])
+                  |> List.map (fun d ->
+                      li ~a:[a_class ["index-entry"]] [deck_to_html d]
+                    )
                  )
             ]
         ]
