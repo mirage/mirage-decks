@@ -57,12 +57,15 @@ module Main
             let cpts = Astring.String.cuts ~empty:false ~sep:"/" path in
             match cpts with
             | [] | [""] ->
+              Http_log.info (fun f -> f "root [/]");
               Slides.index ()
               |> respond_ok ~path:"/index.html"
             | deck :: [] ->
+              Http_log.info (fun f -> f "deck [%s]" deck);
               Slides.deck ~readf:read_deck ~deck
               |> respond_ok ~mime_type:"text/html" ~path
             | deck :: asset :: [] ->
+              Http_log.info (fun f -> f "deck/asset [%s/%s]" deck asset);
               Slides.asset ~readf:read_deck ~deck ~asset
               |> respond_ok ~path
             | _ ->
