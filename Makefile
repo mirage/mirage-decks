@@ -14,11 +14,8 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-MODE   ?= unix
-FS     ?= direct
-DEPLOY ?= false
-NET    ?= socket
-DHCP   ?= false
+MIRAGE_BACKEND ?= unix
+FLAGS ?= -vv --net=socket --port=8080
 
 .PHONY: all configure build clean
 
@@ -26,12 +23,14 @@ all: build
 	@ :
 
 configure:
-	FS=$(FS) DEPLOY=$(DEPLOY) NET=$(NET) DHCP=$(DHCP) \
-		mirage configure -f src/config.ml --$(MODE)
+	mirage configure -f src/config.ml $(FLAGS) -t $(MIRAGE_BACKEND)
 
 build:
-	mirage build -f src/config.ml
+	@ [ -r src/Makefile ] \
+	  && ( cd src && make ) \
+	  || echo '"make configure" first!'
 
 clean:
-	[ -r src/Makefile ] && mirage clean -f src/config.ml || true
-	$(RM) log
+	[ -r src/Makefile ] && ( cd src && make clean ) || true
+	mirage clean -f src/config.ml || true
+	$(RM) log src/*.img
