@@ -24,6 +24,6 @@ let http_job =
     (clock @-> http @-> kv_ro @-> kv_ro @-> job)
 
 let () =
-  register ~libraries ~packages "decks" [
+  register ~libraries ~packages "decks.openmirage.org" [
     http_job $ default_clock $ httpsvr $ assetsfs $ slidesfs
   ]
