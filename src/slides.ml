@@ -370,7 +370,7 @@ let deck_to_html d =
     h4 [
       a ~a:[a_href d.Deck.permalink] [pcdata d.Deck.title]
     ];
-    p ([ strong [pcdata d.Deck.venue] ] @ speakers) ;
+    p ( (strong [pcdata d.Deck.venue]) :: (pcdata " ") :: speakers) ;
     p [ br () ]
   ]
 
@@ -400,7 +400,7 @@ let index () =
 
   let body =
     body [
-      div ~a:[a_class ["contain-to-grid"; "fixed"]] [
+      div ~a:[a_class ["contain-to-grid"]] [
         nav ~a:[a_class ["top-bar"]; a_user_data "topbar" ""] [
           ul ~a:[a_class ["title-area"]] [
             li ~a:[a_class ["name"]] [
