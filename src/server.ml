@@ -28,10 +28,10 @@ module Http_log = (val Logs.src_log http_src : Logs.LOG)
 let log_info s = Http_log.info (fun f -> f "%s" s)
 
 module Main
-    (CLOCK: V1.CLOCK) (S: HTTP) (ASSETS: V1_LWT.KV_RO) (DECKS: V1_LWT.KV_RO)
+    (PCLOCK: V1_LWT.PCLOCK) (S: HTTP) (ASSETS: V1_LWT.KV_RO) (DECKS: V1_LWT.KV_RO)
 = struct
 
-  module Logs_reporter = Mirage_logs.Make(CLOCK)
+  module Logs_reporter = Mirage_logs.Make(PCLOCK)
 
   let dispatcher cid read_asset read_deck uri =
     let respond_ok ?mime_type ~path body_lwt =
@@ -93,9 +93,9 @@ module Main
       | `Error (DECKS.Unknown_key _) -> Lwt.fail (Failure ("deck read " ^ deck))
       | `Ok bufs -> Lwt.return (Cstruct.copyv bufs)
 
-  let start _clock http assets decks =
+  let start clock http assets decks =
     Logs.(set_level (Some Info));
-    Logs_reporter.(create () |> run) @@ fun () ->
+    Logs_reporter.(create clock |> run) @@ fun () ->
 
     let callback (_, cid) request _body =
       let uri = Cohttp.Request.uri request in
