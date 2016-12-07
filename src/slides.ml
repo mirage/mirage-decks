@@ -20,6 +20,13 @@ open Tyxml
 let decks =
   let open Deck in
   [
+    { permalink = "msndevops";
+      given = Date.t (2016, 12, 07);
+      speakers = [People.mindy];
+      venue = "Madison DevOps";
+      title = "Unikernels, MirageOS, Library Operating Systems, You";
+      style = Reveal262 None;
+    };
     { permalink = "ucamafp16";
       given = Date.t (2016, 03, 06);
       speakers = [People.anil];
