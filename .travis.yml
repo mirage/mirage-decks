@@ -10,11 +10,11 @@ script: bash -ex .travis-mirage.sh
 
 env:
   matrix:
-  - OCAML_VERSION=4.03 MIRAGE_BACKEND=unix FLAGS="-vv --net=socket"
+  - OCAML_VERSION=4.03 MIRAGE_BACKEND=unix FLAGS="-vv"
   - OCAML_VERSION=4.03 MIRAGE_BACKEND=unix FLAGS-"-vv --net=direct"
   - OCAML_VERSION=4.03 MIRAGE_BACKEND=xen DEPLOY=1 XENIMG="decks.openmirage.org"
     UPDATE_GCC_BINUTILS=1
-    FLAGS="-vv --net direct --dhcp false --network 0 --ipv4 46.43.42.134/25 --ipv4-gateway 46.43.42.129"
+    FLAGS="-vv --net direct --dhcp false --ipv4 46.43.42.134/25 --ipv4-gateway 46.43.42.129"
 
   global:
   - EXTRA_REMOTES="https://github.com/mirage/mirage-dev.git"
