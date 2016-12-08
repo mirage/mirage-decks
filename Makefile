@@ -15,7 +15,12 @@
 #
 
 MIRAGE_BACKEND ?= unix
-FLAGS ?= -vv --port=8080
+ifeq ($(MIRAGE_BACKEND),unix)
+	FLAGS ?= -vv --port=8080
+	FLAGS += --net=socket
+else
+	FLAGS ?= -vv --port=8080
+endif	
 
 .PHONY: all configure build clean
 
