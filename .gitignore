@@ -15,6 +15,11 @@ src/mir-decks.elf
 src/mir-decks.xen
 src/static*.ml
 src/static*.mli
+src/decks.openmirage.org.xe
+src/decks.openmirage.org.xl
+src/decks.openmirage.org.xl.in
+src/decks.openmirage.org_libvirt.xml
+src/mir-decks.openmirage.org
 
 # un-minified reveal.css for debugging
 assets/reveal-2.4.0/css/reveal.css
