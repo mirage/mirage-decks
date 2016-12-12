@@ -34,6 +34,7 @@ let decks =
       title = "Modular Operating System Construction";
       style = Reveal240;
     };
+
     { permalink = "cif16-loops";
       given = Date.t (2016, 01, 22);
       speakers = [People.mort];
@@ -41,6 +42,7 @@ let decks =
       title = "Knock, Knock: Unikernels Calling!";
       style = Reveal262 None;
     };
+
     { permalink = "strangeloop15";
       given = Date.t (2015, 09, 26);
       speakers = [People.mindy];
@@ -48,6 +50,7 @@ let decks =
       title = "Non-Imperative Network Programming";
       style = Reveal262 None;
     };
+
     { permalink = "ocaml15-irminnet";
       given = Date.t (2015, 09, 04);
       speakers = [People.mindy];
@@ -55,6 +58,15 @@ let decks =
       title = "Persistent Networking with Irmin and MirageOS";
       style = Reveal262 None;
     };
+
+    { permalink = "polyconf15";
+      given = Date.t (2015, 07, 04);
+      speakers = [People.amir];
+      venue = "PolyConf 2015";
+      title = "Unikernels!";
+      style = Reveal262 None;
+    };
+
     { permalink = "bigtechday8";
       given = Date.t (2015, 06, 12);
       speakers = [People.mort];
@@ -79,11 +91,27 @@ let decks =
       style = Reveal262 None;
     };
 
+    { permalink = "iot-summit15";
+      given = Date.t (2015, 05, 11);
+      speakers = [People.amir];
+      venue = "IoT Summit 2015";
+      title = "Giving users control (and why Unikernels are the way to do it)";
+      style = Reveal262 None;
+    };
+
     { permalink = "nsdi2015";
       given = Date.t (2015, 05, 06);
       speakers = [People.anil; People.magnus; People.mort];
       venue = "USENIX Networked System Design and Implementation (NSDI)";
       title = "Jitsu: Just-in-Time Summoning of Unikernels";
+      style = Reveal262 None;
+    };
+
+    { permalink = "pcampldn15";
+      given = Date.t (2015, 03, 28);
+      speakers = [People.amir];
+      venue = "ProductCamp London 2015";
+      title = "New Open Source Tech for IoT Products";
       style = Reveal262 None;
     };
 
