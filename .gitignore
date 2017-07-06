@@ -1,27 +1,15 @@
 .DS_Store
-.*.swp
+/.mirage.container
 
-# mirage build outputs
-log
+src/static*.ml*
+src/.mirage.config
 src/Makefile
 src/_build/
+src/key_gen.ml
 src/main.ml
-src/main.native
-src/mir-decks
-src/decks.xl
-src/decks.xe
-src/decks_libvirt.xml
-src/mir-decks.elf
-src/mir-decks.xen
-src/static*.ml
-src/static*.mli
-src/decks.openmirage.org.xe
-src/decks.openmirage.org.xl
-src/decks.openmirage.org.xl.in
-src/decks.openmirage.org_libvirt.xml
-src/mir-decks.openmirage.org
+src/mirage-unikernel-*.opam
+src/myocamlbuild.ml
+src/decksopenmirageorg.x*
+src/decksopenmirageorg_libvirt.xml
 
-# un-minified reveal.css for debugging
-assets/reveal-2.4.0/css/reveal.css
-/src/decks.xl.in
-/src/key_gen.ml
+

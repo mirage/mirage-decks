@@ -14,23 +14,28 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-MIRAGE_BACKEND ?= unix
-FLAGS ?= -vv --net=socket --port=8080
+PORT  ?= 8080
+FLAGS ?= -vv --net=socket -t unix --kv_ro archive --port=$(PORT)
 
-.PHONY: all configure build clean
+MIRAGE = DOCKER_FLAGS="$$DOCKER_FLAGS -p $(PORT)" \
+    dommage --dommage-chdir src
+
+.PHONY: clean configure build destroy run
 
 all: build
 	@ :
 
+clean:
+	$(MIRAGE) clean || true
+
 configure:
-	mirage configure -f src/config.ml $(FLAGS) -t $(MIRAGE_BACKEND)
+	$(MIRAGE) configure $(FLAGS)
 
 build:
-	@ [ -r src/Makefile ] \
-	  && ( cd src && make ) \
-	  || echo '"make configure" first!'
+	$(MIRAGE) build
 
-clean:
-	[ -r src/Makefile ] && ( cd src && make clean ) || true
-	mirage clean -f src/config.ml || true
-	$(RM) log src/*.img
+destroy:
+	$(MIRAGE) destroy
+
+run:
+	$(MIRAGE) run sudo ./decks
