@@ -11,5 +11,5 @@ src/mirage-unikernel-*.opam
 src/myocamlbuild.ml
 src/decksopenmirageorg.x*
 src/decksopenmirageorg_libvirt.xml
-
+src/tar_*.img
 
