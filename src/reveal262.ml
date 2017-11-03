@@ -3,6 +3,7 @@ open Deck
 
 let page ~site d =
   let head =
+    let open Deck in
     let theme = match d.style with Reveal262 (Some s) -> s | _ -> "horizon" in
     let speakers =
       d.speakers |> List.map (fun p -> p.People.name) |> String.concat ", "
@@ -33,7 +34,7 @@ let page ~site d =
        |> tot)
     ]
   in
-  
+
   let body =
     let open Html in
     let script s = script ~a:[a_src s] (pcdata " ") in

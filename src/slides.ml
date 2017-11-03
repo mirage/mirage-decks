@@ -494,12 +494,12 @@ _gaq.push(['_trackPageview']);
   Lwt.return (Render.to_string @@ Html.html ~a:[Html.a_lang "en"] head body)
 
 let deck ~readf ~deck =
-  let d = List.find (fun d -> d.Deck.permalink = deck) decks in
+  let open Deck in
+  let d = List.find (fun d -> d.permalink = deck) decks in
   let title = "openmirage.org | decks | " in
-  Deck.(match d.style with
-      | Reveal240 -> Reveal240.page ~readf ~site:title d
-      | Reveal262 _ -> Reveal262.page ~site:title d
-    )
+  match d.style with
+  | Reveal240 -> Reveal240.page ~readf ~site:title d
+  | Reveal262 _ -> Reveal262.page ~site:title d
 
 let asset ~readf ~deck ~asset =
   let d = List.find (fun d -> d.Deck.permalink = deck) decks in

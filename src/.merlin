@@ -1,5 +1,5 @@
-PKG functoria mirage mirage-types logs mirage-logs lwt cohttp cstruct
-PKG tyxml cowabloga magic-mime
+PKG functoria mirage mirage-types mirage-types-lwt logs mirage-logs lwt cstruct
+PKG cohttp cohttp-lwt tyxml cowabloga magic-mime
 
 S .
 B ./_build/**

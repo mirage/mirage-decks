@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2015 Richard Mortier <mort@cantab.net>
+# Copyright (c) 2013-2017 Richard Mortier <mort@cantab.net>
 #
 # Permission to use, copy, modify, and distribute this software for any purpose
 # with or without fee is hereby granted, provided that the above copyright
@@ -14,23 +14,45 @@
 # PERFORMANCE OF THIS SOFTWARE.
 #
 
-MIRAGE_BACKEND ?= unix
-FLAGS ?= -vv --net=socket --port=8080
+PORT  ?= 8080
+FLAGS ?= -vv --net=socket -t unix --kv_ro archive --port=$(PORT)
 
-.PHONY: all configure build clean
+MIRAGE ?= DOCKER_FLAGS="$$DOCKER_FLAGS -p $(PORT):$(PORT)" \
+    dommage --dommage-chdir src
 
+.PHONY: all
 all: build
 	@ :
 
-configure:
-	mirage configure -f src/config.ml $(FLAGS) -t $(MIRAGE_BACKEND)
-
-build:
-	@ [ -r src/Makefile ] \
-	  && ( cd src && make ) \
-	  || echo '"make configure" first!'
-
+.PHONY: clean
 clean:
-	[ -r src/Makefile ] && ( cd src && make clean ) || true
-	mirage clean -f src/config.ml || true
-	$(RM) log src/*.img
+	$(MIRAGE) clean || true
+	$(RM) src/*.img
+
+.PHONY: configure
+configure:
+	$(MIRAGE) configure $(FLAGS)
+
+.PHONY: build
+build:
+	$(MIRAGE) build
+
+.PHONY: destroy
+destroy:
+	$(MIRAGE) destroy
+
+.PHONY: update
+update:
+	$(MIRAGE) update
+
+.PHONY: publish
+publish:
+	$(MIRAGE) publish mor1/mirage-decks
+
+.PHONY: run
+run:
+	$(MIRAGE) run sudo ./decksopenmirageorg
+
+.PHONY: shell
+shell:
+	$(MIRAGE) run /bin/bash

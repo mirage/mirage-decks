@@ -17,40 +17,69 @@
 
 open Lwt.Infix
 
-module type HTTP = Cohttp_lwt.Server
-
-let https_src = Logs.Src.create "https" ~doc:"HTTPS server"
-module Https_log = (val Logs.src_log https_src : Logs.LOG)
-
-let http_src = Logs.Src.create "http" ~doc:"HTTP server"
-module Http_log = (val Logs.src_log http_src : Logs.LOG)
-
-let log_info s = Http_log.info (fun f -> f "%s" s)
+let err fmt = Fmt.kstrf failwith fmt
 
 module Main
-    (CLOCK: V1.CLOCK) (S: HTTP) (ASSETS: V1_LWT.KV_RO) (DECKS: V1_LWT.KV_RO)
+    (S: Cohttp_lwt.S.Server)
+    (ASSETS: Mirage_types_lwt.KV_RO)
+    (DECKS: Mirage_types_lwt.KV_RO)
 = struct
 
-  module Logs_reporter = Mirage_logs.Make(CLOCK)
+  let http_src = Logs.Src.create "http" ~doc:"HTTP server"
+  module Http_log = (val Logs.src_log http_src : Logs.LOG)
 
-  let dispatcher cid read_asset read_deck uri =
-    let respond_ok ?mime_type ~path body_lwt =
-      body_lwt >>= fun body ->
-      Http_log.info (fun f -> f "[%s] ok [%s]" cid path);
-      let mime_type = match mime_type with
-        | None -> Magic_mime.lookup path
-        | Some mime_type -> mime_type
-      in
-      let headers = Cohttp.Header.init () in
-      let headers = Cohttp.Header.add headers "content-type" mime_type in
-      S.respond_string ~status:`OK ~body ~headers ()
+  let join ~sep ss =
+    let open Astring.String in
+    concat ~sep ss |> cuts ~empty:false ~sep |> concat ~sep
+
+  let size_then_read ~pp_error ~size ~read device name =
+    size device name >>= function
+    | Error e -> err "%a" pp_error e
+    | Ok size ->
+      read device name 0L size >>= function
+      | Error e -> err "%a" pp_error e
+      | Ok bufs -> Lwt.return (Cstruct.copyv bufs)
+
+  let assets_read device name =
+    let path = join ~sep:"/" ["assets"; name] in
+    size_then_read
+      ~pp_error:ASSETS.pp_error ~size:ASSETS.size ~read:ASSETS.read device path
+
+  let decks_read device name =
+    let path = join ~sep:"/" ["slides"; name] in
+    size_then_read
+      ~pp_error:DECKS.pp_error ~size:DECKS.size ~read:DECKS.read device path
+
+  let respond_ok ?mime_type ~path body_lwt =
+    body_lwt >>= fun body ->
+    let mime_type = match mime_type with
+      | None -> Magic_mime.lookup path
+      | Some mime_type -> mime_type
     in
+    let headers = Cohttp.Header.init () in
+    let headers = Cohttp.Header.add headers "content-type" mime_type in
+    S.respond_string ~status:`OK ~body ~headers ()
 
+  let dispatcher assets decks cid uri =
     let path = Uri.path uri in
-    Lwt.catch (fun () -> read_asset path |> respond_ok ~path)
+    Http_log.info (fun f -> f "[%s] request '%s'" cid path);
+
+    Lwt.catch
+      (fun () ->
+         Http_log.info (fun f -> f "[%s] trying assets for [%s]" cid path);
+
+         let cpts = Astring.String.cuts ~empty:false ~sep:"/" path in
+         match cpts with
+         | [] | [""] ->
+           Http_log.info (fun f -> f "root [/]");
+           Slides.index ()
+           |> respond_ok ~path:"/index.html"
+         | _ ->
+           assets_read assets path |> respond_ok ~path
+      )
       (function
         | Failure e -> (
-            Http_log.debug (fun f ->
+            Http_log.info (fun f ->
                 f "[%s] not an asset, trying decks! [%s]" cid e
               );
 
@@ -62,11 +91,11 @@ module Main
               |> respond_ok ~path:"/index.html"
             | deck :: [] ->
               Http_log.info (fun f -> f "deck [%s]" deck);
-              Slides.deck ~readf:read_deck ~deck
+              Slides.deck ~readf:(decks_read decks) ~deck
               |> respond_ok ~mime_type:"text/html" ~path
             | deck :: asset :: [] ->
               Http_log.info (fun f -> f "deck/asset [%s/%s]" deck asset);
-              Slides.asset ~readf:read_deck ~deck ~asset
+              Slides.asset ~readf:(decks_read decks) ~deck ~asset
               |> respond_ok ~path
             | _ ->
               Http_log.info (fun f -> f "[%s] not found [%s]" cid path);
@@ -75,34 +104,14 @@ module Main
         | e -> Lwt.fail e
       )
 
-  let read_asset kv_ro asset =
-    ASSETS.size kv_ro asset >>= function
-    | `Error (ASSETS.Unknown_key _) ->
-      Lwt.fail (Failure ("asset size " ^ asset))
-    | `Ok size ->
-      ASSETS.read kv_ro asset 0 (Int64.to_int size) >>= function
-      | `Error (ASSETS.Unknown_key _) ->
-        Lwt.fail (Failure ("asset read " ^ asset))
-      | `Ok bufs -> Lwt.return (Cstruct.copyv bufs)
-
-  let read_deck kv_ro deck =
-    DECKS.size kv_ro deck >>= function
-    | `Error (DECKS.Unknown_key _) -> Lwt.fail (Failure ("deck size " ^ deck))
-    | `Ok size ->
-      DECKS.read kv_ro deck 0 (Int64.to_int size) >>= function
-      | `Error (DECKS.Unknown_key _) -> Lwt.fail (Failure ("deck read " ^ deck))
-      | `Ok bufs -> Lwt.return (Cstruct.copyv bufs)
-
-  let start _clock http assets decks =
+  let start http assets decks =
     Logs.(set_level (Some Info));
-    Logs_reporter.(create () |> run) @@ fun () ->
 
     let callback (_, cid) request _body =
       let uri = Cohttp.Request.uri request in
       let cid = Cohttp.Connection.to_string cid in
       Http_log.info (fun f -> f "[%s] serving [%s]" cid (Uri.to_string uri));
-      let read_deck = read_deck decks in
-      dispatcher cid (read_asset assets) read_deck uri
+      dispatcher assets decks cid uri
     in
     let conn_closed (_, cid) =
       let cid = Cohttp.Connection.to_string cid in
@@ -111,6 +120,6 @@ module Main
     let port = Key_gen.port () in
     Http_log.info (fun f -> f "listening on %d/TCP" port);
 
-    http (`TCP port) (S.make ~conn_closed ~callback ())
+    http (`TCP port) @@ S.make ~conn_closed ~callback ()
 
 end
