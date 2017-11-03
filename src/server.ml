@@ -20,13 +20,17 @@ open Lwt.Infix
 let err fmt = Fmt.kstrf failwith fmt
 
 module Main
-    (S: Cohttp_lwt.Server)
+    (S: Cohttp_lwt.S.Server)
     (ASSETS: Mirage_types_lwt.KV_RO)
     (DECKS: Mirage_types_lwt.KV_RO)
 = struct
 
   let http_src = Logs.Src.create "http" ~doc:"HTTP server"
   module Http_log = (val Logs.src_log http_src : Logs.LOG)
+
+  let join ~sep ss =
+    let open Astring.String in
+    concat ~sep ss |> cuts ~empty:false ~sep |> concat ~sep
 
   let size_then_read ~pp_error ~size ~read device name =
     size device name >>= function
@@ -36,11 +40,15 @@ module Main
       | Error e -> err "%a" pp_error e
       | Ok bufs -> Lwt.return (Cstruct.copyv bufs)
 
-  let assets_read =
-    size_then_read ~pp_error:ASSETS.pp_error ~size:ASSETS.size ~read:ASSETS.read
+  let assets_read device name =
+    let path = join ~sep:"/" ["assets"; name] in
+    size_then_read
+      ~pp_error:ASSETS.pp_error ~size:ASSETS.size ~read:ASSETS.read device path
 
-  let decks_read =
-    size_then_read ~pp_error:DECKS.pp_error ~size:DECKS.size ~read:DECKS.read
+  let decks_read device name =
+    let path = join ~sep:"/" ["slides"; name] in
+    size_then_read
+      ~pp_error:DECKS.pp_error ~size:DECKS.size ~read:DECKS.read device path
 
   let respond_ok ?mime_type ~path body_lwt =
     body_lwt >>= fun body ->
@@ -56,10 +64,22 @@ module Main
     let path = Uri.path uri in
     Http_log.info (fun f -> f "[%s] request '%s'" cid path);
 
-    Lwt.catch (fun () -> assets_read assets path |> respond_ok ~path)
+    Lwt.catch
+      (fun () ->
+         Http_log.info (fun f -> f "[%s] trying assets for [%s]" cid path);
+
+         let cpts = Astring.String.cuts ~empty:false ~sep:"/" path in
+         match cpts with
+         | [] | [""] ->
+           Http_log.info (fun f -> f "root [/]");
+           Slides.index ()
+           |> respond_ok ~path:"/index.html"
+         | _ ->
+           assets_read assets path |> respond_ok ~path
+      )
       (function
         | Failure e -> (
-            Http_log.debug (fun f ->
+            Http_log.info (fun f ->
                 f "[%s] not an asset, trying decks! [%s]" cid e
               );
 
