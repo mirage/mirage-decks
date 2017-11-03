@@ -18,10 +18,10 @@ script:
 
 env:
   matrix:
-    - FLAGS="-t unix -vv --net socket --kv_ro archive --port 80"
-    - FLAGS="-t unix -vv --net direct --kv_ro archive --port 80"
-    - FLAGS="-vv --net direct --dhcp false --kv_ro archive --port 80
-        --ipv4 46.43.42.134/28 --ipv4-gateway 46.43.42.129"
+    - FLAGS="-t unix -vv --kv_ro archive --net socket --port 80"
+    - FLAGS="-t unix -vv --kv_ro archive --net direct --port 80"
+    - FLAGS="-t xen  -vv --kv_ro archive --net direct --port 80
+        --dhcp false --ipv4 46.43.42.134/28 --ipv4-gateway 46.43.42.129"
       DEPLOY=1 XENIMG="decksopenmirageorg"
 
   global:
