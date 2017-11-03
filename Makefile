@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2015 Richard Mortier <mort@cantab.net>
+# Copyright (c) 2013-2017 Richard Mortier <mort@cantab.net>
 #
 # Permission to use, copy, modify, and distribute this software for any purpose
 # with or without fee is hereby granted, provided that the above copyright
@@ -17,25 +17,42 @@
 PORT  ?= 8080
 FLAGS ?= -vv --net=socket -t unix --kv_ro archive --port=$(PORT)
 
-MIRAGE = DOCKER_FLAGS="$$DOCKER_FLAGS -p $(PORT)" \
+MIRAGE ?= DOCKER_FLAGS="$$DOCKER_FLAGS -p $(PORT):$(PORT)" \
     dommage --dommage-chdir src
 
-.PHONY: clean configure build destroy run
-
+.PHONY: all
 all: build
 	@ :
 
+.PHONY: clean
 clean:
 	$(MIRAGE) clean || true
+	$(RM) src/*.img
 
+.PHONY: configure
 configure:
 	$(MIRAGE) configure $(FLAGS)
 
+.PHONY: build
 build:
 	$(MIRAGE) build
 
+.PHONY: destroy
 destroy:
 	$(MIRAGE) destroy
 
+.PHONY: update
+update:
+	$(MIRAGE) update
+
+.PHONY: publish
+publish:
+	$(MIRAGE) publish mor1/mirage-decks
+
+.PHONY: run
 run:
-	$(MIRAGE) run sudo ./decks
+	$(MIRAGE) run sudo ./decksopenmirageorg
+
+.PHONY: shell
+shell:
+	$(MIRAGE) run /bin/bash
